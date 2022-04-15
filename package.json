@@ -4,7 +4,7 @@
   "description": "Yu-Gi-Oh duel simulator.",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node ts/index.ts",
+    "start": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

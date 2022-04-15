@@ -11,4 +11,5 @@ const deck2 = new Deck(player2, "dragon_rage");
 player1.setDeck(deck1);
 player2.setDeck(deck2);
 
-new Duel(player1, player2);
+global.DUEL = new Duel([player1, player2]);
+global.DUEL.start();

@@ -8,5 +8,8 @@
     "outDir": "dist",
     "strict": true
   },
-  "lib": ["es2022"]
+  "lib": ["es2022"],
+  "ts-node": {
+    "files": true
+  }
 }
