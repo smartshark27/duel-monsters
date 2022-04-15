@@ -4,7 +4,7 @@ import Deck from "./Deck";
 import Field from "./Field";
 
 export default class Player {
-  name: String;
+  name: string;
 
   private static logger = LoggerFactory.getLogger("Player");
   private lifePoints: number = 8000;
@@ -14,7 +14,7 @@ export default class Player {
   private deck: Deck | undefined;
   private field: Field;
 
-  constructor(name: String) {
+  constructor(name: string) {
     this.name = name;
     Player.logger.info(`Created player ${name}`);
     this.field = new Field(this);

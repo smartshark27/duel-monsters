@@ -1,0 +1,3 @@
+interface CardData {
+  cardType: string;
+}

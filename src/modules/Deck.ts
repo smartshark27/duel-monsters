@@ -7,10 +7,10 @@ import Player from "./Player";
 export default class Deck {
   private static logger = LoggerFactory.getLogger("Duel");
   private owner: Player;
-  private name: String;
+  private name: string;
   private cards: Card[] = [];
 
-  constructor(owner: Player, name: String) {
+  constructor(owner: Player, name: string) {
     Deck.logger.info(`Creating deck ${name}`);
     this.owner = owner;
     this.name = name;

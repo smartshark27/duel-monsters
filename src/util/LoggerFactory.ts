@@ -12,7 +12,7 @@ export default class LoggerFactory {
     ],
   });
 
-  static getLogger(name: String) {
+  static getLogger(name: string) {
     return this.logger.child({ name: name });
   }
 }

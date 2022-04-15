@@ -5,7 +5,7 @@ import Player from "./Player";
 export default class Monster extends Card {
   protected static override logger = LoggerFactory.getLogger("Monster");
 
-  constructor(owner: Player, name: String) {
+  constructor(owner: Player, name: string) {
     super(owner, name);
   }
 }
