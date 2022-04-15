@@ -1,6 +1,7 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Player from "./Player";
 import File from "../util/File";
+import Action from "./actions/Action";
 
 export default class Card {
   name: string;
@@ -8,7 +9,7 @@ export default class Card {
   protected static logger = LoggerFactory.getLogger("Card");
   protected static cardsData = JSON.parse(File.read("./cards/cards.json"));
   protected data: MonsterData;
-  private owner: Player;
+  protected owner: Player;
 
   protected static getCardData(name: string) {
     return Card.cardsData[name];
@@ -20,5 +21,9 @@ export default class Card {
     this.owner = owner;
     this.name = name;
     this.data = Card.getCardData(name);
+  }
+
+  getActions(): Array<Action> {
+    return [];
   }
 }

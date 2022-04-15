@@ -44,8 +44,27 @@ export default class Player {
     }
   }
 
-  startTurn() {
+  startDrawPhase() {
     Player.logger.info(`Starting turn for player ${this.name}`);
     this.drawCard();
+  }
+
+  startMainPhase1() {
+    Player.logger.info(`Starting main phase for player ${this.name}`);
+    const actions = this.getActions();
+  }
+
+  getActions() {
+    const handActions = this.getHandActions();
+    return handActions;
+  }
+
+  private getHandActions() {
+    const actions: Card[] = [];
+    this.hand.forEach(card => {
+      if (card.getActions()) {
+        actions.push(card);
+      }
+    })
   }
 }
