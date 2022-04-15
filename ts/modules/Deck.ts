@@ -1,14 +1,17 @@
 import File from "../util/File";
 import LoggerFactory from "../util/LoggerFactory";
 import Card from "./Card";
+import Player from "./Player";
 
 export default class Deck {
   private static logger = LoggerFactory.getLogger("Duel");
+  private owner: Player;
   private name: String;
   private cards: Card[] = [];
 
-  constructor(name: String) {
+  constructor(owner: Player, name: String) {
     Deck.logger.info(`Creating deck ${name}`);
+    this.owner = owner;
     this.name = name;
     this.loadCards();
   }
@@ -19,6 +22,6 @@ export default class Deck {
     const file = File.read(filename);
     const cardNames = file.split("\n");
     Deck.logger.debug("Loaded cards " + cardNames);
-    cardNames.forEach(cardName => this.cards.push(new Card(cardName)));
+    cardNames.forEach(cardName => this.cards.push(new Card(this.owner, cardName)));
   }
 }
