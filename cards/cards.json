@@ -1,0 +1,34 @@
+{
+  "Blackland Fire Dragon": {
+    "cardType": "monster",
+    "attribute": "DARK",
+    "level": 4,
+    "monsterTypes": ["normal", "dragon"],
+    "attack": 1500,
+    "defence": 800
+  },
+  "Blue-Eyes White Dragon": {
+    "cardType": "monster",
+    "attribute": "LIGHT",
+    "level": 8,
+    "monsterTypes": ["normal", "dragon"],
+    "attack": 3000,
+    "defence": 2500
+  },
+  "Flying Kamakiri #1": {
+    "cardType": "monster",
+    "attribute": "WIND",
+    "level": 4,
+    "monsterTypes": ["effect", "insect"],
+    "attack": 1400,
+    "defence": 900
+  },
+  "The Dragon Dwelling in the Cave": {
+    "cardType": "monster",
+    "attribute": "WIND",
+    "level": 4,
+    "monsterTypes": ["normal", "dragon"],
+    "attack": 1300,
+    "defence": 2000
+  }
+}

@@ -4,7 +4,7 @@ import Player from "./Player";
 export default class Card {
   name: String;
 
-  private static logger = LoggerFactory.getLogger("Card");
+  protected static logger = LoggerFactory.getLogger("Card");
   private owner: Player;
 
   constructor(owner: Player, name: String) {
