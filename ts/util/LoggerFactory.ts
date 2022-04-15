@@ -2,6 +2,7 @@ import winston from "winston";
 
 export default class LoggerFactory {
   private static logger = winston.createLogger({
+    level: 'debug',
     transports: [
       new winston.transports.Console({
         format: winston.format.printf((options) => {

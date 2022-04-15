@@ -1,15 +1,16 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Deck from "./Deck";
+import Player from "./Player";
 
 export default class Duel {
   private static logger = LoggerFactory.getLogger("Duel");
-  private deck1: Deck;
-  private deck2: Deck;
+  private player1: Player;
+  private player2: Player;
 
   constructor(deck1: Deck, deck2: Deck) {
     Duel.logger.info("Created duel");
 
-    this.deck1 = deck1;
-    this.deck2 = deck2;
+    this.player1 = new Player(deck1);
+    this.player2 = new Player(deck2);
   }
 }
