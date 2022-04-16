@@ -1,7 +1,9 @@
+import { Phase } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Player from "./Player";
 
 export default class Duel {
+  phase: Phase = Phase.PreGame;
   private static logger = LoggerFactory.getLogger("Duel");
   private players: Player[];
   private activePlayerIndex = 0;
@@ -21,9 +23,11 @@ export default class Duel {
   start() {
     this.running = true;
     this.activePlayer = this.getActivePlayer();
+    this.activePlayer.havingTurn = true;
     while (this.running) {
       this.activePlayer.startDrawPhase();
       this.activePlayer.startMainPhase1();
+      this.activePlayer.startBattlePhase();
       this.activePlayer.startEndPhase();
       this.switchTurns();
     }
@@ -44,8 +48,10 @@ export default class Duel {
   }
 
   private switchTurns() {
+    this.activePlayer.havingTurn = false;
     this.activePlayerIndex = this.getInactivePlayerIndex();
     this.activePlayer = this.players[this.activePlayerIndex];
+    this.activePlayer.havingTurn = true;
     Duel.logger.info(`Switched to player ${this.activePlayer.name}`);
   }
 

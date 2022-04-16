@@ -1,4 +1,4 @@
-import { CardType } from "./CardType";
+import { CardType } from "../enums";
 
 export default interface CardData {
   cardType: CardType;

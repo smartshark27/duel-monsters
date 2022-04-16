@@ -1,6 +1,6 @@
+import { Phase } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
-import Action from "./actions/Action";
 import Card from "./Card";
 import Deck from "./Deck";
 import Field from "./Field";
@@ -8,6 +8,7 @@ import Monster from "./Monster";
 
 export default class Player {
   hand: Card[] = [];
+  havingTurn: boolean = false;
   normalSummonsRemaining = 0;
   name: string;
   field: Field;
@@ -50,13 +51,15 @@ export default class Player {
 
   startDrawPhase() {
     Player.logger.info(`Starting turn for player ${this.name}`);
+    global.DUEL.phase = Phase.Draw;
     this.drawCard();
   }
 
   startMainPhase1() {
     Player.logger.info(`Starting main phase 1 for player ${this.name}`);
+    global.DUEL.phase = Phase.Main1;
     this.normalSummonsRemaining++;
-    Player.logger.info(
+    Player.logger.debug(
       `Player ${this.name} has ${this.normalSummonsRemaining} normal summons remaining`
     );
     let actions = this.getActions();
@@ -75,13 +78,21 @@ export default class Player {
 
   canNormalSummon() {
     const result: boolean =
+      this.havingTurn &&
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
       this.normalSummonsRemaining > 0 &&
       this.field.getFreeMonsterZones().length > 0;
     return result;
   }
 
+  startBattlePhase() {
+    Player.logger.info(`Starting battle phase for player ${this.name}`);
+    global.DUEL.phase = Phase.Battle;
+  }
+
   startEndPhase() {
     Player.logger.info(`Starting end phase for player ${this.name}`);
+    global.DUEL.phase = Phase.End;
     this.normalSummonsRemaining = 0;
     while (this.hand.length > 6) {
       this.discardRandom();
@@ -95,9 +106,6 @@ export default class Player {
   }
 
   private getHandActions() {
-    Player.logger.debug(
-      `Player ${this.name} has ${this.hand.length} cards in hand`
-    );
     const actions = this.hand.flatMap((card) => {
       return card.getActions();
     });

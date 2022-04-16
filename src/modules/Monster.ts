@@ -14,7 +14,7 @@ export default class Monster extends Card {
 
   override getActions(): Action[] {
     const possibleActions = [];
-    if (this.owner.canNormalSummon()) {
+    if (this.canNormalSummon()) {
       possibleActions.push(
         new NormalSummon(
           this.owner,
@@ -24,5 +24,9 @@ export default class Monster extends Card {
       );
     }
     return possibleActions;
+  }
+
+  private canNormalSummon(): boolean {
+    return this.owner.canNormalSummon();
   }
 }

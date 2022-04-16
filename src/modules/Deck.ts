@@ -1,5 +1,5 @@
 import CardData from "../interfaces/CardData";
-import { CardType } from "../interfaces/CardType";
+import { CardType } from "../enums";
 import File from "../util/File";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
