@@ -1,6 +1,7 @@
 import { Phase } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
+import Action from "./actions/Action";
 import Card from "./Card";
 import Deck from "./Deck";
 import Field from "./Field";
@@ -63,16 +64,10 @@ export default class Player {
     );
     let actions = this.getActions();
     while (actions.length > 0) {
-      Player.logger.debug(`There are ${actions.length} possible actions`);
       const action = Util.getRandomItemFromArray(actions);
       action.perform();
       actions = this.getActions();
     }
-  }
-
-  getActions() {
-    const actions = this.getHandActions();
-    return actions;
   }
 
   canNormalSummon() {
@@ -87,6 +82,10 @@ export default class Player {
   startBattlePhase() {
     Player.logger.info(`Starting battle phase for player ${this.name}`);
     global.DUEL.phase = Phase.Battle;
+    this.field
+      .getMonsters()
+      .forEach((monster) => (monster.attacksRemaining = 1));
+    this.getActions();
   }
 
   startEndPhase() {
@@ -105,12 +104,17 @@ export default class Player {
     Util.removeItemFromArray(this.hand, card);
   }
 
-  private getHandActions() {
-    const actions = this.hand.flatMap((card) => {
-      return card.getActions();
-    });
+  private getActions(): Action[] {
+    const actions = this.getHandActions().concat(this.getFieldActions());
     Player.logger.debug(`Player ${this.name} has ${actions.length} actions`);
-
     return actions;
+  }
+
+  private getHandActions(): Action[] {
+    return this.hand.flatMap((card) => card.getActions());
+  }
+
+  private getFieldActions(): Action[] {
+    return this.field.getCards().flatMap((card) => card.getActions());
   }
 }

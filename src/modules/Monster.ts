@@ -1,11 +1,13 @@
 import CardData from "../interfaces/CardData";
 import LoggerFactory from "../util/LoggerFactory";
 import Action from "./actions/Action";
+import Attack from "./actions/Attack";
 import NormalSummon from "./actions/NormalSummon";
 import Card from "./Card";
 import Player from "./Player";
 
 export default class Monster extends Card {
+  attacksRemaining = 0;
   protected static override logger = LoggerFactory.getLogger("Monster");
 
   constructor(owner: Player, name: string, data: CardData) {
@@ -23,10 +25,22 @@ export default class Monster extends Card {
         )
       );
     }
+    if (this.canAttack()) {
+      const attackActions = global.DUEL.getInactivePlayer()
+        .field.getMonsters()
+        .map((target) => new Attack(this.owner, this, target));
+      if (attackActions.length > 0) {
+        possibleActions.push(...attackActions);
+      }
+    }
     return possibleActions;
   }
 
   private canNormalSummon(): boolean {
     return this.owner.canNormalSummon();
+  }
+
+  private canAttack(): boolean {
+    return this.attacksRemaining > 0;
   }
 }

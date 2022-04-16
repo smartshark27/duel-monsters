@@ -1,5 +1,7 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
+import Card from "./Card";
+import Monster from "./Monster";
 import MonsterZone from "./MonsterZone";
 import Player from "./Player";
 
@@ -13,6 +15,16 @@ export default class Field {
     for (let i = 0; i < 5; i++) {
       this.monsterZones.push(new MonsterZone(owner, i));
     }
+  }
+
+  getCards(): Card[] {
+    return this.getMonsters();
+  }
+
+  getMonsters(): Monster[] {
+    return this.monsterZones.flatMap((zone) =>
+      zone.isEmpty() ? [] : zone.card
+    ) as Monster[];
   }
 
   getRandomFreeMonsterZone() {
