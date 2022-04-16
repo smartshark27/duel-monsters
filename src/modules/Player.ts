@@ -59,15 +59,7 @@ export default class Player {
     Player.logger.info(`Starting main phase 1 for player ${this.name}`);
     global.DUEL.phase = Phase.Main1;
     this.normalSummonsRemaining++;
-    Player.logger.debug(
-      `Player ${this.name} has ${this.normalSummonsRemaining} normal summons remaining`
-    );
-    let actions = this.getActions();
-    while (actions.length > 0) {
-      const action = Util.getRandomItemFromArray(actions);
-      action.perform();
-      actions = this.getActions();
-    }
+    this.performActions();
   }
 
   canNormalSummon() {
@@ -85,7 +77,12 @@ export default class Player {
     this.field
       .getMonsters()
       .forEach((monster) => (monster.attacksRemaining = 1));
-    this.getActions();
+    this.performActions();
+  }
+
+  takeBattleDamage(damage: number): void {
+    Player.logger.info(`Inflicting ${damage} battle damage to ${this.name}`);
+    this.lifePoints -= damage;
   }
 
   startEndPhase() {
@@ -108,6 +105,15 @@ export default class Player {
     const actions = this.getHandActions().concat(this.getFieldActions());
     Player.logger.debug(`Player ${this.name} has ${actions.length} actions`);
     return actions;
+  }
+
+  private performActions() {
+    let actions = this.getActions();
+    while (actions.length > 0) {
+      const action = Util.getRandomItemFromArray(actions);
+      action.perform();
+      actions = this.getActions();
+    }
   }
 
   private getHandActions(): Action[] {

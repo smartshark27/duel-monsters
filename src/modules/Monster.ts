@@ -1,3 +1,4 @@
+import { Phase } from "../enums";
 import CardData from "../interfaces/CardData";
 import LoggerFactory from "../util/LoggerFactory";
 import Action from "./actions/Action";
@@ -36,11 +37,15 @@ export default class Monster extends Card {
     return possibleActions;
   }
 
+  getAttackPoints(): number {
+    return this.data.attack as number;
+  }
+
   private canNormalSummon(): boolean {
     return this.owner.canNormalSummon();
   }
 
   private canAttack(): boolean {
-    return this.attacksRemaining > 0;
+    return global.DUEL.phase === Phase.Battle && this.attacksRemaining > 0;
   }
 }
