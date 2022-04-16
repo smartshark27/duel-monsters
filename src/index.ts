@@ -12,4 +12,5 @@ player1.setDeck(deck1);
 player2.setDeck(deck2);
 
 global.DUEL = new Duel([player1, player2]);
+global.DUEL.init();
 global.DUEL.start();

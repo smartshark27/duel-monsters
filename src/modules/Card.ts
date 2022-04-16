@@ -1,29 +1,20 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Player from "./Player";
-import File from "../util/File";
 import Action from "./actions/Action";
+import CardData from "../interfaces/CardData";
 
 export default class Card {
   name: string;
 
   protected static logger = LoggerFactory.getLogger("Card");
-  protected static cardsData = JSON.parse(File.read("./cards/cards.json"));
-  protected data: MonsterData;
-  protected owner: Player;
 
-  protected static getCardData(name: string) {
-    return Card.cardsData[name];
-  }
-
-  constructor(owner: Player, name: string) {
+  constructor(protected owner: Player, name: string, protected data: CardData) {
     Card.logger.debug(`Creating card ${name}`);
-
-    this.owner = owner;
     this.name = name;
-    this.data = Card.getCardData(name);
   }
 
-  getActions(): Array<Action> {
+  getActions(): Action[] {
+    Card.logger.warn("Should not happen");
     return [];
   }
 }

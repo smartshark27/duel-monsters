@@ -1,18 +1,22 @@
 import LoggerFactory from "../util/LoggerFactory";
+import Util from "../util/Util";
+import Action from "./actions/Action";
 import Card from "./Card";
 import Deck from "./Deck";
 import Field from "./Field";
+import Monster from "./Monster";
 
 export default class Player {
+  hand: Card[] = [];
+  normalSummonsRemaining = 0;
   name: string;
+  field: Field;
 
   private static logger = LoggerFactory.getLogger("Player");
   private lifePoints: number = 8000;
-  private hand: Card[] = [];
   private graveyard: Card[] = [];
   private extraDeck: Card[] = [];
   private deck: Deck | undefined;
-  private field: Field;
 
   constructor(name: string) {
     this.name = name;
@@ -50,21 +54,55 @@ export default class Player {
   }
 
   startMainPhase1() {
-    Player.logger.info(`Starting main phase for player ${this.name}`);
-    const actions = this.getActions();
+    Player.logger.info(`Starting main phase 1 for player ${this.name}`);
+    this.normalSummonsRemaining++;
+    Player.logger.info(
+      `Player ${this.name} has ${this.normalSummonsRemaining} normal summons remaining`
+    );
+    let actions = this.getActions();
+    while (actions.length > 0) {
+      Player.logger.debug(`There are ${actions.length} possible actions`);
+      const action = Util.getRandomItemFromArray(actions);
+      action.perform();
+      actions = this.getActions();
+    }
   }
 
   getActions() {
-    const handActions = this.getHandActions();
-    return handActions;
+    const actions = this.getHandActions();
+    return actions;
+  }
+
+  canNormalSummon() {
+    const result: boolean =
+      this.normalSummonsRemaining > 0 &&
+      this.field.getFreeMonsterZones().length > 0;
+    return result;
+  }
+
+  startEndPhase() {
+    Player.logger.info(`Starting end phase for player ${this.name}`);
+    this.normalSummonsRemaining = 0;
+    while (this.hand.length > 6) {
+      this.discardRandom();
+    }
+  }
+
+  discardRandom() {
+    Player.logger.info("Discarding card");
+    const card = Util.getRandomItemFromArray(this.hand);
+    Util.removeItemFromArray(this.hand, card);
   }
 
   private getHandActions() {
-    const actions: Card[] = [];
-    this.hand.forEach(card => {
-      if (card.getActions()) {
-        actions.push(card);
-      }
-    })
+    Player.logger.debug(
+      `Player ${this.name} has ${this.hand.length} cards in hand`
+    );
+    const actions = this.hand.flatMap((card) => {
+      return card.getActions();
+    });
+    Player.logger.debug(`Player ${this.name} has ${actions.length} actions`);
+
+    return actions;
   }
 }

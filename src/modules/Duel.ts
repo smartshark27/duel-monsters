@@ -23,6 +23,8 @@ export default class Duel {
     this.activePlayer = this.getActivePlayer();
     while (this.running) {
       this.activePlayer.startDrawPhase();
+      this.activePlayer.startMainPhase1();
+      this.activePlayer.startEndPhase();
       this.switchTurns();
     }
     Duel.logger.info("Game has ended");

@@ -2,12 +2,23 @@ import Card from "../Card";
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
 import Action from "./Action";
+import MonsterZone from "../MonsterZone";
+import Monster from "../Monster";
+import Util from "../../util/Util";
 
 export default class NormalSummon extends Action {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
+  private monsterZone: MonsterZone;
 
-  constructor(actor: Player, card: Card) {
-    NormalSummon.logger.debug(`Normal summoning ${card.name}`);
-    super(actor, card);
+  constructor(actor: Player, monster: Monster, monsterZone: MonsterZone) {
+    super(actor, monster as Card);
+    this.monsterZone = monsterZone;
+  }
+
+  override perform(): void {
+    NormalSummon.logger.info(`Normal summoning ${this.card.name}`);
+    this.monsterZone.card = this.card;
+    Util.removeItemFromArray(this.actor.hand, this.card);
+    this.actor.normalSummonsRemaining--;
   }
 }

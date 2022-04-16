@@ -11,4 +11,6 @@ export default class Action {
     this.actor = actor;
     this.card = card;
   }
+
+  perform() {}
 }

@@ -6,6 +6,6 @@ export default class File {
 
   static read(filename: PathOrFileDescriptor) {
     File.logger.debug(`Reading file ${filename}`);
-    return readFileSync(filename, "utf8");
+    return readFileSync(filename, "utf8").trimEnd();
   }
 }
