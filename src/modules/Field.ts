@@ -5,15 +5,13 @@ import Player from "./Player";
 
 export default class Field {
   private static logger = LoggerFactory.getLogger("Field");
-  private owner: Player;
   private monsterZones: MonsterZone[] = [];
 
-  constructor(owner: Player) {
+  constructor(private owner: Player) {
     Field.logger.debug(`Creating field`);
 
-    this.owner = owner;
     for (let i = 0; i < 5; i++) {
-      this.monsterZones.push(new MonsterZone(owner, i))
+      this.monsterZones.push(new MonsterZone(owner, i));
     }
   }
 
@@ -26,6 +24,6 @@ export default class Field {
   }
 
   getFreeMonsterZones() {
-    return this.monsterZones.filter(zone => zone.isEmpty());
+    return this.monsterZones.filter((zone) => zone.isEmpty());
   }
 }

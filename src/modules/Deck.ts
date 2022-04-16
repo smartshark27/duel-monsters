@@ -10,14 +10,10 @@ import Player from "./Player";
 export default class Deck {
   private static logger = LoggerFactory.getLogger("Duel");
   private static cardsData = JSON.parse(File.read("./cards/cards.json"));
-  private owner: Player;
-  private name: string;
   private cards: Card[] = [];
 
-  constructor(owner: Player, name: string) {
+  constructor(private owner: Player, private name: string) {
     Deck.logger.info(`Creating deck ${name}`);
-    this.owner = owner;
-    this.name = name;
     this.loadCards();
   }
 

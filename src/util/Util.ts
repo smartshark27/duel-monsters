@@ -16,6 +16,6 @@ export default class Util {
   }
 
   static getRandomItemFromArray(array: any[]) {
-    return array[array.length * Math.random() | 0];
+    return array[(array.length * Math.random()) | 0];
   }
 }

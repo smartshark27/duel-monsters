@@ -8,11 +8,13 @@ import Util from "../../util/Util";
 
 export default class NormalSummon extends Action {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
-  private monsterZone: MonsterZone;
 
-  constructor(actor: Player, monster: Monster, monsterZone: MonsterZone) {
+  constructor(
+    actor: Player,
+    monster: Monster,
+    private monsterZone: MonsterZone
+  ) {
     super(actor, monster as Card);
-    this.monsterZone = monsterZone;
   }
 
   override perform(): void {

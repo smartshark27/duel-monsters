@@ -4,7 +4,6 @@ import Util from "../util/Util";
 import Card from "./Card";
 import Deck from "./Deck";
 import Field from "./Field";
-import Monster from "./Monster";
 
 export default class Player {
   hand: Card[] = [];
@@ -102,6 +101,7 @@ export default class Player {
   discardRandom() {
     Player.logger.info("Discarding card");
     const card = Util.getRandomItemFromArray(this.hand);
+    this.graveyard.push(card);
     Util.removeItemFromArray(this.hand, card);
   }
 

@@ -5,14 +5,12 @@ import Player from "./Player";
 export default class Duel {
   phase: Phase = Phase.PreGame;
   private static logger = LoggerFactory.getLogger("Duel");
-  private players: Player[];
   private activePlayerIndex = 0;
   private activePlayer: Player;
   private running = false;
 
-  constructor(players: Player[]) {
+  constructor(private players: Player[]) {
     Duel.logger.info("Creating duel");
-    this.players = players;
     this.activePlayer = players[this.activePlayerIndex];
   }
 
