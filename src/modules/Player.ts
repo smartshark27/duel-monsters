@@ -51,15 +51,37 @@ export default class Player {
 
   startDrawPhase() {
     Player.logger.info(`Starting turn for player ${this.name}`);
-    global.DUEL.phase = Phase.Draw;
     this.drawCard();
   }
 
   startMainPhase1() {
     Player.logger.info(`Starting main phase 1 for player ${this.name}`);
-    global.DUEL.phase = Phase.Main1;
     this.normalSummonsRemaining++;
-    this.performActions();
+  }
+
+  startBattlePhase() {
+    Player.logger.info(`Starting battle phase for player ${this.name}`);
+    this.field
+      .getMonsters()
+      .forEach((monster) => (monster.attacksRemaining = 1));
+  }
+
+  startMainPhase2() {
+    Player.logger.info(`Starting main phase 2 for player ${this.name}`);
+  }
+
+  startEndPhase() {
+    Player.logger.info(`Starting end phase for player ${this.name}`);
+    this.normalSummonsRemaining = 0;
+    while (this.hand.length > 6) {
+      this.discardRandom();
+    }
+  }
+
+  getActions(): Action[] {
+    const actions = this.getHandActions().concat(this.getFieldActions());
+    Player.logger.debug(`Player ${this.name} has ${actions.length} actions`);
+    return actions;
   }
 
   canNormalSummon() {
@@ -71,27 +93,9 @@ export default class Player {
     return result;
   }
 
-  startBattlePhase() {
-    Player.logger.info(`Starting battle phase for player ${this.name}`);
-    global.DUEL.phase = Phase.Battle;
-    this.field
-      .getMonsters()
-      .forEach((monster) => (monster.attacksRemaining = 1));
-    this.performActions();
-  }
-
   receiveBattleDamage(damage: number): void {
     Player.logger.info(`Inflicting ${damage} battle damage to ${this.name}`);
     this.reduceLifePoints(damage);
-  }
-
-  startEndPhase() {
-    Player.logger.info(`Starting end phase for player ${this.name}`);
-    global.DUEL.phase = Phase.End;
-    this.normalSummonsRemaining = 0;
-    while (this.hand.length > 6) {
-      this.discardRandom();
-    }
   }
 
   discardRandom() {
@@ -99,22 +103,6 @@ export default class Player {
     const card = Util.getRandomItemFromArray(this.hand);
     this.graveyard.push(card);
     Util.removeItemFromArray(this.hand, card);
-  }
-
-  private getActions(): Action[] {
-    const actions = this.getHandActions().concat(this.getFieldActions());
-    Player.logger.debug(`Player ${this.name} has ${actions.length} actions`);
-    return actions;
-  }
-
-  private performActions() {
-    let actions = this.getActions();
-    while (actions.length > 0) {
-      const action = Util.getRandomItemFromArray(actions);
-      action.perform();
-      if (!global.DUEL.running) break;
-      actions = this.getActions();
-    }
   }
 
   private getHandActions(): Action[] {

@@ -5,10 +5,10 @@ export const enum CardType {
 }
 
 export const enum Phase {
-  PreGame = "preGame",
-  Draw = "draw",
-  Main1 = "main1",
-  Battle = "battle",
-  Main2 = "main2",
-  End = "end",
+  Draw = 0,
+  Main1,
+  Battle,
+  Main2,
+  End,
 }
+export const PHASE_ENUM_LENGTH = 5;

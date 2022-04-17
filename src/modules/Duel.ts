@@ -1,9 +1,11 @@
-import { Phase } from "../enums";
+import { Phase, PHASE_ENUM_LENGTH } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
+import Util from "../util/Util";
+import Action from "./actions/Action";
 import Player from "./Player";
 
 export default class Duel {
-  phase = Phase.PreGame;
+  phase = Phase.Draw;
   running = false;
   private static logger = LoggerFactory.getLogger("Duel");
   private activePlayerIndex = 0;
@@ -23,16 +25,17 @@ export default class Duel {
     this.running = true;
     this.activePlayer = this.getActivePlayer();
     this.activePlayer.havingTurn = true;
+    let actions = this.activePlayer.getActions();
     while (this.running) {
-      this.activePlayer.startDrawPhase();
+      while (actions.length > 0) {
+        this.performRandomAction(actions);
+        if (!this.running) break;
+        actions = this.activePlayer.getActions();
+      }
       if (!this.running) break;
-      this.activePlayer.startMainPhase1();
-      if (!this.running) break;
-      this.activePlayer.startBattlePhase();
-      if (!this.running) break;
-      this.activePlayer.startEndPhase();
-      if (!this.running) break;
-      this.switchTurns();
+      if (this.phase === Phase.End) this.switchTurns();
+      this.startNextPhase();
+      actions = this.activePlayer.getActions();
     }
     this.printResults();
   }
@@ -50,6 +53,26 @@ export default class Duel {
     return this.players[this.getInactivePlayerIndex()];
   }
 
+  private performRandomAction(actions: Action[]) {
+    const action = Util.getRandomItemFromArray(actions);
+    action.perform();
+  }
+
+  private startNextPhase() {
+    this.phase = (this.phase + 1) % PHASE_ENUM_LENGTH;
+    if (this.phase == Phase.Draw) {
+      this.activePlayer.startDrawPhase();
+    } else if (this.phase == Phase.Main1) {
+      this.activePlayer.startMainPhase1();
+    } else if (this.phase == Phase.Battle) {
+      this.activePlayer.startBattlePhase();
+    } else if (this.phase == Phase.Main2) {
+      this.activePlayer.startMainPhase2();
+    } else if (this.phase == Phase.End) {
+      this.activePlayer.startEndPhase();
+    }
+  }
+
   private switchTurns() {
     this.activePlayer.havingTurn = false;
     this.activePlayerIndex = this.getInactivePlayerIndex();
@@ -65,7 +88,7 @@ export default class Duel {
   private printResults() {
     Duel.logger.info("Game has ended");
     const winner = this.winner as Player;
-    const loser = this.players.find(player => player !== winner) as Player;
+    const loser = this.players.find((player) => player !== winner) as Player;
     Duel.logger.info(`The winner is ${winner.name}`);
     Duel.logger.info(`The loser is ${loser.name}`);
   }
