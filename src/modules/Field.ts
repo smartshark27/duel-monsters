@@ -38,4 +38,12 @@ export default class Field {
   getFreeMonsterZones() {
     return this.monsterZones.filter((zone) => zone.isEmpty());
   }
+
+  getZoneOf(card: Card): MonsterZone | undefined {
+    const zone = this.monsterZones.find((zone) => zone.card === card);
+    if (!zone) {
+      Field.logger.warn(`Could not find card ${card.name} on field`);
+    }
+    return zone;
+  }
 }

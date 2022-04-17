@@ -17,4 +17,16 @@ export default class Card {
     Card.logger.warn("Should not happen");
     return [];
   }
+
+  destroy(): void {
+    this.sendToGraveyard();
+  }
+
+  private sendToGraveyard(): void {
+    const zone = this.owner.field.getZoneOf(this);
+    if (zone) {
+      this.owner.graveyard.push(this);
+      zone.card = null;
+    }
+  }
 }

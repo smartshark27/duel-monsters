@@ -23,9 +23,15 @@ export default class Attack extends Action {
     const difference = attackerPoints - targetPoints;
     const inactivePlayer = global.DUEL.getInactivePlayer();
     if (difference > 0) {
-      inactivePlayer.takeBattleDamage(difference);
+      inactivePlayer.receiveBattleDamage(difference);
+      this.target.destroyByBattle();
     } else if (difference < 0) {
-      this.actor.takeBattleDamage(-difference);
+      this.actor.receiveBattleDamage(-difference);
+      attacker.destroyByBattle();
+    } else {
+      Attack.logger.info("Both monsters have the same attack points");
+      this.target.destroyByBattle();
+      attacker.destroyByBattle();
     }
   }
 }

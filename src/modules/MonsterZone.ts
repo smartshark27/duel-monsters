@@ -3,7 +3,7 @@ import Card from "./Card";
 import Player from "./Player";
 
 export default class MonsterZone {
-  card: Card | undefined;
+  card: Card | undefined | null;
 
   private static logger = LoggerFactory.getLogger("MonsterZone");
 

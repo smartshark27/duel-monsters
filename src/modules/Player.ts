@@ -8,6 +8,7 @@ import Field from "./Field";
 
 export default class Player {
   hand: Card[] = [];
+  graveyard: Card[] = [];
   havingTurn: boolean = false;
   normalSummonsRemaining = 0;
   name: string;
@@ -15,7 +16,6 @@ export default class Player {
 
   private static logger = LoggerFactory.getLogger("Player");
   private lifePoints: number = 8000;
-  private graveyard: Card[] = [];
   private extraDeck: Card[] = [];
   private deck: Deck | undefined;
 
@@ -80,9 +80,10 @@ export default class Player {
     this.performActions();
   }
 
-  takeBattleDamage(damage: number): void {
+  receiveBattleDamage(damage: number): void {
     Player.logger.info(`Inflicting ${damage} battle damage to ${this.name}`);
     this.lifePoints -= damage;
+    Player.logger.info(`Player ${this.name} has ${this.lifePoints} remaining`);
   }
 
   startEndPhase() {

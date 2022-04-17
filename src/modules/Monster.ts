@@ -41,6 +41,11 @@ export default class Monster extends Card {
     return this.data.attack as number;
   }
 
+  destroyByBattle(): void {
+    this.destroy();
+    Monster.logger.info(`${this.name} has been destroyed`);
+  }
+
   private canNormalSummon(): boolean {
     return this.owner.canNormalSummon();
   }
