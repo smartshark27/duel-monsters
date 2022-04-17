@@ -82,8 +82,7 @@ export default class Player {
 
   receiveBattleDamage(damage: number): void {
     Player.logger.info(`Inflicting ${damage} battle damage to ${this.name}`);
-    this.lifePoints -= damage;
-    Player.logger.info(`Player ${this.name} has ${this.lifePoints} remaining`);
+    this.reduceLifePoints(damage);
   }
 
   startEndPhase() {
@@ -113,6 +112,7 @@ export default class Player {
     while (actions.length > 0) {
       const action = Util.getRandomItemFromArray(actions);
       action.perform();
+      if (!global.DUEL.running) break;
       actions = this.getActions();
     }
   }
@@ -123,5 +123,18 @@ export default class Player {
 
   private getFieldActions(): Action[] {
     return this.field.getCards().flatMap((card) => card.getActions());
+  }
+
+  private reduceLifePoints(damage: number): void {
+    this.lifePoints -= damage;
+    this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
+    Player.logger.info(`Player ${this.name} has ${this.lifePoints} life points remaining`);
+    this.checkLifePointsLoss();
+  }
+
+  private checkLifePointsLoss(): void {
+    if (this.lifePoints === 0) {
+      global.DUEL.end(global.DUEL.getInactivePlayer());
+    }
   }
 }
