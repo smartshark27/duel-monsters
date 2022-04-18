@@ -15,7 +15,20 @@ export default class Util {
     }
   }
 
-  static getRandomItemFromArray(array: any[]) {
+  static getRandomItemFromArray(array: any[]): any {
     return array[(array.length * Math.random()) | 0];
+  }
+
+  static getAllPairsFromArray(array: any[]): any[][] {
+    // TODO: Make more efficient
+    const pairs = [];
+    for (let i = 0; i < array.length; i++) {
+      for (let j = 0; i < array.length; i++) {
+        if (i !== j) {
+          pairs.push([array[i], array[j]]);
+        }
+      }
+    }
+    return pairs;
   }
 }

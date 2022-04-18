@@ -1,4 +1,3 @@
-import Card from "../Card";
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
 import MonsterZone from "../MonsterZone";

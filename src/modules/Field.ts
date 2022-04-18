@@ -27,7 +27,7 @@ export default class Field {
     ) as Monster[];
   }
 
-  getRandomFreeMonsterZone() {
+  getRandomFreeMonsterZone(): MonsterZone | null {
     const freeZones = this.getFreeMonsterZones();
     if (freeZones) {
       return Util.getRandomItemFromArray(this.getFreeMonsterZones());
@@ -35,8 +35,12 @@ export default class Field {
     return null;
   }
 
-  getFreeMonsterZones() {
+  getFreeMonsterZones(): MonsterZone[]  {
     return this.monsterZones.filter((zone) => zone.isEmpty());
+  }
+
+  getZonesWithMonsters(): MonsterZone[] {
+    return this.monsterZones.filter((zone) => !zone.isEmpty());
   }
 
   getZoneOf(card: Card): MonsterZone | undefined {
@@ -47,7 +51,7 @@ export default class Field {
     return zone;
   }
 
-  toString() {
+  toString(): string {
     let str = "";
     for (let i = 0; i < 5; i++) {
       const zone = this.monsterZones[i];

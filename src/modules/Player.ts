@@ -85,12 +85,19 @@ export default class Player {
   }
 
   canNormalSummon() {
-    const result: boolean =
+    return (
       this.havingTurn &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
       this.normalSummonsRemaining > 0 &&
-      this.field.getFreeMonsterZones().length > 0;
-    return result;
+      this.field.getFreeMonsterZones().length > 0
+    );
+  }
+
+  canTributeSummon(tributesRequired: number) {
+    return (
+      this.canNormalSummon() &&
+      this.field.getMonsters().length >= tributesRequired
+    );
   }
 
   receiveBattleDamage(damage: number): void {
@@ -124,7 +131,9 @@ export default class Player {
   private reduceLifePoints(damage: number): void {
     this.lifePoints -= damage;
     this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
-    Player.logger.info(`Player ${this} has ${this.lifePoints} life points remaining`);
+    Player.logger.info(
+      `Player ${this} has ${this.lifePoints} life points remaining`
+    );
     this.checkLifePointsLoss();
   }
 
