@@ -3,6 +3,7 @@ import Deck from "./modules/Deck";
 import Duel from "./modules/Duel";
 import Player from "./modules/Player";
 import Util from "./util/Util";
+import Input from "./util/Input";
 
 const player1 = new Player("Tom");
 const player2 = new Player("Thomas");
@@ -14,10 +15,13 @@ player1.setDeck(deck1);
 player2.setDeck(deck2);
 
 const duel = new Duel([player1, player2]);
-global.DUEL = duel
+global.DUEL = duel;
 
-autoRun(duel);
-duel.printResults();
+if (Input.checkFlag("--step")) {
+  stepRun(duel);
+} else {
+  autoRun(duel);
+}
 
 function autoRun(duel: Duel) {
   let actions = duel.getActions();
@@ -33,4 +37,23 @@ function autoRun(duel: Duel) {
     duel.startNextPhase();
     actions = duel.getActivePlayer().getActions();
   }
+  duel.printResults();
+}
+
+async function stepRun(duel: Duel) {
+  let actions = duel.getActions();
+  while (duel.running) {
+    while (actions.length > 0) {
+      await Input.getUserInput("Proceed?");
+      const action = Util.getRandomItemFromArray(actions);
+      duel.performAction(action);
+      if (!duel.running) break;
+      actions = duel.getActions();
+    }
+    if (!duel.running) break;
+    if (duel.phase === Phase.End) duel.switchTurns();
+    duel.startNextPhase();
+    actions = duel.getActivePlayer().getActions();
+  }
+  duel.printResults();
 }

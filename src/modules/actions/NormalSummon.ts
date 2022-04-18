@@ -1,12 +1,12 @@
 import Card from "../Card";
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import Action from "./Action";
 import MonsterZone from "../MonsterZone";
 import Monster from "../Monster";
 import Util from "../../util/Util";
+import CardAction from "./CardAction";
 
-export default class NormalSummon extends Action {
+export default class NormalSummon extends CardAction {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
 
   constructor(

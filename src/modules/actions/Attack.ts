@@ -1,9 +1,9 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import Action from "./Action";
 import Monster from "../Monster";
+import CardAction from "./CardAction";
 
-export default class Attack extends Action {
+export default class Attack extends CardAction {
   protected static override logger = LoggerFactory.getLogger("Attack");
 
   constructor(actor: Player, monster: Monster, private target: Monster) {

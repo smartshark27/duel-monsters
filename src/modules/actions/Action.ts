@@ -5,7 +5,7 @@ import Player from "../Player";
 export default class Action {
   protected static logger = LoggerFactory.getLogger("Action");
 
-  constructor(protected actor: Player, protected card: Card) {}
+  constructor(protected actor: Player) {}
 
   perform() {}
 }
