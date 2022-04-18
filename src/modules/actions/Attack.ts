@@ -34,4 +34,8 @@ export default class Attack extends CardAction {
       attacker.destroyByBattle();
     }
   }
+
+  override toString(): string {
+    return `Attack ${this.target.name} using ${this.card.name}`;
+  }
 }

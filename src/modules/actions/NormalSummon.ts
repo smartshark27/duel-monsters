@@ -4,9 +4,9 @@ import Player from "../Player";
 import MonsterZone from "../MonsterZone";
 import Monster from "../Monster";
 import Util from "../../util/Util";
-import CardAction from "./CardAction";
+import Summon from "./Summon";
 
-export default class NormalSummon extends CardAction {
+export default class NormalSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
 
   constructor(
@@ -22,5 +22,9 @@ export default class NormalSummon extends CardAction {
     this.monsterZone.card = this.card;
     Util.removeItemFromArray(this.actor.hand, this.card);
     this.actor.normalSummonsRemaining--;
+  }
+
+  override toString(): string {
+    return `Normal summon ${this.card.name}`;
   }
 }

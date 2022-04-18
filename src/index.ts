@@ -4,6 +4,10 @@ import Duel from "./modules/Duel";
 import Player from "./modules/Player";
 import Util from "./util/Util";
 import Input from "./util/Input";
+import Action from "./modules/actions/Action";
+import LoggerFactory from "./util/LoggerFactory";
+
+const logger = LoggerFactory.getLogger("index");
 
 const player1 = new Player("Tom");
 const player2 = new Player("Thomas");
@@ -44,6 +48,7 @@ async function stepRun(duel: Duel) {
   let actions = duel.getActions();
   while (duel.running) {
     while (actions.length > 0) {
+      logActions(actions);
       await Input.getUserInput("Proceed?");
       const action = Util.getRandomItemFromArray(actions);
       duel.performAction(action);
@@ -56,4 +61,8 @@ async function stepRun(duel: Duel) {
     actions = duel.getActivePlayer().getActions();
   }
   duel.printResults();
+}
+
+function logActions(actions: Action[]): void {
+  logger.info(`Actions are [${actions}]`);
 }
