@@ -21,35 +21,16 @@ player2.setDeck(deck2);
 const duel = new Duel([player1, player2]);
 global.DUEL = duel;
 
-if (Input.checkFlag("--step")) {
-  stepRun(duel);
-} else {
-  autoRun(duel);
-}
+run(duel, Input.checkFlag("--step"));
 
-function autoRun(duel: Duel) {
+async function run(duel: Duel, step = false) {
   let actions = duel.getActions();
   while (duel.running) {
     while (actions.length > 0) {
-      const action = Util.getRandomItemFromArray(actions);
-      duel.performAction(action);
-      if (!duel.running) break;
-      actions = duel.getActions();
-    }
-    if (!duel.running) break;
-    if (duel.phase === Phase.End) duel.switchTurns();
-    duel.startNextPhase();
-    actions = duel.getActivePlayer().getActions();
-  }
-  duel.printResults();
-}
-
-async function stepRun(duel: Duel) {
-  let actions = duel.getActions();
-  while (duel.running) {
-    while (actions.length > 0) {
-      logActions(actions);
-      await Input.getUserInput("Proceed?");
+      if (step) {
+        logActions(actions);
+        await Input.getUserInput("Proceed?");
+      }
       const action = Util.getRandomItemFromArray(actions);
       duel.performAction(action);
       if (!duel.running) break;
