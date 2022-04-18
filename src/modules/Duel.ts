@@ -1,6 +1,7 @@
 import { Phase, PHASE_ENUM_LENGTH } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Action from "./actions/Action";
+import EndPhase from "./actions/EndPhase";
 import Player from "./Player";
 
 export default class Duel {
@@ -21,7 +22,7 @@ export default class Duel {
   }
 
   getActions(): Action[] {
-    return this.activePlayer.getActions();
+    return this.activePlayer.getActions().concat(new EndPhase(this.activePlayer));
   }
 
   performAction(action: Action) {
@@ -37,6 +38,7 @@ export default class Duel {
   }
 
   startNextPhase() {
+    if (global.DUEL.phase === Phase.End) global.DUEL.switchTurns();
     this.phase = (this.phase + 1) % PHASE_ENUM_LENGTH;
     if (this.phase == Phase.Draw) {
       this.activePlayer.startDrawPhase();

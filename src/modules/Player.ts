@@ -50,7 +50,7 @@ export default class Player {
   }
 
   startDrawPhase() {
-    Player.logger.info(`Starting turn for player ${this.name}`);
+    Player.logger.info(`Starting draw phase for player ${this.name}`);
     this.drawCard();
   }
 

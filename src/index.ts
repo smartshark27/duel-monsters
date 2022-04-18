@@ -6,6 +6,7 @@ import Util from "./util/Util";
 import Input from "./util/Input";
 import Action from "./modules/actions/Action";
 import LoggerFactory from "./util/LoggerFactory";
+import EndPhase from "./modules/actions/EndPhase";
 
 const logger = LoggerFactory.getLogger("index");
 
@@ -26,20 +27,14 @@ run(duel, Input.checkFlag("--step"));
 async function run(duel: Duel, step = false) {
   let actions = duel.getActions();
   while (duel.running) {
-    while (actions.length > 0) {
-      if (step) {
-        logActions(actions);
-        await Input.getUserInput("Proceed?");
-      }
-      const action = Util.getRandomItemFromArray(actions);
-      duel.performAction(action);
-      if (!duel.running) break;
-      actions = duel.getActions();
+    if (step) {
+      logActions(actions);
+      await Input.getUserInput("Proceed?");
     }
+    const action = Util.getRandomItemFromArray(actions);
+    duel.performAction(action);
     if (!duel.running) break;
-    if (duel.phase === Phase.End) duel.switchTurns();
-    duel.startNextPhase();
-    actions = duel.getActivePlayer().getActions();
+    actions = duel.getActions();
   }
   duel.printResults();
 }
