@@ -1,4 +1,12 @@
 {
+  "Baby Dragon": {
+    "cardType": "monster",
+    "attribute": "WIND",
+    "level": 3,
+    "monsterTypes": ["normal", "dragon"],
+    "attack": 1200,
+    "defence": 700
+  },
   "Blackland Fire Dragon": {
     "cardType": "monster",
     "attribute": "DARK",
@@ -14,14 +22,6 @@
     "monsterTypes": ["normal", "dragon"],
     "attack": 3000,
     "defence": 2500
-  },
-  "Flying Kamakiri #1": {
-    "cardType": "monster",
-    "attribute": "WIND",
-    "level": 4,
-    "monsterTypes": ["effect", "insect"],
-    "attack": 1400,
-    "defence": 900
   },
   "The Dragon Dwelling in the Cave": {
     "cardType": "monster",

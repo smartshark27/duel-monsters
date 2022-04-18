@@ -6,12 +6,11 @@ import Util from "./util/Util";
 import Input from "./util/Input";
 import Action from "./modules/actions/Action";
 import LoggerFactory from "./util/LoggerFactory";
-import EndPhase from "./modules/actions/EndPhase";
 
 const logger = LoggerFactory.getLogger("index");
 
-const player1 = new Player("Tom");
-const player2 = new Player("Thomas");
+const player1 = new Player("Top");
+const player2 = new Player("Bottom");
 
 const deck1 = new Deck(player1, "dragon_rage");
 const deck2 = new Deck(player2, "dragon_rage");
@@ -27,8 +26,8 @@ run(duel, Input.checkFlag("--step"));
 async function run(duel: Duel, step = false) {
   let actions = duel.getActions();
   while (duel.running) {
+    logActions(actions);
     if (step) {
-      logActions(actions);
       await Input.getUserInput("Proceed?");
     }
     const action = Util.getRandomItemFromArray(actions);
@@ -40,5 +39,6 @@ async function run(duel: Duel, step = false) {
 }
 
 function logActions(actions: Action[]): void {
+  logger.info(duel);
   logger.info(`Actions are [${actions}]`);
 }

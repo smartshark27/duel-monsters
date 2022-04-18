@@ -42,8 +42,17 @@ export default class Field {
   getZoneOf(card: Card): MonsterZone | undefined {
     const zone = this.monsterZones.find((zone) => zone.card === card);
     if (!zone) {
-      Field.logger.warn(`Could not find card ${card.name} on field`);
+      Field.logger.warn(`Could not find card ${card} on field`);
     }
     return zone;
+  }
+
+  toString() {
+    let str = "";
+    for (let i = 0; i < 5; i++) {
+      const zone = this.monsterZones[i];
+      str += zone.isEmpty() ? "-" : "M";
+    }
+    return str;
   }
 }

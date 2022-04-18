@@ -11,7 +11,7 @@ export default class Attack extends CardAction {
   }
 
   override perform(): void {
-    Attack.logger.info(`${this.card.name} is attacking ${this.target.name}`);
+    Attack.logger.info(`${this.card} is attacking ${this.target}`);
     const attacker = this.card as Monster;
     this.battle(attacker);
     attacker.attacksRemaining--;
@@ -36,6 +36,6 @@ export default class Attack extends CardAction {
   }
 
   override toString(): string {
-    return `Attack ${this.target.name} using ${this.card.name}`;
+    return `Attack ${this.target} using ${this.card}`;
   }
 }

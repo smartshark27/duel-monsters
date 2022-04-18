@@ -22,11 +22,15 @@ export default class Card {
     this.sendToGraveyard();
   }
 
-  private sendToGraveyard(): void {
+  sendToGraveyard(): void {
     const zone = this.owner.field.getZoneOf(this);
     if (zone) {
       this.owner.graveyard.push(this);
       zone.card = null;
     }
+  }
+
+  toString() {
+    return this.name;
   }
 }

@@ -41,7 +41,7 @@ export default class Player {
     Player.logger.debug("Drawing card");
     const card = this.deck?.drawCard();
     if (card) {
-      Player.logger.info(`Drew card ${card.name}`);
+      Player.logger.info(`Drew card ${card}`);
       this.hand.push(card);
     } else {
       Player.logger.warn("No cards left to draw");
@@ -50,28 +50,28 @@ export default class Player {
   }
 
   startDrawPhase() {
-    Player.logger.info(`Starting draw phase for player ${this.name}`);
+    Player.logger.info(`Starting draw phase for player ${this}`);
     this.drawCard();
   }
 
   startMainPhase1() {
-    Player.logger.info(`Starting main phase 1 for player ${this.name}`);
+    Player.logger.info(`Starting main phase 1 for player ${this}`);
     this.normalSummonsRemaining++;
   }
 
   startBattlePhase() {
-    Player.logger.info(`Starting battle phase for player ${this.name}`);
+    Player.logger.info(`Starting battle phase for player ${this}`);
     this.field
       .getMonsters()
       .forEach((monster) => (monster.attacksRemaining = 1));
   }
 
   startMainPhase2() {
-    Player.logger.info(`Starting main phase 2 for player ${this.name}`);
+    Player.logger.info(`Starting main phase 2 for player ${this}`);
   }
 
   startEndPhase() {
-    Player.logger.info(`Starting end phase for player ${this.name}`);
+    Player.logger.info(`Starting end phase for player ${this}`);
     this.normalSummonsRemaining = 0;
     while (this.hand.length > 6) {
       this.discardRandom();
@@ -80,7 +80,7 @@ export default class Player {
 
   getActions(): Action[] {
     const actions = this.getHandActions().concat(this.getFieldActions());
-    Player.logger.debug(`Player ${this.name} has ${actions.length} actions`);
+    Player.logger.debug(`Player ${this} has ${actions.length} actions`);
     return actions;
   }
 
@@ -94,7 +94,7 @@ export default class Player {
   }
 
   receiveBattleDamage(damage: number): void {
-    Player.logger.info(`Inflicting ${damage} battle damage to ${this.name}`);
+    Player.logger.info(`Inflicting ${damage} battle damage to ${this}`);
     this.reduceLifePoints(damage);
   }
 
@@ -103,6 +103,14 @@ export default class Player {
     const card = Util.getRandomItemFromArray(this.hand);
     this.graveyard.push(card);
     Util.removeItemFromArray(this.hand, card);
+  }
+
+  getFieldString() {
+    return `|-|${this.field}|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints`;
+  }
+
+  toString() {
+    return this.name;
   }
 
   private getHandActions(): Action[] {
@@ -116,7 +124,7 @@ export default class Player {
   private reduceLifePoints(damage: number): void {
     this.lifePoints -= damage;
     this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
-    Player.logger.info(`Player ${this.name} has ${this.lifePoints} life points remaining`);
+    Player.logger.info(`Player ${this} has ${this.lifePoints} life points remaining`);
     this.checkLifePointsLoss();
   }
 
