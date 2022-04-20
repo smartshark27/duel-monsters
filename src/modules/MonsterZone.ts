@@ -1,19 +1,12 @@
 import LoggerFactory from "../util/LoggerFactory";
-import Card from "./Card";
 import Player from "./Player";
+import Zone from "./Zone";
 
-export default class MonsterZone {
-  card: Card | undefined | null;
+export default class MonsterZone extends Zone {
+  protected static override logger = LoggerFactory.getLogger("MonsterZone");
 
-  private static logger = LoggerFactory.getLogger("MonsterZone");
-
-  constructor(private owner: Player, private index: number) {
+  constructor(owner: Player, private index: number) {
+    super(owner);
     MonsterZone.logger.debug(`Creating monster zone ${index}`);
-
-    this.owner = owner;
-  }
-
-  isEmpty() {
-    return !this.card;
   }
 }

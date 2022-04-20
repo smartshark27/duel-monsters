@@ -4,6 +4,7 @@ import Card from "./Card";
 import Monster from "./Monster";
 import MonsterZone from "./MonsterZone";
 import Player from "./Player";
+import Zone from "./Zone";
 
 export default class Field {
   private static logger = LoggerFactory.getLogger("Field");
@@ -43,7 +44,7 @@ export default class Field {
     return this.monsterZones.filter((zone) => !zone.isEmpty());
   }
 
-  getZoneOf(card: Card): MonsterZone | undefined {
+  getZoneOf(card: Card): Zone | undefined {
     const zone = this.monsterZones.find((zone) => zone.card === card);
     if (!zone) {
       Field.logger.warn(`Could not find card ${card} on field`);
