@@ -5,6 +5,7 @@ import Util from "../util/Util";
 import Action from "./actions/Action";
 import Attack from "./actions/Attack";
 import NormalSummon from "./actions/NormalSummon";
+import SelectTributeSummon from "./actions/SelectTributeSummon";
 import TributeSummon from "./actions/TributeSummon";
 import Card from "./Card";
 import MonsterZone from "./MonsterZone";
@@ -26,12 +27,33 @@ export default class Monster extends Card {
       possibleActions.push(this.getNormalSummonAction());
     }
     if (this.canTributeSummon()) {
-      possibleActions.push(...this.getTributeSummonActions());
+      possibleActions.push(new SelectTributeSummon(this.owner, this));
     }
     if (this.canAttack()) {
       possibleActions.push(...this.getAttackActions());
     }
     return possibleActions;
+  }
+
+  getTributeSummonActions(): TributeSummon[] {
+    const zonesWithMonsters: MonsterZone[] =
+      this.owner.field.getZonesWithMonsters();
+    if (this.tributesRequired === 1) {
+      const tributeZone = Util.getRandomItemFromArray(zonesWithMonsters);
+      return [
+        new TributeSummon(this.owner, this, tributeZone, tributeZone.card),
+      ];
+    }
+    const tributePairs = Util.getAllPairsFromArray(zonesWithMonsters);
+    return tributePairs.map(
+      (pair) =>
+        new TributeSummon(
+          this.owner,
+          this,
+          pair[0],
+          pair.map((zone) => zone.card)
+        )
+    );
   }
 
   getAttackPoints(): number {
@@ -70,27 +92,6 @@ export default class Monster extends Card {
       this.owner,
       this,
       this.owner.field.getRandomFreeMonsterZone() as MonsterZone
-    );
-  }
-
-  private getTributeSummonActions(): TributeSummon[] {
-    const zonesWithMonsters: MonsterZone[] =
-      this.owner.field.getZonesWithMonsters();
-    if (this.tributesRequired === 1) {
-      const tributeZone = Util.getRandomItemFromArray(zonesWithMonsters);
-      return [
-        new TributeSummon(this.owner, this, tributeZone, tributeZone.card),
-      ];
-    }
-    const tributePairs = Util.getAllPairsFromArray(zonesWithMonsters);
-    return tributePairs.map(
-      (pair) =>
-        new TributeSummon(
-          this.owner,
-          this,
-          pair[0],
-          pair.map((zone) => zone.card)
-        )
     );
   }
 

@@ -1,7 +1,6 @@
 import { Phase, PHASE_ENUM_LENGTH } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Action from "./actions/Action";
-import EndPhase from "./actions/EndPhase";
 import Player from "./Player";
 
 export default class Duel {
@@ -24,9 +23,12 @@ export default class Duel {
   }
 
   getActions(): Action[] {
-    return this.activePlayer
-      .getActions()
-      .concat(new EndPhase(this.activePlayer));
+    const actionSelection = this.activePlayer.actionSelection;
+    if (actionSelection.length > 0) {
+      this.activePlayer.actionSelection = [];
+      return actionSelection;
+    }
+    return this.activePlayer.getActions();
   }
 
   performAction(action: Action) {

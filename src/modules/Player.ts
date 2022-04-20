@@ -2,6 +2,7 @@ import { Phase } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
 import Action from "./actions/Action";
+import EndPhase from "./actions/EndPhase";
 import Card from "./Card";
 import Deck from "./Deck";
 import Field from "./Field";
@@ -11,6 +12,7 @@ export default class Player {
   graveyard: Card[] = [];
   havingTurn: boolean = false;
   normalSummonsRemaining = 0;
+  actionSelection: Action[] = [];
   name: string;
   field: Field;
 
@@ -79,7 +81,14 @@ export default class Player {
   }
 
   getActions(): Action[] {
-    const actions = this.getHandActions().concat(this.getFieldActions());
+    const actionSelection = this.actionSelection;
+    if (actionSelection.length > 0) {
+      this.actionSelection = [];
+      return actionSelection;
+    }
+    const actions = this.getHandActions()
+      .concat(this.getFieldActions())
+      .concat(new EndPhase(this));
     Player.logger.debug(`Player ${this} has ${actions.length} actions`);
     return actions;
   }
