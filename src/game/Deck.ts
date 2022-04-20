@@ -6,11 +6,12 @@ import Util from "../util/Util";
 import Card from "./Card";
 import Monster from "./cards/Monster";
 import Player from "./Player";
+import Spell from "./cards/Spell";
 
 export default class Deck {
+  cards: Card[] = [];
   private static logger = LoggerFactory.getLogger("Duel");
   private static cardsData = JSON.parse(File.read("./cards/cards.json"));
-  private cards: Card[] = [];
 
   constructor(private owner: Player, private name: string) {
     Deck.logger.info(`Creating deck ${name}`);
@@ -36,6 +37,8 @@ export default class Deck {
       const cardData = this.getCardData(cardName);
       if (cardData.cardType === CardType.Monster) {
         this.cards.push(new Monster(this.owner, cardName, cardData));
+      } else if (cardData.cardType === CardType.Spell) {
+        this.cards.push(new Spell(this.owner, cardName, cardData));
       }
     });
   }

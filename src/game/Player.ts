@@ -126,7 +126,19 @@ export default class Player {
   }
 
   getFieldString() {
-    return `|-|${this.field}|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints`;
+    let str = "|-|";
+    for (let i = 0; i < 5; i++) {
+      const zone = this.field.monsterZones[i];
+      str += zone.isEmpty() ? "-" : "M";
+    }
+    str += `|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints\n`;
+    str += `|-|`;
+    for (let i = 0; i < 5; i++) {
+      const zone = this.field.spellTrapZones[i];
+      str += zone.isEmpty() ? "-" : "S";
+    }
+    str += `|${this.deck?.cards.length}|`;
+    return str;
   }
 
   toString() {

@@ -1,3 +1,4 @@
+import { Phase } from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../util/LoggerFactory";
 import Action from "../Action";
@@ -21,8 +22,6 @@ export default class Spell extends Card {
     return possibleActions;
   }
 
-  activate(): void {}
-
   private getActivationAction(): SpellActivation {
     return new SpellActivation(
       this.owner,
@@ -32,6 +31,10 @@ export default class Spell extends Card {
   }
 
   private canActivate(): boolean {
-    return this.owner.canActivateSpell();
+    return (
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      this.owner.canActivateSpell() &&
+      (this.effect?.canActivate() as boolean)
+    );
   }
 }

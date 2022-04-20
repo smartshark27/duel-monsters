@@ -8,7 +8,11 @@ import Util from "../../util/Util";
 export default class SpellActivation extends CardAction {
   protected static logger = LoggerFactory.getLogger("SpellActivation");
 
-  constructor(protected actor: Player, protected card: Spell, private zone: SpellTrapZone) {
+  constructor(
+    protected actor: Player,
+    protected card: Spell,
+    private zone: SpellTrapZone
+  ) {
     super(actor, card);
   }
 
@@ -16,7 +20,10 @@ export default class SpellActivation extends CardAction {
     SpellActivation.logger.info(`Activating spell ${this.card}`);
     this.zone.card = this.card;
     Util.removeItemFromArray(this.actor.hand, this.card);
-    const spell = this.card as Spell;
-    spell.activate();
+    this.card.activate();
+  }
+
+  override toString(): string {
+    return `Activate ${this.card}`;
   }
 }

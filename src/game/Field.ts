@@ -8,9 +8,9 @@ import Zone from "./field/Zone";
 import SpellTrapZone from "./field/SpellTrapZone";
 
 export default class Field {
+  monsterZones: MonsterZone[] = [];
+  spellTrapZones: SpellTrapZone[] = [];
   private static logger = LoggerFactory.getLogger("Field");
-  private monsterZones: MonsterZone[] = [];
-  private spellTrapZones: SpellTrapZone[] = [];
 
   constructor(private owner: Player) {
     Field.logger.debug(`Creating field`);
@@ -52,7 +52,7 @@ export default class Field {
   }
 
   getRandomFreeSpellTrapZone(): SpellTrapZone | null {
-    const freeZones = this.getFreeMonsterZones();
+    const freeZones = this.getFreeSpellTrapZones();
     if (freeZones) {
       return Util.getRandomItemFromArray(freeZones);
     }
@@ -60,7 +60,7 @@ export default class Field {
   }
 
   getZoneOf(card: Card): Zone | undefined {
-    const zone = this.monsterZones.find((zone) => zone.card === card);
+    const zone = (this.monsterZones as Zone[]).concat(this.spellTrapZones).find((zone) => zone.card === card);
     if (!zone) {
       Field.logger.warn(`Could not find card ${card} on field`);
     }
@@ -68,11 +68,6 @@ export default class Field {
   }
 
   toString(): string {
-    let str = "";
-    for (let i = 0; i < 5; i++) {
-      const zone = this.monsterZones[i];
-      str += zone.isEmpty() ? "-" : "M";
-    }
-    return str;
+    return `${this.owner}'s field`;
   }
 }
