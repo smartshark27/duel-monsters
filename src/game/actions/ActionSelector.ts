@@ -1,6 +1,6 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import Action from "./Action";
+import Action from "../Action";
 
 export default class ActionSelector extends Action {
   protected static override logger = LoggerFactory.getLogger(

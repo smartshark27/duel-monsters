@@ -1,6 +1,6 @@
 import { Phase, PHASE_ENUM_LENGTH } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
-import Action from "./actions/Action";
+import Action from "./Action";
 import Player from "./Player";
 
 export default class Duel {

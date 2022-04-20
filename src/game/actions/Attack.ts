@@ -1,6 +1,6 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import Monster from "../Monster";
+import Monster from "../cards/Monster";
 import CardAction from "./CardAction";
 
 export default class Attack extends CardAction {

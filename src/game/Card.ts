@@ -1,6 +1,6 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Player from "./Player";
-import Action from "./actions/Action";
+import Action from "./Action";
 import CardData from "../interfaces/CardData";
 
 export default class Card {

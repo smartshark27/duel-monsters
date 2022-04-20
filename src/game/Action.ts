@@ -1,5 +1,5 @@
-import LoggerFactory from "../../util/LoggerFactory";
-import Player from "../Player";
+import LoggerFactory from "../util/LoggerFactory";
+import Player from "./Player";
 
 export default class Action {
   protected static logger = LoggerFactory.getLogger("Action");

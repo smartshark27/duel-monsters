@@ -1,6 +1,6 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import Monster from "../Monster";
+import Monster from "../cards/Monster";
 import ActionSelector from "./ActionSelector";
 
 export default class SelectTributeSummon extends ActionSelector {

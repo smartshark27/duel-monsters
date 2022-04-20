@@ -4,7 +4,7 @@ import File from "../util/File";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
 import Card from "./Card";
-import Monster from "./Monster";
+import Monster from "./cards/Monster";
 import Player from "./Player";
 
 export default class Deck {

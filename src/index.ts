@@ -1,9 +1,9 @@
-import Deck from "./modules/Deck";
-import Duel from "./modules/Duel";
-import Player from "./modules/Player";
+import Deck from "./game/Deck";
+import Duel from "./game/Duel";
+import Player from "./game/Player";
 import Util from "./util/Util";
 import Input from "./util/Input";
-import Action from "./modules/actions/Action";
+import Action from "./game/Action";
 import LoggerFactory from "./util/LoggerFactory";
 
 const logger = LoggerFactory.getLogger("index");

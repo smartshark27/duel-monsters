@@ -1,5 +1,5 @@
-import LoggerFactory from "../util/LoggerFactory";
-import Player from "./Player";
+import LoggerFactory from "../../util/LoggerFactory";
+import Player from "../Player";
 import Zone from "./Zone";
 
 export default class MonsterZone extends Zone {

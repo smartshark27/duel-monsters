@@ -1,7 +1,7 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import MonsterZone from "../MonsterZone";
-import Monster from "../Monster";
+import MonsterZone from "../field/MonsterZone";
+import Monster from "../cards/Monster";
 import NormalSummon from "./NormalSummon";
 
 export default class TributeSummon extends NormalSummon {

@@ -1,7 +1,7 @@
 import { Phase } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
-import Action from "./actions/Action";
+import Action from "./Action";
 import EndPhase from "./actions/EndPhase";
 import Card from "./Card";
 import Deck from "./Deck";

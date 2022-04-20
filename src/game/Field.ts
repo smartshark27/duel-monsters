@@ -1,10 +1,10 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
 import Card from "./Card";
-import Monster from "./Monster";
-import MonsterZone from "./MonsterZone";
+import Monster from "./cards/Monster";
+import MonsterZone from "./field/MonsterZone";
 import Player from "./Player";
-import Zone from "./Zone";
+import Zone from "./field/Zone";
 
 export default class Field {
   private static logger = LoggerFactory.getLogger("Field");

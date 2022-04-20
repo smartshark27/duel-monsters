@@ -1,4 +1,4 @@
-import Duel from "./modules/Duel";
+import Duel from "./game/Duel";
 
 declare global {
   var DUEL: Duel;

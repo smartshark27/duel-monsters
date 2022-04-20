@@ -1,15 +1,15 @@
-import { Phase } from "../enums";
-import CardData from "../interfaces/CardData";
-import LoggerFactory from "../util/LoggerFactory";
-import Util from "../util/Util";
-import Action from "./actions/Action";
-import Attack from "./actions/Attack";
-import NormalSummon from "./actions/NormalSummon";
-import SelectTributeSummon from "./actions/SelectTributeSummon";
-import TributeSummon from "./actions/TributeSummon";
-import Card from "./Card";
-import MonsterZone from "./MonsterZone";
-import Player from "./Player";
+import { Phase } from "../../enums";
+import CardData from "../../interfaces/CardData";
+import LoggerFactory from "../../util/LoggerFactory";
+import Util from "../../util/Util";
+import Action from "../Action";
+import Attack from "../actions/Attack";
+import NormalSummon from "../actions/NormalSummon";
+import SelectTributeSummon from "../actions/SelectTributeSummon";
+import TributeSummon from "../actions/TributeSummon";
+import Card from "../Card";
+import MonsterZone from "../field/MonsterZone";
+import Player from "../Player";
 
 export default class Monster extends Card {
   attacksRemaining = 0;
