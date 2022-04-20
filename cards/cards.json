@@ -30,5 +30,9 @@
     "monsterTypes": ["normal", "dragon"],
     "attack": 1300,
     "defence": 2000
+  },
+  "Monster Reborn": {
+    "cardType": "spell",
+    "effect": "Target 1 monster in either player's GY; Special Summon it"
   }
 }

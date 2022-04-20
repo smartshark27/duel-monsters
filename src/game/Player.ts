@@ -109,6 +109,10 @@ export default class Player {
     );
   }
 
+  canActivateSpell() {
+    return this.field.getFreeSpellTrapZones().length > 0;
+  }
+
   receiveBattleDamage(damage: number): void {
     Player.logger.info(`Inflicting ${damage} battle damage to ${this}`);
     this.reduceLifePoints(damage);

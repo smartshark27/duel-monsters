@@ -5,16 +5,19 @@ import Monster from "./cards/Monster";
 import MonsterZone from "./field/MonsterZone";
 import Player from "./Player";
 import Zone from "./field/Zone";
+import SpellTrapZone from "./field/SpellTrapZone";
 
 export default class Field {
   private static logger = LoggerFactory.getLogger("Field");
   private monsterZones: MonsterZone[] = [];
+  private spellTrapZones: SpellTrapZone[] = [];
 
   constructor(private owner: Player) {
     Field.logger.debug(`Creating field`);
 
     for (let i = 0; i < 5; i++) {
       this.monsterZones.push(new MonsterZone(owner, i));
+      this.spellTrapZones.push(new SpellTrapZone(owner, i));
     }
   }
 
@@ -28,20 +31,32 @@ export default class Field {
     ) as Monster[];
   }
 
-  getRandomFreeMonsterZone(): MonsterZone | null {
-    const freeZones = this.getFreeMonsterZones();
-    if (freeZones) {
-      return Util.getRandomItemFromArray(this.getFreeMonsterZones());
-    }
-    return null;
-  }
-
-  getFreeMonsterZones(): MonsterZone[]  {
+  getFreeMonsterZones(): MonsterZone[] {
     return this.monsterZones.filter((zone) => zone.isEmpty());
   }
 
   getZonesWithMonsters(): MonsterZone[] {
     return this.monsterZones.filter((zone) => !zone.isEmpty());
+  }
+
+  getFreeSpellTrapZones(): SpellTrapZone[] {
+    return this.spellTrapZones.filter((zone) => zone.isEmpty());
+  }
+
+  getRandomFreeMonsterZone(): MonsterZone | null {
+    const freeZones = this.getFreeMonsterZones();
+    if (freeZones) {
+      return Util.getRandomItemFromArray(freeZones);
+    }
+    return null;
+  }
+
+  getRandomFreeSpellTrapZone(): SpellTrapZone | null {
+    const freeZones = this.getFreeMonsterZones();
+    if (freeZones) {
+      return Util.getRandomItemFromArray(freeZones);
+    }
+    return null;
   }
 
   getZoneOf(card: Card): Zone | undefined {
