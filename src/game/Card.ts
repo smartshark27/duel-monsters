@@ -12,7 +12,11 @@ export default class Card {
 
   protected static logger = LoggerFactory.getLogger("Card");
 
-  constructor(public owner: Player, protected originalName: string, protected data: CardData) {
+  constructor(
+    public owner: Player,
+    protected originalName: string,
+    protected data: CardData
+  ) {
     Card.logger.debug(`Creating card ${originalName}`);
     this.setEffect();
     this.reset();
@@ -38,7 +42,9 @@ export default class Card {
   }
 
   sendToGraveyard(): void {
-    const zone = this.controller.field.getZoneOf(this);
+    const zone =
+      this.controller.field.getZoneOf(this) ||
+      global.DUEL.getOpponentOf(this.controller).field.getZoneOf(this);
     if (zone) {
       this.owner.graveyard.push(this);
       zone.card = null;

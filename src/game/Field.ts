@@ -60,11 +60,9 @@ export default class Field {
   }
 
   getZoneOf(card: Card): Zone | undefined {
-    const zone = (this.monsterZones as Zone[]).concat(this.spellTrapZones).find((zone) => zone.card === card);
-    if (!zone) {
-      Field.logger.warn(`Could not find card ${card} on field`);
-    }
-    return zone;
+    return (this.monsterZones as Zone[])
+      .concat(this.spellTrapZones)
+      .find((zone) => zone.card === card);
   }
 
   toString(): string {

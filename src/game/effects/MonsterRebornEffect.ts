@@ -13,27 +13,29 @@ export default class MonsterRebornEffect extends Effect {
   }
 
   override canActivate(): boolean {
-    const controller = this.card.controller;
     return (
-      controller.graveyard.some((card) => card instanceof Monster) &&
-      controller.field.getFreeMonsterZones().length > 0
+      this.getGraveyardMonsters().length > 0 &&
+      this.card.controller.field.getFreeMonsterZones().length > 0
     );
   }
 
   override activate(): void {
     const controller = this.card.controller;
-    // const opponent = global.DUEL.getOpponentOf(this.controller);
-    controller.actionSelection = controller.graveyard
-      // .concat(opponent.graveyard) # TODO: Check both graveyards
-      .filter((card) => card instanceof Monster)
-      .map(
-        (monster) =>
-          new SpecialSummon(
-            controller,
-            monster as Monster,
-            controller.field.getRandomFreeMonsterZone() as MonsterZone,
-            () => this.card.sendToGraveyard()
-          )
-      );
+    controller.actionSelection = this.getGraveyardMonsters().map(
+      (monster) =>
+        new SpecialSummon(
+          controller,
+          monster as Monster,
+          controller.field.getRandomFreeMonsterZone() as MonsterZone,
+          () => this.card.sendToGraveyard()
+        )
+    );
+  }
+
+  private getGraveyardMonsters(): Monster[] {
+    const opponent = global.DUEL.getOpponentOf(this.card.controller);
+    return this.card.controller.graveyard
+      .concat(opponent.graveyard)
+      .filter((card) => card instanceof Monster) as Monster[];
   }
 }
