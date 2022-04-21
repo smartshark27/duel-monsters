@@ -8,13 +8,12 @@ export default class Duel {
   running = false;
   turnCounter = 0;
   private static logger = LoggerFactory.getLogger("Duel");
-  private activePlayerIndex = 0;
   private activePlayer: Player;
   private winner: Player | undefined;
 
   constructor(private players: Player[]) {
     Duel.logger.info("Creating duel");
-    this.activePlayer = players[this.activePlayerIndex];
+    this.activePlayer = players[0];
     this.players.forEach((player) => player.init());
     this.activePlayer = this.getActivePlayer();
     this.activePlayer.havingTurn = true;
@@ -38,8 +37,7 @@ export default class Duel {
   switchTurns() {
     this.turnCounter++;
     this.activePlayer.havingTurn = false;
-    this.activePlayerIndex = this.getInactivePlayerIndex();
-    this.activePlayer = this.players[this.activePlayerIndex];
+    this.activePlayer = this.getOpponentOf(this.activePlayer);
     this.activePlayer.havingTurn = true;
     Duel.logger.info(`Switched to player ${this.activePlayer}`);
   }
@@ -72,11 +70,11 @@ export default class Duel {
   }
 
   getActivePlayer() {
-    return this.players[this.activePlayerIndex];
+    return this.activePlayer;
   }
 
-  getInactivePlayer() {
-    return this.players[this.getInactivePlayerIndex()];
+  getOpponentOf(player: Player): Player {
+    return this.players.indexOf(player) === 0 ? this.players[1] : this.players[0];
   }
 
   printResults() {
@@ -94,9 +92,5 @@ export default class Duel {
       "\n" +
       this.players[1].getFieldString()
     );
-  }
-
-  private getInactivePlayerIndex() {
-    return this.activePlayerIndex == 0 ? 1 : 0;
   }
 }

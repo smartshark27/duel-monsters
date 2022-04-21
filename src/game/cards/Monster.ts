@@ -115,7 +115,7 @@ export default class Monster extends Card {
   }
 
   private getAttackActions(): Attack[] {
-    return global.DUEL.getInactivePlayer()
+    return global.DUEL.getOpponentOf(this.owner)
       .field.getMonsters()
       .map((target) => new Attack(this.controller, this, target));
   }

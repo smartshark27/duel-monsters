@@ -21,9 +21,9 @@ export default class Attack extends CardAction {
     const attackerPoints = attacker.getAttackPoints();
     const targetPoints = this.target.getAttackPoints();
     const difference = attackerPoints - targetPoints;
-    const inactivePlayer = global.DUEL.getInactivePlayer();
+    const opponent = global.DUEL.getOpponentOf(this.actor);
     if (difference > 0) {
-      inactivePlayer.receiveBattleDamage(difference);
+      opponent.receiveBattleDamage(difference);
       this.target.destroyByBattle();
     } else if (difference < 0) {
       this.actor.receiveBattleDamage(-difference);

@@ -47,7 +47,7 @@ export default class Player {
       this.hand.push(card);
     } else {
       Player.logger.warn("No cards left to draw");
-      global.DUEL.end(global.DUEL.getInactivePlayer());
+      global.DUEL.end(global.DUEL.getOpponentOf(this));
     }
   }
 
@@ -164,7 +164,7 @@ export default class Player {
 
   private checkLifePointsLoss(): void {
     if (this.lifePoints === 0) {
-      global.DUEL.end(global.DUEL.getInactivePlayer());
+      global.DUEL.end(global.DUEL.getOpponentOf(this));
     }
   }
 }

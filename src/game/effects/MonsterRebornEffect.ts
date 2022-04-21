@@ -22,7 +22,7 @@ export default class MonsterRebornEffect extends Effect {
 
   override activate(): void {
     const controller = this.card.controller;
-    // const opponent = global.DUEL.getInactivePlayer();
+    // const opponent = global.DUEL.getOpponentOf(this.controller);
     controller.actionSelection = controller.graveyard
       // .concat(opponent.graveyard) # TODO: Check both graveyards
       .filter((card) => card instanceof Monster)
