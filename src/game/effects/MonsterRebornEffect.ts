@@ -13,7 +13,11 @@ export default class MonsterRebornEffect extends Effect {
   }
 
   override canActivate(): boolean {
-    return this.card.controller.graveyard.some((card) => card instanceof Monster);
+    const controller = this.card.controller;
+    return (
+      controller.graveyard.some((card) => card instanceof Monster) &&
+      controller.field.getFreeMonsterZones().length > 0
+    );
   }
 
   override activate(): void {

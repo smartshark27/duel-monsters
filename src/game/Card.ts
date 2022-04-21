@@ -6,17 +6,20 @@ import Effect from "./Effect";
 import MonsterRebornEffect from "./effects/MonsterRebornEffect";
 
 export default class Card {
-  name: string;
   controller!: Player;
   protected effect: Effect | undefined;
+  private name!: string;
 
   protected static logger = LoggerFactory.getLogger("Card");
 
-  constructor(public owner: Player, name: string, protected data: CardData) {
-    Card.logger.debug(`Creating card ${name}`);
-    this.name = name;
+  constructor(public owner: Player, protected originalName: string, protected data: CardData) {
+    Card.logger.debug(`Creating card ${originalName}`);
     this.setEffect();
     this.reset();
+  }
+
+  getName(): string {
+    return this.name;
   }
 
   getActions(): Action[] {
@@ -44,15 +47,16 @@ export default class Card {
   }
 
   reset(): void {
+    this.name = this.originalName;
     this.controller = this.owner;
   }
 
   toString() {
-    return this.name;
+    return this.getName();
   }
 
   private setEffect(): void {
-    if (this.name === "Monster Reborn") {
+    if (this.originalName === "Monster Reborn") {
       this.effect = new MonsterRebornEffect(this);
     }
   }
