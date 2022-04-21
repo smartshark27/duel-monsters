@@ -7,5 +7,5 @@ export default interface CardData {
   monsterTypes?: String[];
   attack?: number;
   defence?: number;
-  effect?: string;
+  description?: string;
 }

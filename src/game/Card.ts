@@ -7,6 +7,7 @@ import MonsterRebornEffect from "./effects/MonsterRebornEffect";
 
 export default class Card {
   name: string;
+  controller!: Player;
   protected effect: Effect | undefined;
 
   protected static logger = LoggerFactory.getLogger("Card");
@@ -15,10 +16,11 @@ export default class Card {
     Card.logger.debug(`Creating card ${name}`);
     this.name = name;
     this.setEffect();
+    this.reset();
   }
 
   getActions(): Action[] {
-    Card.logger.warn("Should not happen");
+    Card.logger.warn("getActions() not implemented for subclass of Card");
     return [];
   }
 
@@ -33,11 +35,16 @@ export default class Card {
   }
 
   sendToGraveyard(): void {
-    const zone = this.owner.field.getZoneOf(this);
+    const zone = this.controller.field.getZoneOf(this);
     if (zone) {
       this.owner.graveyard.push(this);
       zone.card = null;
+      this.reset();
     }
+  }
+
+  reset(): void {
+    this.controller = this.owner;
   }
 
   toString() {

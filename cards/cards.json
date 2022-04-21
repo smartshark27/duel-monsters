@@ -33,6 +33,6 @@
   },
   "Monster Reborn": {
     "cardType": "spell",
-    "effect": "Target 1 monster in either player's GY; Special Summon it"
+    "description": "Target 1 monster in either player's GY; Special Summon it"
   }
 }

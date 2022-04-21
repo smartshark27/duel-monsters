@@ -14,11 +14,14 @@ import Player from "../Player";
 export default class Monster extends Card {
   attacksRemaining = 0;
   protected static override logger = LoggerFactory.getLogger("Monster");
-  private tributesRequired: number;
+  private originalAttack!: number;
+  private originalDefence!: number;
+  private originalLevel!: number;
+  private tributesRequired!: number;
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
-    this.tributesRequired = this.getTributesRequired();
+    this.reset();
   }
 
   override getActions(): Action[] {
@@ -27,7 +30,7 @@ export default class Monster extends Card {
       possibleActions.push(this.getNormalSummonAction());
     }
     if (this.canTributeSummon()) {
-      possibleActions.push(new SelectTributeSummon(this.owner, this));
+      possibleActions.push(new SelectTributeSummon(this.controller, this));
     }
     if (this.canAttack()) {
       possibleActions.push(...this.getAttackActions());
@@ -35,20 +38,28 @@ export default class Monster extends Card {
     return possibleActions;
   }
 
+  override reset(): void {
+    super.reset();
+    this.originalAttack = this.data.attack as number;
+    this.originalDefence = this.data.defence as number;
+    this.originalLevel = this.data.level as number;
+    this.tributesRequired = this.getTributesRequired();
+  }
+
   getTributeSummonActions(): TributeSummon[] {
     const zonesWithMonsters: MonsterZone[] =
-      this.owner.field.getZonesWithMonsters();
+      this.controller.field.getZonesWithMonsters();
     if (this.tributesRequired === 1) {
       const tributeZone = Util.getRandomItemFromArray(zonesWithMonsters);
       return [
-        new TributeSummon(this.owner, this, tributeZone, tributeZone.card),
+        new TributeSummon(this.controller, this, tributeZone, tributeZone.card),
       ];
     }
     const tributePairs = Util.getAllPairsFromArray(zonesWithMonsters);
     return tributePairs.map(
       (pair) =>
         new TributeSummon(
-          this.owner,
+          this.controller,
           this,
           pair[0],
           pair.map((zone) => zone.card)
@@ -57,7 +68,15 @@ export default class Monster extends Card {
   }
 
   getAttackPoints(): number {
-    return this.data.attack as number;
+    return this.originalAttack as number;
+  }
+
+  getDefencePoints(): number {
+    return this.originalDefence;
+  }
+
+  getLevel(): number {
+    return this.originalLevel;
   }
 
   destroyByBattle(): void {
@@ -66,19 +85,19 @@ export default class Monster extends Card {
   }
 
   private getTributesRequired(): number {
-    const level = this.data.level as number;
+    const level = this.getLevel();
     if (level > 6) return 2;
     else if (level > 4) return 1;
     return 0;
   }
 
   private canNormalSummon(): boolean {
-    return this.owner.canNormalSummon() && this.tributesRequired === 0;
+    return this.controller.canNormalSummon() && this.tributesRequired === 0;
   }
 
   private canTributeSummon(): boolean {
     return (
-      this.owner.canTributeSummon(this.tributesRequired) &&
+      this.controller.canTributeSummon(this.tributesRequired) &&
       this.tributesRequired > 0
     );
   }
@@ -89,15 +108,15 @@ export default class Monster extends Card {
 
   private getNormalSummonAction(): NormalSummon {
     return new NormalSummon(
-      this.owner,
+      this.controller,
       this,
-      this.owner.field.getRandomFreeMonsterZone() as MonsterZone
+      this.controller.field.getRandomFreeMonsterZone() as MonsterZone
     );
   }
 
   private getAttackActions(): Attack[] {
     return global.DUEL.getInactivePlayer()
       .field.getMonsters()
-      .map((target) => new Attack(this.owner, this, target));
+      .map((target) => new Attack(this.controller, this, target));
   }
 }

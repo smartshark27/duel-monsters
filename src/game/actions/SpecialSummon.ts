@@ -12,7 +12,7 @@ export default class SpecialSummon extends Summon {
     actor: Player,
     monster: Monster,
     private monsterZone: MonsterZone,
-    private resolve: () => void
+    private resolve: () => void = () => {}
   ) {
     super(actor, monster);
   }

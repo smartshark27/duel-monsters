@@ -24,16 +24,16 @@ export default class Spell extends Card {
 
   private getActivationAction(): SpellActivation {
     return new SpellActivation(
-      this.owner,
+      this.controller,
       this,
-      this.owner.field.getRandomFreeSpellTrapZone() as SpellTrapZone
+      this.controller.field.getRandomFreeSpellTrapZone() as SpellTrapZone
     );
   }
 
   private canActivate(): boolean {
     return (
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
-      this.owner.canActivateSpell() &&
+      this.controller.canActivateSpell() &&
       (this.effect?.canActivate() as boolean)
     );
   }
