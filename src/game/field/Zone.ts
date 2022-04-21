@@ -9,7 +9,7 @@ export default class Zone {
 
   constructor(protected owner: Player) {}
 
-  isEmpty() {
+  isEmpty(): boolean {
     return !this.card;
   }
 }

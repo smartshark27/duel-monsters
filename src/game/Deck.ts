@@ -7,6 +7,7 @@ import Card from "./Card";
 import Monster from "./cards/Monster";
 import Player from "./Player";
 import Spell from "./cards/Spell";
+import Trap from "./cards/Trap";
 
 export default class Deck {
   cards: Card[] = [];
@@ -39,6 +40,8 @@ export default class Deck {
         this.cards.push(new Monster(this.owner, cardName, cardData));
       } else if (cardData.cardType === CardType.Spell) {
         this.cards.push(new Spell(this.owner, cardName, cardData));
+      } else if (cardData.cardType === CardType.Trap) {
+        this.cards.push(new Trap(this.owner, cardName, cardData));
       }
     });
   }

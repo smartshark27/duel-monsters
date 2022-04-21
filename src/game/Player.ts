@@ -4,6 +4,8 @@ import Util from "../util/Util";
 import Action from "./Action";
 import EndPhase from "./actions/EndPhase";
 import Card from "./Card";
+import Spell from "./cards/Spell";
+import Trap from "./cards/Trap";
 import Deck from "./Deck";
 import Field from "./Field";
 
@@ -113,6 +115,13 @@ export default class Player {
     return this.field.getFreeSpellTrapZones().length > 0;
   }
 
+  canSetSpellTrap() {
+    return (
+      this.field.getFreeSpellTrapZones().length > 0 &&
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase)
+    );
+  }
+
   receiveBattleDamage(damage: number): void {
     Player.logger.info(`Inflicting ${damage} battle damage to ${this}`);
     this.reduceLifePoints(damage);
@@ -135,7 +144,13 @@ export default class Player {
     str += `|-|`;
     for (let i = 0; i < 5; i++) {
       const zone = this.field.spellTrapZones[i];
-      str += zone.isEmpty() ? "-" : "S";
+      if (zone.card instanceof Spell) {
+        str += "S";
+      } else if (zone.card instanceof Trap) {
+        str += "T";
+      } else {
+        str += "-";
+      }
     }
     str += `|${this.deck?.cards.length}|`;
     return str;

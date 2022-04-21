@@ -23,6 +23,14 @@
     "attack": 3000,
     "defence": 2500
   },
+  "Mirror Force": {
+    "cardType": "trap",
+    "description": "When an opponent's monster declares an attack: Destroy all your opponent's Attack Position monsters."
+  },
+  "Monster Reborn": {
+    "cardType": "spell",
+    "description": "Target 1 monster in either player's GY; Special Summon it."
+  },
   "The Dragon Dwelling in the Cave": {
     "cardType": "monster",
     "attribute": "WIND",
@@ -30,9 +38,5 @@
     "monsterTypes": ["normal", "dragon"],
     "attack": 1300,
     "defence": 2000
-  },
-  "Monster Reborn": {
-    "cardType": "spell",
-    "description": "Target 1 monster in either player's GY; Special Summon it"
   }
 }
