@@ -10,14 +10,14 @@ export default class SpellTrapSet extends CardAction {
   protected static logger = LoggerFactory.getLogger("SpellTrapSet");
 
   constructor(
-    protected actor: Player,
-    protected card: Spell | Trap,
+    actor: Player,
+    card: Spell | Trap,
     private zone: SpellTrapZone
   ) {
     super(actor, card);
   }
 
-  perform() {
+  override perform() {
     SpellTrapSet.logger.info(`Setting ${this.card}`);
     this.zone.card = this.card;
     Util.removeItemFromArray(this.actor.hand, this.card);

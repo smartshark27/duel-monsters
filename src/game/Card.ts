@@ -32,9 +32,11 @@ export default class Card {
   }
 
   activate(): void {
-    if (this.effect) {
-      this.effect.activate();
-    }
+    if (this.effect) this.effect.activate();
+  }
+
+  resolve(): void {
+    if (this.effect) this.effect.resolve();
   }
 
   destroy(): void {

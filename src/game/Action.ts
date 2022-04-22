@@ -4,9 +4,11 @@ import Player from "./Player";
 export default class Action {
   protected static logger = LoggerFactory.getLogger("Action");
 
-  constructor(protected actor: Player) {}
+  constructor(public actor: Player) {}
 
   perform(): void {}
+
+  finalise(): void {}
 
   toString(): string {
     Action.logger.error("toString() not implemented for subclass of Action");

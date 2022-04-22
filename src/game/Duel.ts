@@ -32,6 +32,7 @@ export default class Duel {
 
   performAction(action: Action) {
     action.perform();
+    action.finalise();
   }
 
   switchTurns() {

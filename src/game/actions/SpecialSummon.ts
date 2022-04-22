@@ -4,6 +4,7 @@ import MonsterZone from "../field/MonsterZone";
 import Monster from "../cards/Monster";
 import Util from "../../util/Util";
 import Summon from "./Summon";
+import Effect from "../Effect";
 
 export default class SpecialSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("SpecialSummon");
@@ -12,7 +13,7 @@ export default class SpecialSummon extends Summon {
     actor: Player,
     monster: Monster,
     private monsterZone: MonsterZone,
-    private resolve: () => void = () => {}
+    private effect: Effect
   ) {
     super(actor, monster);
   }
@@ -22,7 +23,10 @@ export default class SpecialSummon extends Summon {
     this.monsterZone.card = this.card;
     // TODO: Handle special summoning from other places
     Util.removeItemFromArray(this.actor.graveyard, this.card);
-    this.resolve();
+  }
+
+  override finalise(): void {
+    this.effect.resolve();
   }
 
   override toString(): string {

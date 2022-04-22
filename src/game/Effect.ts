@@ -1,6 +1,5 @@
 import LoggerFactory from "../util/LoggerFactory";
 import Card from "./Card";
-import Player from "./Player";
 
 export default class Effect {
   protected static logger = LoggerFactory.getLogger("Effect");
@@ -12,6 +11,8 @@ export default class Effect {
   }
 
   activate(): void {}
+
+  resolve(): void {}
 
   toString(): string {
     return `${this.card} effect`;

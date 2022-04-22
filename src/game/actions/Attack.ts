@@ -14,7 +14,7 @@ export default class Attack extends CardAction {
     super(actor, monster);
   }
 
-  override perform(): void {
+  override finalise(): void {
     const attacker = this.card as Monster;
     if (this.target instanceof Player) {
       this.attackDirectly(attacker);

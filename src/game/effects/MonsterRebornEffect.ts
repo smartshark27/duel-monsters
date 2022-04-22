@@ -27,7 +27,7 @@ export default class MonsterRebornEffect extends Effect {
           controller,
           monster as Monster,
           controller.field.getRandomFreeMonsterZone() as MonsterZone,
-          () => this.card.sendToGraveyard()
+          this
         )
     );
   }

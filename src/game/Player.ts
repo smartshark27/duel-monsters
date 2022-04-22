@@ -20,7 +20,6 @@ export default class Player {
 
   private static logger = LoggerFactory.getLogger("Player");
   private lifePoints: number = 8000;
-  private extraDeck: Card[] = [];
   private deck: Deck | undefined;
 
   constructor(name: string) {
@@ -32,7 +31,6 @@ export default class Player {
   setDeck(deck: Deck) {
     deck.shuffle();
     this.deck = deck;
-    // TODO: Move extra deck cards to extra deck
   }
 
   init() {

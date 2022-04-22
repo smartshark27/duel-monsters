@@ -9,7 +9,7 @@ export default class EndPhase extends Action {
     super(actor);
   }
 
-  perform(): void {
+  finalise(): void {
     global.DUEL.startNextPhase();
   }
 
