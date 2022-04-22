@@ -26,7 +26,7 @@ export default class SpecialSummon extends Summon {
   }
 
   override finalise(): void {
-    this.effect.resolve();
+    this.effect.after();
   }
 
   override toString(): string {

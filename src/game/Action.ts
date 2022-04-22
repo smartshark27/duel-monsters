@@ -10,6 +10,10 @@ export default class Action {
 
   finalise(): void {}
 
+  isChainable(): boolean {
+    return true;
+  }
+
   toString(): string {
     Action.logger.error("toString() not implemented for subclass of Action");
     return "";

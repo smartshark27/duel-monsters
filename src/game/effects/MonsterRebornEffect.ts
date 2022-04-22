@@ -19,7 +19,7 @@ export default class MonsterRebornEffect extends Effect {
     );
   }
 
-  override activate(): void {
+  override resolve(): void {
     const controller = this.card.controller;
     controller.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
@@ -30,6 +30,10 @@ export default class MonsterRebornEffect extends Effect {
           this
         )
     );
+  }
+
+  override after(): void {
+    this.card.sendToGraveyard();
   }
 
   private getGraveyardMonsters(): Monster[] {

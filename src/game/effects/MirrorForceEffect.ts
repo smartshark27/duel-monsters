@@ -13,13 +13,6 @@ export default class MirrorForceEffect extends Effect {
 
   override canActivate(): boolean {
     // TODO: Implement action responses and chaining
-    // const opponent = global.DUEL.getOpponentOf(this.card.controller);
-    // const lastAction: Action = global.DUEL.chain;
-    // return (
-    //   opponent.field.getMonsters().length > 0 &&
-    //   lastAction instanceof Attack &&
-    //   lastAction.actor === opponent
-    // );
     return false;
   }
 
@@ -27,5 +20,6 @@ export default class MirrorForceEffect extends Effect {
     global.DUEL.getOpponentOf(this.card.controller)
       .field.getMonsters()
       .forEach((monster) => monster.destroy());
+    this.card.sendToGraveyard();
   }
 }

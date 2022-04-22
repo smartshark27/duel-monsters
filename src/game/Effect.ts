@@ -14,6 +14,8 @@ export default class Effect {
 
   resolve(): void {}
 
+  after(): void {}
+
   toString(): string {
     return `${this.card} effect`;
   }

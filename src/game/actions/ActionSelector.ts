@@ -11,6 +11,10 @@ export default class ActionSelector extends Action {
     super(actor);
   }
 
+  override isChainable(): boolean {
+    return false;
+  }
+
   setPlayerActions(actions: Action[]): void {
     this.actor.actionSelection = actions;
   }

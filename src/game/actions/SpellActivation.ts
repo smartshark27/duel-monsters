@@ -20,7 +20,7 @@ export default class SpellActivation extends CardAction {
   }
 
   override finalise() {
-    this.card.sendToGraveyard();
+    this.card.resolve();
   }
 
   override toString(): string {
