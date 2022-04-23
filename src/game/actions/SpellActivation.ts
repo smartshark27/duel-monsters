@@ -20,6 +20,7 @@ export default class SpellActivation extends CardAction {
   }
 
   override finalise() {
+    SpellActivation.logger.info(`Resolving spell ${this.card}`);
     this.card.resolve();
   }
 

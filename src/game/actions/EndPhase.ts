@@ -9,11 +9,11 @@ export default class EndPhase extends Action {
     super(actor);
   }
 
-  finalise(): void {
+  override finalise(): void {
     global.DUEL.startNextPhase();
   }
 
-  toString(): string {
+  override toString(): string {
     return `End current phase`;
   }
 }

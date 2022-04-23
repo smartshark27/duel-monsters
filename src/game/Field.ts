@@ -22,13 +22,19 @@ export default class Field {
   }
 
   getCards(): Card[] {
-    return this.getMonsters();
+    return (this.getMonsters() as Card[]).concat(this.getSpellTraps());
   }
 
   getMonsters(): Monster[] {
-    return this.monsterZones.flatMap((zone) =>
-      zone.isEmpty() ? [] : zone.card
-    ) as Monster[];
+    return this.monsterZones
+      .filter((zone) => !zone.isEmpty())
+      .map((zone) => zone.card as Monster);
+  }
+
+  getSpellTraps(): Card[] {
+    return this.spellTrapZones
+      .filter((zone) => !zone.isEmpty())
+      .map((zone) => zone.card as Card);
   }
 
   getFreeMonsterZones(): MonsterZone[] {

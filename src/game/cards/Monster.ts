@@ -1,4 +1,4 @@
-import { Phase } from "../../enums";
+import { MonsterPosition, Phase } from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../util/LoggerFactory";
 import Util from "../../util/Util";
@@ -12,7 +12,8 @@ import MonsterZone from "../field/MonsterZone";
 import Player from "../Player";
 
 export default class Monster extends Card {
-  attacksRemaining = 0;
+  attacksRemaining!: number;
+  position = MonsterPosition.Attack;
   protected static override logger = LoggerFactory.getLogger("Monster");
   private originalAttack!: number;
   private originalDefence!: number;
@@ -40,6 +41,7 @@ export default class Monster extends Card {
 
   override reset(): void {
     super.reset();
+    this.attacksRemaining = 1;
     this.originalAttack = this.data.attack as number;
     this.originalDefence = this.data.defence as number;
     this.originalLevel = this.data.level as number;
@@ -103,7 +105,11 @@ export default class Monster extends Card {
   }
 
   private canAttack(): boolean {
-    return global.DUEL.phase === Phase.Battle && this.attacksRemaining > 0;
+    return (
+      global.DUEL.phase === Phase.Battle &&
+      this.attacksRemaining > 0 &&
+      this.controller.field.getZoneOf(this) != null
+    );
   }
 
   private getNormalSummonAction(): NormalSummon {
@@ -115,7 +121,7 @@ export default class Monster extends Card {
   }
 
   private getAttackActions(): Attack[] {
-    const opponent = global.DUEL.getOpponentOf(this.owner);
+    const opponent = global.DUEL.getOpponentOf(this.controller);
     const monsterTargets = opponent.field.getMonsters();
     if (monsterTargets.length > 0) {
       return monsterTargets.map(

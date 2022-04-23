@@ -19,6 +19,7 @@ export default class SpellTrapSet extends CardAction {
 
   override perform() {
     SpellTrapSet.logger.info(`Setting ${this.card}`);
+    this.card.set();
     this.zone.card = this.card;
     Util.removeItemFromArray(this.actor.hand, this.card);
   }

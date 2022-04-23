@@ -20,9 +20,10 @@ export default class SpecialSummon extends Summon {
 
   override perform(): void {
     SpecialSummon.logger.info(`Special summoning ${this.card}`);
+    this.card.controller = this.actor;
     this.monsterZone.card = this.card;
     // TODO: Handle special summoning from other places
-    Util.removeItemFromArray(this.actor.graveyard, this.card);
+    Util.removeItemFromArray(this.card.owner.graveyard, this.card);
   }
 
   override finalise(): void {

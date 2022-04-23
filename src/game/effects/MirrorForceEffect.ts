@@ -11,7 +11,7 @@ export default class MirrorForceEffect extends Effect {
   }
 
   override canActivate(): boolean {
-    const lastAction = global.DUEL.chain.at(-1);
+    const lastAction = global.DUEL.lastAction;
     return (
       lastAction instanceof Attack && lastAction.actor !== this.card.controller
     );

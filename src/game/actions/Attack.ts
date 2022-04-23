@@ -14,18 +14,24 @@ export default class Attack extends CardAction {
     super(actor, monster);
   }
 
+  override perform(): void {
+    Attack.logger.info(`${this.card} is declaring attack against ${this.target}`);
+  }
+
   override finalise(): void {
+    const attacker = this.card as Monster;
+    attacker.attacksRemaining--;
     if (!this.actor.field.getZoneOf(this.card)) {
-      // Monster has left the field
+      Attack.logger.debug(
+        `Monster ${this.card} is no longer on field to make attack`
+      );
       return;
     }
-    const attacker = this.card as Monster;
     if (this.target instanceof Player) {
       this.attackDirectly(attacker);
     } else {
       this.battle(attacker, this.target as Monster);
     }
-    attacker.attacksRemaining--;
   }
 
   private attackDirectly(attacker: Monster) {

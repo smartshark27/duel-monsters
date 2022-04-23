@@ -2,6 +2,7 @@ import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../util/LoggerFactory";
 import Action from "../Action";
 import SpellTrapSet from "../actions/SpellTrapSet";
+import TrapActivation from "../actions/TrapActivation";
 import Card from "../Card";
 import SpellTrapZone from "../field/SpellTrapZone";
 import Player from "../Player";
@@ -22,15 +23,15 @@ export default class Trap extends Card {
   }
 
   override getSpeed2Actions(): Action[] {
-    const actions = [];
+    const actions = super.getSpeed2Actions();
     if (this.canActivate()) {
-      actions.push(this.getSetAction());
+      actions.push(this.getActivationAction());
     }
     return actions;
   }
 
   private canSet(): boolean {
-    return this.controller.canSetSpellTrap();
+    return this.turnSet < 0 && this.controller.canSetSpellTrap();
   }
 
   private getSetAction(): SpellTrapSet {
@@ -41,9 +42,14 @@ export default class Trap extends Card {
     );
   }
 
+  private getActivationAction(): TrapActivation {
+    return new TrapActivation(this.controller, this);
+  }
+
   private canActivate(): boolean {
-    // return this.effect?.canActivate() as boolean;
-    // TODO: Add trap position and turn set
-    return false;
+    return (
+      this.turnSet < global.DUEL.turnCounter &&
+      (this.effect?.canActivate() as boolean)
+    );
   }
 }

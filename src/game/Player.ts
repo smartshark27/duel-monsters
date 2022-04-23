@@ -62,9 +62,6 @@ export default class Player {
 
   startBattlePhase() {
     Player.logger.info(`Starting battle phase for player ${this}`);
-    this.field
-      .getMonsters()
-      .forEach((monster) => (monster.attacksRemaining = 1));
   }
 
   startMainPhase2() {
@@ -74,6 +71,9 @@ export default class Player {
   startEndPhase() {
     Player.logger.info(`Starting end phase for player ${this}`);
     this.normalSummonsRemaining = 0;
+    this.field
+      .getMonsters()
+      .forEach((monster) => (monster.attacksRemaining = 1));
     while (this.hand.length > 6) {
       this.discardRandom();
     }

@@ -4,9 +4,13 @@ import Action from "./Action";
 import CardData from "../interfaces/CardData";
 import Effect from "./Effect";
 import MonsterRebornEffect from "./effects/MonsterRebornEffect";
+import { CardFace } from "../enums";
+import MirrorForceEffect from "./effects/MirrorForceEffect";
 
 export default class Card {
+  visibility = CardFace.Down;
   controller!: Player;
+  turnSet!: number;
   protected effect: Effect | undefined;
   private name!: string;
 
@@ -35,7 +39,13 @@ export default class Card {
   }
 
   activate(): void {
+    this.visibility = CardFace.Up;
     if (this.effect) this.effect.activate();
+  }
+
+  set(): void {
+    this.visibility = CardFace.Down;
+    this.turnSet = global.DUEL.turnCounter;
   }
 
   resolve(): void {
@@ -51,6 +61,7 @@ export default class Card {
       this.controller.field.getZoneOf(this) ||
       global.DUEL.getOpponentOf(this.controller).field.getZoneOf(this);
     if (zone) {
+      this.visibility = CardFace.Up;
       this.owner.graveyard.push(this);
       zone.card = null;
       this.reset();
@@ -60,6 +71,7 @@ export default class Card {
   reset(): void {
     this.name = this.originalName;
     this.controller = this.owner;
+    this.turnSet = -1;
   }
 
   toString() {
@@ -67,7 +79,9 @@ export default class Card {
   }
 
   private setEffect(): void {
-    if (this.originalName === "Monster Reborn") {
+    if (this.originalName === "Mirror Force") {
+      this.effect = new MirrorForceEffect(this);
+    } else if (this.originalName === "Monster Reborn") {
       this.effect = new MonsterRebornEffect(this);
     }
   }

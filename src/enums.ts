@@ -4,6 +4,16 @@ export const enum CardType {
   Trap = "trap",
 }
 
+export const enum CardFace {
+  Up = "up",
+  Down = "down"
+}
+
+export const enum MonsterPosition {
+  Attack = "attack",
+  Defence = "defence"
+}
+
 export const enum Phase {
   Draw = 0,
   Main1,

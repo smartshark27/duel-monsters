@@ -10,6 +10,7 @@ export default class Duel {
   phase = Phase.Main1;
   running = false;
   turnCounter = 0;
+  lastAction: Action | undefined | null;
   private static logger = LoggerFactory.getLogger("Duel");
   private activePlayer: Player;
   private winner: Player | undefined;
@@ -24,6 +25,7 @@ export default class Duel {
   }
 
   getActions(): Action[] {
+    Duel.logger.debug("Getting actions");
     if (this.actionSelection.length > 0) {
       const actionSelection = this.actionSelection;
       this.actionSelection = [];
@@ -33,12 +35,17 @@ export default class Duel {
       const lastChainAction: Action = this.chain[this.chain.length - 1];
       const opponent = this.getOpponentOf(lastChainAction.actor);
 
+      Duel.logger.debug(`Checking speed 2 actions for ${opponent}`);
       const opponentActions = opponent.getSpeed2Actions();
       if (opponentActions.length > 0) return opponentActions;
 
+      Duel.logger.debug(
+        `Checking speed 2 actions for ${lastChainAction.actor}`
+      );
       const playerActions = lastChainAction.actor.getSpeed2Actions();
       if (playerActions.length > 0) return playerActions;
 
+      this.lastAction = null;
       lastChainAction.finalise();
       this.chain.pop();
       if (this.actionSelection.length > 0) {
@@ -52,7 +59,12 @@ export default class Duel {
   }
 
   performAction(action: Action) {
-    if (!(action instanceof ActionSelector)) this.chain.push(action);
+    Duel.logger.debug(`Performing action ${action}`);
+    if (!(action instanceof ActionSelector)) {
+      this.lastAction = action;
+      this.chain.push(action);
+    }
+    Duel.logger.debug(`Chain is ${this.chain}`);
     action.perform();
   }
 
@@ -114,7 +126,9 @@ export default class Duel {
       "\n" +
       this.players[0].getFieldString() +
       "\n" +
-      this.players[1].getFieldString()
+      this.players[1].getFieldString() +
+      "\n" +
+      `Top monsters are ${this.players[0].field.getMonsters()}, Bottom monsters are ${this.players[1].field.getMonsters()}`
     );
   }
 }
