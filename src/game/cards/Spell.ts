@@ -14,8 +14,8 @@ export default class Spell extends Card {
     super(owner, name, data);
   }
 
-  override getActions(): Action[] {
-    const possibleActions = [];
+  override getSpeed1Actions(): Action[] {
+    const possibleActions = super.getSpeed2Actions();
     if (this.canActivate()) {
       possibleActions.push(this.getActivationAction());
     }

@@ -2,7 +2,6 @@ import Effect from "../Effect";
 import LoggerFactory from "../../util/LoggerFactory";
 import Card from "../Card";
 import Attack from "../actions/Attack";
-import Action from "../Action";
 
 export default class MirrorForceEffect extends Effect {
   protected static logger = LoggerFactory.getLogger("MirrorForceEffect");
@@ -12,8 +11,10 @@ export default class MirrorForceEffect extends Effect {
   }
 
   override canActivate(): boolean {
-    // TODO: Implement action responses and chaining
-    return false;
+    const lastAction = global.DUEL.chain.at(-1);
+    return (
+      lastAction instanceof Attack && lastAction.actor !== this.card.controller
+    );
   }
 
   override resolve(): void {

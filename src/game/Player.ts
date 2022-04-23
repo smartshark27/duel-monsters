@@ -14,7 +14,6 @@ export default class Player {
   graveyard: Card[] = [];
   havingTurn: boolean = false;
   normalSummonsRemaining = 0;
-  actionSelection: Action[] = [];
   name: string;
   field: Field;
 
@@ -80,17 +79,16 @@ export default class Player {
     }
   }
 
-  getActions(): Action[] {
-    const actionSelection = this.actionSelection;
-    if (actionSelection.length > 0) {
-      this.actionSelection = [];
-      return actionSelection;
-    }
-    const actions = this.getHandActions()
-      .concat(this.getFieldActions())
+  getSpeed1Actions(): Action[] {
+    return this.getSpeed2Actions()
+      .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
+      .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()))
       .concat(new EndPhase(this));
-    Player.logger.debug(`Player ${this} has ${actions.length} actions`);
-    return actions;
+  }
+
+  getSpeed2Actions(): Action[] {
+    // TODO: Add ignore action
+    return this.field.getCards().flatMap((card) => card.getSpeed2Actions());
   }
 
   canNormalSummon() {
@@ -156,14 +154,6 @@ export default class Player {
 
   toString() {
     return this.name;
-  }
-
-  private getHandActions(): Action[] {
-    return this.hand.flatMap((card) => card.getActions());
-  }
-
-  private getFieldActions(): Action[] {
-    return this.field.getCards().flatMap((card) => card.getActions());
   }
 
   private reduceLifePoints(damage: number): void {

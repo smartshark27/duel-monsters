@@ -1,9 +1,12 @@
 import { Phase, PHASE_ENUM_LENGTH } from "../enums";
 import LoggerFactory from "../util/LoggerFactory";
 import Action from "./Action";
+import ActionSelector from "./actions/ActionSelector";
 import Player from "./Player";
 
 export default class Duel {
+  actionSelection: Action[] = [];
+  chain: Action[] = [];
   phase = Phase.Main1;
   running = false;
   turnCounter = 0;
@@ -15,24 +18,42 @@ export default class Duel {
     Duel.logger.info("Creating duel");
     this.activePlayer = players[0];
     this.players.forEach((player) => player.init());
-    this.activePlayer = this.getActivePlayer();
     this.activePlayer.havingTurn = true;
     this.running = true;
     this.activePlayer.startMainPhase1();
   }
 
   getActions(): Action[] {
-    const actionSelection = this.activePlayer.actionSelection;
-    if (actionSelection.length > 0) {
-      this.activePlayer.actionSelection = [];
+    if (this.actionSelection.length > 0) {
+      const actionSelection = this.actionSelection;
+      this.actionSelection = [];
       return actionSelection;
     }
-    return this.activePlayer.getActions();
+    while (this.chain.length > 0) {
+      const lastChainAction: Action = this.chain[this.chain.length - 1];
+      const opponent = this.getOpponentOf(lastChainAction.actor);
+
+      const opponentActions = opponent.getSpeed2Actions();
+      if (opponentActions.length > 0) return opponentActions;
+
+      const playerActions = lastChainAction.actor.getSpeed2Actions();
+      if (playerActions.length > 0) return playerActions;
+
+      lastChainAction.finalise();
+      this.chain.pop();
+      if (this.actionSelection.length > 0) {
+        const actionSelection = this.actionSelection;
+        this.actionSelection = [];
+        return actionSelection;
+      }
+    }
+
+    return this.activePlayer.getSpeed1Actions();
   }
 
   performAction(action: Action) {
+    if (!(action instanceof ActionSelector)) this.chain.push(action);
     action.perform();
-    action.finalise();
   }
 
   switchTurns() {
@@ -75,7 +96,9 @@ export default class Duel {
   }
 
   getOpponentOf(player: Player): Player {
-    return this.players.indexOf(player) === 0 ? this.players[1] : this.players[0];
+    return this.players.indexOf(player) === 0
+      ? this.players[1]
+      : this.players[0];
   }
 
   printResults() {

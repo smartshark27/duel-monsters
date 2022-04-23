@@ -15,6 +15,10 @@ export default class Attack extends CardAction {
   }
 
   override finalise(): void {
+    if (!this.actor.field.getZoneOf(this.card)) {
+      // Monster has left the field
+      return;
+    }
     const attacker = this.card as Monster;
     if (this.target instanceof Player) {
       this.attackDirectly(attacker);

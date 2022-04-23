@@ -21,7 +21,7 @@ export default class MonsterRebornEffect extends Effect {
 
   override resolve(): void {
     const controller = this.card.controller;
-    controller.actionSelection = this.getGraveyardMonsters().map(
+    global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
         new SpecialSummon(
           controller,

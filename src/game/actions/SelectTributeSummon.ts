@@ -16,7 +16,7 @@ export default class SelectTributeSummon extends ActionSelector {
     SelectTributeSummon.logger.info(
       `Selected to tribute summon ${this.monster}`
     );
-    this.setPlayerActions(this.monster.getTributeSummonActions());
+    this.setActionSelection(this.monster.getTributeSummonActions());
   }
 
   override toString(): string {

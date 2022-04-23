@@ -10,7 +10,7 @@ export default class Action {
 
   finalise(): void {}
 
-  isChainable(): boolean {
+  canBeChainedOnto(): boolean {
     return true;
   }
 

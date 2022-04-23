@@ -26,8 +26,11 @@ export default class Card {
     return this.name;
   }
 
-  getActions(): Action[] {
-    Card.logger.warn("getActions() not implemented for subclass of Card");
+  getSpeed1Actions(): Action[] {
+    return this.getSpeed2Actions();
+  }
+
+  getSpeed2Actions(): Action[] {
     return [];
   }
 

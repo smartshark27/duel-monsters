@@ -11,11 +11,11 @@ export default class ActionSelector extends Action {
     super(actor);
   }
 
-  override isChainable(): boolean {
+  override canBeChainedOnto(): boolean {
     return false;
   }
 
-  setPlayerActions(actions: Action[]): void {
-    this.actor.actionSelection = actions;
+  setActionSelection(actions: Action[]): void {
+    global.DUEL.actionSelection = actions;
   }
 }

@@ -39,5 +39,5 @@ async function run(duel: Duel, step = false) {
 
 function logActions(actions: Action[]): void {
   logger.info(duel);
-  logger.info(`Actions are [${actions}]`);
+  logger.info(`Actions for ${actions[0].actor} are [${actions}]`);
 }

@@ -24,18 +24,18 @@ export default class Monster extends Card {
     this.reset();
   }
 
-  override getActions(): Action[] {
-    const possibleActions = [];
+  override getSpeed1Actions(): Action[] {
+    const actions = super.getSpeed1Actions();
     if (this.canNormalSummon()) {
-      possibleActions.push(this.getNormalSummonAction());
+      actions.push(this.getNormalSummonAction());
     }
     if (this.canTributeSummon()) {
-      possibleActions.push(new SelectTributeSummon(this.controller, this));
+      actions.push(new SelectTributeSummon(this.controller, this));
     }
     if (this.canAttack()) {
-      possibleActions.push(...this.getAttackActions());
+      actions.push(...this.getAttackActions());
     }
-    return possibleActions;
+    return actions;
   }
 
   override reset(): void {
