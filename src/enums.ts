@@ -30,4 +30,5 @@ export const enum SpellType {
 
 export const enum TrapType {
   Normal = "normal",
+  Continuous = "continuous",
 }

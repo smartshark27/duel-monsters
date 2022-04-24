@@ -6,6 +6,7 @@ import NormalTrapActivation from "../actions/NormalTrapActivation";
 import Card from "../Card";
 import SpellTrapZone from "../field/SpellTrapZone";
 import Player from "../Player";
+import { CardFace } from "../../enums";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
@@ -32,17 +33,18 @@ export default class Trap extends Card {
 
   protected override canActivate(): boolean {
     return (
+      super.canActivate() &&
+      this.visibility === CardFace.Down &&
       this.turnSet > 0 &&
-      this.turnSet < global.DUEL.turnCounter &&
-      (this.effect?.canActivate() as boolean)
+      this.turnSet < global.DUEL.turnCounter
     );
   }
 
-  private getActivationAction(): NormalTrapActivation {
+  protected getActivationAction(): NormalTrapActivation {
     return new NormalTrapActivation(this.controller, this);
   }
 
-  private canSet(): boolean {
+  protected canSet(): boolean {
     return this.turnSet < 0 && this.controller.canSetSpellTrap();
   }
 

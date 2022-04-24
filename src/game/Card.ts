@@ -8,6 +8,7 @@ import { CardFace } from "../enums";
 import MirrorForceEffect from "./effects/MirrorForceEffect";
 import Zone from "./field/Zone";
 import MysticalSpaceTyphoonEffect from "./effects/MysticalSpaceTyphoonEffect";
+import CallOfTheHauntedEffect from "./effects/CallOfTheHauntedEffect";
 
 export default class Card {
   activated = false;
@@ -94,7 +95,9 @@ export default class Card {
   }
 
   private setEffect(): void {
-    if (this.originalName === "Mirror Force") {
+    if (this.originalName === "Call of the Haunted") {
+      this.effect = new CallOfTheHauntedEffect(this);
+    } else if (this.originalName === "Mirror Force") {
       this.effect = new MirrorForceEffect(this);
     } else if (this.originalName === "Monster Reborn") {
       this.effect = new MonsterRebornEffect(this);

@@ -9,6 +9,7 @@ import Player from "./Player";
 import NormalSpell from "./cards/NormalSpell";
 import Trap from "./cards/Trap";
 import QuickPlaySpell from "./cards/QuickPlaySpell";
+import ContinuousTrap from "./cards/ContinuousTrap";
 
 export default class Deck {
   cards: Card[] = [];
@@ -48,6 +49,8 @@ export default class Deck {
       } else if (cardData.cardType === CardType.Trap) {
         if (cardData.trapType === TrapType.Normal) {
           this.cards.push(new Trap(this.owner, cardName, cardData));
+        } else if (cardData.trapType === TrapType.Continuous) {
+          this.cards.push(new ContinuousTrap(this.owner, cardName, cardData));
         }
       }
     });
