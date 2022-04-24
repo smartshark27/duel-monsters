@@ -107,13 +107,13 @@ export default class Player {
     );
   }
 
-  canActivateSpell() {
+  canPlaySpellTrap() {
     return this.field.getFreeSpellTrapZones().length > 0;
   }
 
   canSetSpellTrap() {
     return (
-      this.field.getFreeSpellTrapZones().length > 0 &&
+      this.canPlaySpellTrap() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase)
     );
   }

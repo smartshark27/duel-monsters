@@ -25,6 +25,7 @@ export const PHASE_ENUM_LENGTH = 5;
 
 export const enum SpellType {
   Normal = "normal",
+  QuickPlay = "quick-play",
 }
 
 export const enum TrapType {

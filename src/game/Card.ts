@@ -6,8 +6,11 @@ import Effect from "./Effect";
 import MonsterRebornEffect from "./effects/MonsterRebornEffect";
 import { CardFace } from "../enums";
 import MirrorForceEffect from "./effects/MirrorForceEffect";
+import Zone from "./field/Zone";
+import MysticalSpaceTyphoonEffect from "./effects/MysticalSpaceTyphoonEffect";
 
 export default class Card {
+  activated = false;
   visibility = CardFace.Down;
   controller!: Player;
   turnSet!: number;
@@ -19,7 +22,7 @@ export default class Card {
   constructor(
     public owner: Player,
     protected originalName: string,
-    protected data: CardData
+    public data: CardData
   ) {
     Card.logger.debug(`Creating card ${originalName}`);
     this.setEffect();
@@ -40,6 +43,7 @@ export default class Card {
 
   activate(): void {
     this.visibility = CardFace.Up;
+    this.activated = true;
     if (this.effect) this.effect.activate();
   }
 
@@ -50,6 +54,11 @@ export default class Card {
 
   resolve(): void {
     if (this.effect) this.effect.resolve();
+    this.activated = false;
+  }
+
+  onField(): boolean {
+    return this.controller.field.getZoneOf(this) instanceof Zone;
   }
 
   destroy(): void {
@@ -72,6 +81,7 @@ export default class Card {
   reset(): void {
     this.name = this.originalName;
     this.controller = this.owner;
+    this.activated = false;
     this.turnSet = -1;
   }
 
@@ -80,7 +90,7 @@ export default class Card {
   }
 
   protected canActivate(): boolean {
-    return this.effect?.canActivate() as boolean;
+    return !this.hasActivated() && (this.effect?.canActivate() as boolean);
   }
 
   private setEffect(): void {
@@ -88,6 +98,12 @@ export default class Card {
       this.effect = new MirrorForceEffect(this);
     } else if (this.originalName === "Monster Reborn") {
       this.effect = new MonsterRebornEffect(this);
+    } else if (this.originalName === "Mystical Space Typhoon") {
+      this.effect = new MysticalSpaceTyphoonEffect(this);
     }
+  }
+
+  private hasActivated(): boolean {
+    return this.activated;
   }
 }

@@ -26,7 +26,7 @@ export default class NormalSpell extends Spell {
     return (
       super.canActivate() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
-      this.controller.canActivateSpell()
+      this.controller.canPlaySpellTrap()
     );
   }
 

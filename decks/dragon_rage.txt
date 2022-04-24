@@ -3,9 +3,6 @@ Blackland Fire Dragon
 Blackland Fire Dragon
 Blackland Fire Dragon
 Blackland Fire Dragon
-Blackland Fire Dragon
-Blackland Fire Dragon
-Blue-Eyes White Dragon
 Blue-Eyes White Dragon
 Blue-Eyes White Dragon
 Blue-Eyes White Dragon
@@ -17,11 +14,6 @@ Baby Dragon
 Baby Dragon
 Baby Dragon
 Baby Dragon
-Baby Dragon
-Baby Dragon
-The Dragon Dwelling in the Cave
-The Dragon Dwelling in the Cave
-The Dragon Dwelling in the Cave
 The Dragon Dwelling in the Cave
 The Dragon Dwelling in the Cave
 The Dragon Dwelling in the Cave
@@ -31,10 +23,18 @@ Mirror Force
 Mirror Force
 Mirror Force
 Mirror Force
+Mirror Force
+Mirror Force
+Mirror Force
 Monster Reborn
 Monster Reborn
 Monster Reborn
 Monster Reborn
-Monster Reborn
-Monster Reborn
-Monster Reborn
+Mystical Space Typhoon
+Mystical Space Typhoon
+Mystical Space Typhoon
+Mystical Space Typhoon
+Mystical Space Typhoon
+Mystical Space Typhoon
+Mystical Space Typhoon
+Mystical Space Typhoon

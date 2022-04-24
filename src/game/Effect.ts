@@ -17,6 +17,6 @@ export default class Effect {
   after(): void {}
 
   toString(): string {
-    return `${this.card} effect`;
+    return this.card.data.description || "No effect";
   }
 }
