@@ -6,12 +6,12 @@ export const enum CardType {
 
 export const enum CardFace {
   Up = "up",
-  Down = "down"
+  Down = "down",
 }
 
 export const enum MonsterPosition {
   Attack = "attack",
-  Defence = "defence"
+  Defence = "defence",
 }
 
 export const enum Phase {
@@ -22,3 +22,11 @@ export const enum Phase {
   End,
 }
 export const PHASE_ENUM_LENGTH = 5;
+
+export const enum SpellType {
+  Normal = "normal",
+}
+
+export const enum TrapType {
+  Normal = "normal",
+}

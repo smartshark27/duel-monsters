@@ -25,10 +25,12 @@
   },
   "Mirror Force": {
     "cardType": "trap",
+    "trapType": "normal",
     "description": "When an opponent's monster declares an attack: Destroy all your opponent's Attack Position monsters."
   },
   "Monster Reborn": {
     "cardType": "spell",
+    "spellType": "normal",
     "description": "Target 1 monster in either player's GY; Special Summon it."
   },
   "The Dragon Dwelling in the Cave": {

@@ -1,12 +1,12 @@
 import CardData from "../interfaces/CardData";
-import { CardType } from "../enums";
+import { CardType, SpellType, TrapType } from "../enums";
 import File from "../util/File";
 import LoggerFactory from "../util/LoggerFactory";
 import Util from "../util/Util";
 import Card from "./Card";
 import Monster from "./cards/Monster";
 import Player from "./Player";
-import Spell from "./cards/Spell";
+import NormalSpell from "./cards/NormalSpell";
 import Trap from "./cards/Trap";
 
 export default class Deck {
@@ -39,9 +39,13 @@ export default class Deck {
       if (cardData.cardType === CardType.Monster) {
         this.cards.push(new Monster(this.owner, cardName, cardData));
       } else if (cardData.cardType === CardType.Spell) {
-        this.cards.push(new Spell(this.owner, cardName, cardData));
+        if (cardData.spellType === SpellType.Normal) {
+          this.cards.push(new NormalSpell(this.owner, cardName, cardData));
+        }
       } else if (cardData.cardType === CardType.Trap) {
-        this.cards.push(new Trap(this.owner, cardName, cardData));
+        if (cardData.trapType === TrapType.Normal) {
+          this.cards.push(new Trap(this.owner, cardName, cardData));
+        }
       }
     });
   }

@@ -54,6 +54,7 @@ export default class Card {
 
   destroy(): void {
     this.sendToGraveyard();
+    Card.logger.info(`${this} has been destroyed`);
   }
 
   sendToGraveyard(): void {
@@ -76,6 +77,10 @@ export default class Card {
 
   toString() {
     return this.getName();
+  }
+
+  protected canActivate(): boolean {
+    return this.effect?.canActivate() as boolean;
   }
 
   private setEffect(): void {

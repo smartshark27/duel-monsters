@@ -1,22 +1,21 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
 import CardAction from "./CardAction";
-import Trap from "../cards/Trap";
+import Card from "../Card";
 
-export default class TrapActivation extends CardAction {
-  protected static logger = LoggerFactory.getLogger("TrapActivation");
+export default class Activation extends CardAction {
+  protected static logger = LoggerFactory.getLogger("SpellActivation");
 
-  constructor(actor: Player, card: Trap) {
+  constructor(actor: Player, card: Card) {
     super(actor, card);
   }
 
   override perform() {
-    TrapActivation.logger.info(`Activating trap ${this.card}`);
     this.card.activate();
   }
 
   override finalise() {
-    TrapActivation.logger.info(`Resolving trap ${this.card}`);
+    Activation.logger.info(`Resolving effect of ${this.card}`);
     this.card.resolve();
   }
 

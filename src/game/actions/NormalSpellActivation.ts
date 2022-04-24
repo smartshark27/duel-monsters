@@ -1,11 +1,11 @@
 import LoggerFactory from "../../util/LoggerFactory";
 import Player from "../Player";
-import CardAction from "./CardAction";
 import Spell from "../cards/Spell";
 import SpellTrapZone from "../field/SpellTrapZone";
 import Util from "../../util/Util";
+import Activation from "./Activation";
 
-export default class SpellActivation extends CardAction {
+export default class NormalSpellActivation extends Activation {
   protected static logger = LoggerFactory.getLogger("SpellActivation");
 
   constructor(actor: Player, card: Spell, private zone: SpellTrapZone) {
@@ -13,18 +13,9 @@ export default class SpellActivation extends CardAction {
   }
 
   override perform() {
-    SpellActivation.logger.info(`Activating spell ${this.card}`);
+    NormalSpellActivation.logger.info(`Activating normal spell ${this.card}`);
     this.zone.card = this.card;
     Util.removeItemFromArray(this.actor.hand, this.card);
-    this.card.activate();
-  }
-
-  override finalise() {
-    SpellActivation.logger.info(`Resolving spell ${this.card}`);
-    this.card.resolve();
-  }
-
-  override toString(): string {
-    return `Activate ${this.card}`;
+    super.perform();
   }
 }
