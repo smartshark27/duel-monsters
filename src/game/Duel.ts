@@ -9,7 +9,7 @@ export default class Duel {
   chain: Action[] = [];
   phase = Phase.Main1;
   running = false;
-  turnCounter = 0;
+  turn = 0;
   lastAction: Action | undefined | null;
   private static logger = LoggerFactory.getLogger("Duel");
   private activePlayer: Player;
@@ -69,7 +69,7 @@ export default class Duel {
   }
 
   switchTurns() {
-    this.turnCounter++;
+    this.turn++;
     this.activePlayer.havingTurn = false;
     this.activePlayer = this.getOpponentOf(this.activePlayer);
     this.activePlayer.havingTurn = true;
@@ -81,7 +81,7 @@ export default class Duel {
 
     // Initial turn has less phases
     this.phase =
-      this.turnCounter === 0 && this.phase === Phase.Main1
+      this.turn === 0 && this.phase === Phase.Main1
         ? Phase.End
         : (this.phase + 1) % PHASE_ENUM_LENGTH;
 

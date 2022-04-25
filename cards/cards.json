@@ -43,6 +43,11 @@
     "spellType": "quick-play",
     "description": "Target 1 Spell/Trap on the field; destroy that target."
   },
+  "Supply Squad": {
+    "cardType": "spell",
+    "spellType": "continuous",
+    "description": "Once per turn, if a monster(s) you control is destroyed by battle or card effect: Draw 1 card."
+  },
   "The Dragon Dwelling in the Cave": {
     "cardType": "monster",
     "attribute": "WIND",

@@ -1,12 +1,23 @@
-import Effect from "../Effect";
+import Effects from "../Effects";
 import LoggerFactory from "../../util/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
 import SpecialSummon from "../actions/SpecialSummon";
 import MonsterZone from "../field/MonsterZone";
+import IgnitionEffect from "./IgnitionEffect";
+import Util from "../../util/Util";
 
-export default class CallOfTheHauntedEffect extends Effect {
-  protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffect");
+export default class MonsterRebornEffects extends Effects {
+  protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
+
+  constructor(protected card: Card) {
+    super(card);
+    this.effects.push(new ResurrectionEffect(card));
+  }
+}
+
+class ResurrectionEffect extends IgnitionEffect {
+  protected static logger = LoggerFactory.getLogger("ResurrectionEffect");
 
   constructor(card: Card) {
     super(card);
@@ -14,9 +25,22 @@ export default class CallOfTheHauntedEffect extends Effect {
 
   override canActivate(): boolean {
     return (
+      super.canActivate() &&
+      this.card.controller.canPlaySpellTrap() &&
       this.getGraveyardMonsters().length > 0 &&
       this.card.controller.field.getFreeMonsterZones().length > 0
     );
+  }
+
+  override activate(): void {
+    const controller = this.card.controller;
+    const zone = Util.getRandomItemFromArray(
+      controller.field.getFreeSpellTrapZones()
+    );
+    if (zone) {
+      zone.card = this.card;
+      Util.removeItemFromArray(controller.hand, this.card);
+    }
   }
 
   override resolve(): void {
@@ -30,6 +54,11 @@ export default class CallOfTheHauntedEffect extends Effect {
           this
         )
     );
+  }
+
+  override after(): void {
+    super.after();
+    this.card.sendToGraveyard();
   }
 
   private getGraveyardMonsters(): Monster[] {

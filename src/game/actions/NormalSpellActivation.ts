@@ -13,7 +13,7 @@ export default class NormalSpellActivation extends Activation {
   }
 
   override perform() {
-    NormalSpellActivation.logger.info(`Activating normal spell ${this.card}`);
+    NormalSpellActivation.logger.info(`Activating spell ${this.card}`);
     this.zone.card = this.card;
     Util.removeItemFromArray(this.actor.hand, this.card);
     super.perform();

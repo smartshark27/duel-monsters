@@ -10,6 +10,7 @@ import NormalSpell from "./cards/NormalSpell";
 import Trap from "./cards/Trap";
 import QuickPlaySpell from "./cards/QuickPlaySpell";
 import ContinuousTrap from "./cards/ContinuousTrap";
+import ContinuousSpell from "./cards/ContinuousSpell";
 
 export default class Deck {
   cards: Card[] = [];
@@ -43,6 +44,8 @@ export default class Deck {
       } else if (cardData.cardType === CardType.Spell) {
         if (cardData.spellType === SpellType.Normal) {
           this.cards.push(new NormalSpell(this.owner, cardName, cardData));
+        } else if (cardData.spellType === SpellType.Continuous) {
+          this.cards.push(new ContinuousSpell(this.owner, cardName, cardData));
         } else if (cardData.spellType === SpellType.QuickPlay) {
           this.cards.push(new QuickPlaySpell(this.owner, cardName, cardData));
         }
