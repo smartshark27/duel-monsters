@@ -14,7 +14,9 @@ export default class Effects {
   }
 
   getActivationEffects(): ActivationEffect[] {
-    return [];
+    return this.effects.filter(
+      (effect) => effect instanceof ActivationEffect
+    ) as ActivationEffect[];
   }
 
   toString(): string {

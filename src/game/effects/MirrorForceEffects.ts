@@ -27,8 +27,7 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
     const lastAction = global.DUEL.lastAction;
     return (
       super.canActivate() &&
-      this.card.onField() &&
-      this.card.visibility === CardFace.Down &&
+      this.card.wasSetBeforeThisTurn() &&
       lastAction instanceof Attack &&
       lastAction.actor !== this.card.controller
     );
@@ -38,9 +37,7 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
     global.DUEL.getOpponentOf(this.card.controller)
       .field.getMonsters()
       .forEach((monster) => monster.destroy());
-  }
 
-  override after(): void {
     this.card.sendToGraveyard();
   }
 }

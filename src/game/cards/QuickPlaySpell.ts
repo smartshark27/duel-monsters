@@ -11,15 +11,9 @@ export default class QuickPlaySpell extends Spell {
   }
 
   protected override canActivate(): boolean {
-    if (this.onField()) {
-      // Set on field
-      return (
-        super.canActivate() &&
-        this.turnSet > 0 &&
-        this.turnSet < global.DUEL.turn
-      );
+    if (this.isSet()) {
+      return super.canActivate() && this.turnSet < global.DUEL.turn;
     }
-    // In hand
     return super.canActivate() && this.controller.havingTurn;
   }
 }

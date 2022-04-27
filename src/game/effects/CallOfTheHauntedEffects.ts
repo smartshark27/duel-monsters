@@ -5,8 +5,6 @@ import SpecialSummon from "../actions/SpecialSummon";
 import MonsterZone from "../field/MonsterZone";
 import Effects from "../Effects";
 import QuickEffect from "./QuickEffect";
-import { CardFace } from "../../enums";
-import TriggerEffect from "./TriggerEffect";
 
 export default class CallOfTheHauntedEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffects");
@@ -27,8 +25,7 @@ class ResurrectionEffect extends QuickEffect {
   override canActivate(): boolean {
     return (
       super.canActivate() &&
-      this.card.onField() &&
-      this.card.visibility === CardFace.Down &&
+      this.card.wasSetBeforeThisTurn() &&
       this.getGraveyardMonsters().length > 0 &&
       this.card.controller.field.getFreeMonsterZones().length > 0
     );
@@ -48,13 +45,11 @@ class ResurrectionEffect extends QuickEffect {
   }
 
   private getGraveyardMonsters(): Monster[] {
-    const opponent = global.DUEL.getOpponentOf(this.card.controller);
-    return this.card.controller.graveyard
-      .concat(opponent.graveyard)
-      .filter((card) => card instanceof Monster) as Monster[];
+    return this.card.controller.graveyard.filter(
+      (card) => card instanceof Monster
+    ) as Monster[];
   }
 }
-
 
 // TODO: Implement trigger effects
 

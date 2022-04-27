@@ -13,11 +13,11 @@ import SupplySquadEffects from "./effects/SupplySquadEffects";
 import Activation from "./actions/Activation";
 
 export default class Card {
-  activated = false;
+  activating = false;
   visibility = CardFace.Down;
   controller!: Player;
   turnSet!: number;
-  protected effects: Effects | undefined;
+  effects: Effects | undefined;
   private name!: string;
 
   protected static logger = LoggerFactory.getLogger("Card");
@@ -57,6 +57,14 @@ export default class Card {
     return this.controller.field.getZoneOf(this) instanceof Zone;
   }
 
+  isSet(): boolean {
+    return this.turnSet > 0 && this.visibility === CardFace.Down;
+  }
+
+  wasSetBeforeThisTurn(): boolean {
+    return this.isSet() && this.turnSet < global.DUEL.turn;
+  }
+
   destroy(): void {
     this.sendToGraveyard();
     Card.logger.info(`${this} has been destroyed`);
@@ -77,7 +85,7 @@ export default class Card {
   reset(): void {
     this.name = this.originalName;
     this.controller = this.owner;
-    this.activated = false;
+    this.activating = false;
     this.turnSet = -1;
   }
 
@@ -90,7 +98,7 @@ export default class Card {
   }
 
   protected canActivate(): boolean {
-    return !this.activated;
+    return !this.activating;
   }
 
   protected getActivationActions(speed: number): Activation[] {
@@ -113,7 +121,7 @@ export default class Card {
       this.effects = new MonsterRebornEffects(this);
     } else if (this.originalName === "Mystical Space Typhoon") {
       this.effects = new MysticalSpaceTyphoonEffects(this);
-    } else if (this.originalName === "Mystical Space Typhoon") {
+    } else if (this.originalName === "Supply Squad") {
       this.effects = new SupplySquadEffects(this);
     }
   }

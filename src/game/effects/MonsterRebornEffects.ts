@@ -26,20 +26,24 @@ class ResurrectionEffect extends IgnitionEffect {
   override canActivate(): boolean {
     return (
       super.canActivate() &&
-      this.card.controller.canPlaySpellTrap() &&
+      ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
+        this.card.wasSetBeforeThisTurn()) &&
       this.getGraveyardMonsters().length > 0 &&
       this.card.controller.field.getFreeMonsterZones().length > 0
     );
   }
 
   override activate(): void {
+    super.activate();
     const controller = this.card.controller;
-    const zone = Util.getRandomItemFromArray(
-      controller.field.getFreeSpellTrapZones()
-    );
-    if (zone) {
-      zone.card = this.card;
-      Util.removeItemFromArray(controller.hand, this.card);
+    if (this.card.inHand()) {
+      const zone = Util.getRandomItemFromArray(
+        controller.field.getFreeSpellTrapZones()
+      );
+      if (zone) {
+        zone.card = this.card;
+        Util.removeItemFromArray(controller.hand, this.card);
+      }
     }
   }
 

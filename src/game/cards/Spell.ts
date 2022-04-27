@@ -20,8 +20,6 @@ export default class Spell extends Card {
     }
     return actions;
   }
-  
-  // TODO: Allow activation of set spells
 
   private canSet(): boolean {
     return this.turnSet < 0 && this.controller.canSetSpellTrap();

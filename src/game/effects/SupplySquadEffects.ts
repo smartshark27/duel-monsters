@@ -25,20 +25,22 @@ class SupplySquadPlayEffect extends IgnitionEffect {
   override canActivate(): boolean {
     return (
       super.canActivate() &&
-      this.card.controller.canPlaySpellTrap() &&
-      this.card.inHand()
+      ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
+        this.card.wasSetBeforeThisTurn())
     );
   }
 
   override activate(): void {
     super.activate();
     const controller = this.card.controller;
-    const zone = Util.getRandomItemFromArray(
-      controller.field.getFreeSpellTrapZones()
-    );
-    if (zone) {
-      zone.card = this.card;
-      Util.removeItemFromArray(controller.hand, this.card);
+    if (this.card.inHand()) {
+      const zone = Util.getRandomItemFromArray(
+        controller.field.getFreeSpellTrapZones()
+      );
+      if (zone) {
+        zone.card = this.card;
+        Util.removeItemFromArray(controller.hand, this.card);
+      }
     }
   }
 }
@@ -53,7 +55,8 @@ class SupplySquadTriggerEffect extends TriggerEffect {
   }
 
   override canActivate(): boolean {
-    return this.card.onField() && this.turnLastActivated < global.DUEL.turn;
+    return false;
+    // return this.card.onField() && this.turnLastActivated < global.DUEL.turn;
   }
 
   override activate(): void {

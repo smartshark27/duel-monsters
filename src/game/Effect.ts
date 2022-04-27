@@ -7,22 +7,14 @@ export default class Effect {
 
   constructor(public card: Card, public speed: number) {}
 
-  canActivate(): boolean {
-    return false;
-  }
-
   activate(): void {
     this.card.visibility = CardFace.Up;
-    this.card.activated = true;
+    this.card.activating = true;
   }
 
   resolve(): void {}
 
   after(): void {
-    this.card.activated = false;
-  }
-
-  toString(): string {
-    return this.card.data.description || "No effect";
+    this.card.activating = false;
   }
 }
