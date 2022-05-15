@@ -61,8 +61,8 @@ class ResurrectionEffect extends IgnitionEffect {
     );
   }
 
-  override after(): void {
-    super.after();
+  override cleanup(): void {
+    super.cleanup();
     this.card.sendToGraveyard();
   }
 

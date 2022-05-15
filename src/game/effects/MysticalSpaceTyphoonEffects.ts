@@ -52,8 +52,8 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
     //   .map((card) => new Destroy(this.card.controller, card, this));
   }
 
-  override after(): void {
-    super.after();
+  override cleanup(): void {
+    super.cleanup();
     this.card.sendToGraveyard();
   }
 }

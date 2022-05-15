@@ -14,7 +14,7 @@ export default class Effect {
 
   resolve(): void {}
 
-  after(): void {
+  cleanup(): void {
     this.card.activating = false;
   }
 

@@ -1,4 +1,4 @@
-import { Phase } from "../enums";
+import { CardFace, Phase } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
@@ -144,14 +144,13 @@ export default class Player {
     str += `|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints\n`;
     str += `|-|`;
     for (let i = 0; i < 5; i++) {
-      const zone = this.field.spellTrapZones[i];
-      if (zone.card instanceof Spell) {
-        str += "S";
-      } else if (zone.card instanceof Trap) {
+      const card = this.field.spellTrapZones[i].card;
+      if (card instanceof Spell && card.visibility === CardFace.Up) str += "S";
+      else if (card instanceof Spell) str += "s";
+      else if (card instanceof Trap && card.visibility === CardFace.Up)
         str += "T";
-      } else {
-        str += "-";
-      }
+      else if (card instanceof Trap) str += "t";
+      else str += "-";
     }
     str += `|${this.deck?.cards.length}|`;
     return str;

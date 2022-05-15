@@ -1,4 +1,4 @@
-import { Phase, PHASE_ENUM_LENGTH, State, Step, Timing } from "../enums";
+import { Phase, State, Step, Timing } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Action from "./Action";
 import Activation from "./actions/Activation";
@@ -122,6 +122,7 @@ export default class Duel {
 
   private getTriggerStateActions(): Action[] {
     Duel.logger.debug("Checking trigger state actions");
+    // TODO: Implement
     this.state = State.Trigger;
     const triggerEffectActions: Action[] = [];
 
@@ -130,15 +131,27 @@ export default class Duel {
     return this.getTurnPlayerResponseActions();
   }
 
-  private getChainStateActions() {
+  private getChainStateActions(): Action[] {
     Duel.logger.debug("Checking chain state actions");
     this.state = State.Chain;
-    if (this.lastAction instanceof Pass) {
+    if (this.chain.isResolving) {
+      this.lastAction = null;
       this.chain.resolveNext();
+      return this.getChainStateActions();
     } else if (this.lastAction) {
-      const opponent = this.getOpponentOf(this.lastAction?.actor);
-      const actions = opponent.getSpeed2Actions();
-      if (actions.length > 0) return actions.concat(new Pass(opponent));
+      const lastActor = this.lastAction?.actor;
+      const opponent = this.getOpponentOf(lastActor);
+
+      const opponentActions = opponent.getSpeed2Actions();
+      if (opponentActions.length > 0)
+        return opponentActions.concat(new Pass(opponent));
+
+      const lastActorActions = lastActor.getSpeed2Actions();
+      if (lastActorActions.length > 0 && !(this.lastAction instanceof Pass))
+        return lastActorActions.concat(new Pass(opponent));
+
+      this.chain.isResolving = true;
+      return this.getChainStateActions();
     }
 
     return this.getTriggerStateActions();

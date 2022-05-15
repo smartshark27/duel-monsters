@@ -4,6 +4,7 @@ import ActivationEffect from "./effects/ActivationEffect";
 export default class Chain {
   protected static logger = LoggerFactory.getLogger("Chain");
   effects: ActivationEffect[] = [];
+  effectsToCleanup: ActivationEffect[] = [];
   isResolving = false;
   speed = 0;
 
@@ -12,11 +13,21 @@ export default class Chain {
   }
 
   resolveNext(): void {
-    this.effects.pop()?.resolve();
+    const effect = this.effects.pop();
+    if (effect) {
+      this.effectsToCleanup.push(effect);
+      effect.resolve();
+    }
+
     if (this.getLength() === 0) {
       Chain.logger.info("Chain has resolved");
       this.isResolving = false;
+      this.cleanup();
     }
+  }
+
+  cleanup(): void {
+    this.effectsToCleanup.forEach(effect => effect.cleanup());
   }
 
   getLength(): number {
