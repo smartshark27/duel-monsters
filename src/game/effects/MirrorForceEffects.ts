@@ -1,9 +1,8 @@
 import Effects from "../Effects";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Attack from "../actions/Attack";
 import QuickEffect from "./QuickEffect";
-import { CardFace } from "../../enums";
 
 export default class MirrorForceEffect extends Effects {
   protected static logger = LoggerFactory.getLogger("MirrorForceEffect");
@@ -34,6 +33,7 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
   }
 
   override resolve(): void {
+    super.resolve();
     global.DUEL.getOpponentOf(this.card.controller)
       .field.getMonsters()
       .forEach((monster) => monster.destroy());

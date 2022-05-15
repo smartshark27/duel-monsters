@@ -1,16 +1,13 @@
 import CardData from "../interfaces/CardData";
 import { CardType, SpellType, TrapType } from "../enums";
-import File from "../util/File";
-import LoggerFactory from "../util/LoggerFactory";
-import Util from "../util/Util";
+import File from "../utils/File";
+import LoggerFactory from "../utils/LoggerFactory";
+import Utils from "../utils/Utils";
 import Card from "./Card";
 import Monster from "./cards/Monster";
 import Player from "./Player";
-import NormalSpell from "./cards/NormalSpell";
 import Trap from "./cards/Trap";
-import QuickPlaySpell from "./cards/QuickPlaySpell";
-import ContinuousTrap from "./cards/ContinuousTrap";
-import ContinuousSpell from "./cards/ContinuousSpell";
+import Spell from "./cards/Spell";
 
 export default class Deck {
   cards: Card[] = [];
@@ -24,7 +21,7 @@ export default class Deck {
 
   shuffle() {
     Deck.logger.info("Shuffling deck");
-    Util.shuffleArray(this.cards);
+    Utils.shuffleArray(this.cards);
   }
 
   drawCard() {
@@ -42,19 +39,9 @@ export default class Deck {
       if (cardData.cardType === CardType.Monster) {
         this.cards.push(new Monster(this.owner, cardName, cardData));
       } else if (cardData.cardType === CardType.Spell) {
-        if (cardData.spellType === SpellType.Normal) {
-          this.cards.push(new NormalSpell(this.owner, cardName, cardData));
-        } else if (cardData.spellType === SpellType.Continuous) {
-          this.cards.push(new ContinuousSpell(this.owner, cardName, cardData));
-        } else if (cardData.spellType === SpellType.QuickPlay) {
-          this.cards.push(new QuickPlaySpell(this.owner, cardName, cardData));
-        }
+        this.cards.push(new Spell(this.owner, cardName, cardData));
       } else if (cardData.cardType === CardType.Trap) {
-        if (cardData.trapType === TrapType.Normal) {
-          this.cards.push(new Trap(this.owner, cardName, cardData));
-        } else if (cardData.trapType === TrapType.Continuous) {
-          this.cards.push(new ContinuousTrap(this.owner, cardName, cardData));
-        }
+        this.cards.push(new Trap(this.owner, cardName, cardData));
       }
     });
   }

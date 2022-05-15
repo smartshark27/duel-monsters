@@ -1,9 +1,9 @@
 import Effects from "../Effects";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import TriggerEffect from "./TriggerEffect";
 import IgnitionEffect from "./IgnitionEffect";
-import Util from "../../util/Util";
+import Utils from "../../utils/Utils";
 
 export default class SupplySquadEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("SupplySquadEffects");
@@ -34,12 +34,12 @@ class SupplySquadPlayEffect extends IgnitionEffect {
     super.activate();
     const controller = this.card.controller;
     if (this.card.inHand()) {
-      const zone = Util.getRandomItemFromArray(
+      const zone = Utils.getRandomItemFromArray(
         controller.field.getFreeSpellTrapZones()
       );
       if (zone) {
         zone.card = this.card;
-        Util.removeItemFromArray(controller.hand, this.card);
+        Utils.removeItemFromArray(controller.hand, this.card);
       }
     }
   }
@@ -65,6 +65,7 @@ class SupplySquadTriggerEffect extends TriggerEffect {
   }
 
   override resolve(): void {
-    // TODO: Draw card
+    super.resolve();
+    this.card.controller.drawCard();
   }
 }

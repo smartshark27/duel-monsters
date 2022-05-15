@@ -1,8 +1,8 @@
 import { Phase } from "../enums";
-import LoggerFactory from "../util/LoggerFactory";
-import Util from "../util/Util";
+import LoggerFactory from "../utils/LoggerFactory";
+import Utils from "../utils/Utils";
 import Action from "./Action";
-import EndPhase from "./actions/EndPhase";
+import ProceedPhase from "./actions/ProceedPhase";
 import Card from "./Card";
 import Spell from "./cards/Spell";
 import Trap from "./cards/Trap";
@@ -52,7 +52,10 @@ export default class Player {
 
   startDrawPhase() {
     Player.logger.info(`Starting draw phase for player ${this}`);
-    this.drawCard();
+  }
+
+  startStandbyPhase() {
+    Player.logger.info(`Starting standby phase for player ${this}`);
   }
 
   startMainPhase1() {
@@ -83,7 +86,7 @@ export default class Player {
     return this.getSpeed2Actions()
       .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
       .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()))
-      .concat(new EndPhase(this));
+      .concat(new ProceedPhase(this));
   }
 
   getSpeed2Actions(): Action[] {
@@ -127,9 +130,9 @@ export default class Player {
 
   discardRandom() {
     Player.logger.info("Discarding card");
-    const card = Util.getRandomItemFromArray(this.hand);
+    const card = Utils.getRandomItemFromArray(this.hand);
     this.graveyard.push(card);
-    Util.removeItemFromArray(this.hand, card);
+    Utils.removeItemFromArray(this.hand, card);
   }
 
   getFieldString() {

@@ -1,11 +1,11 @@
-import { MonsterPosition, Phase } from "../../enums";
+import { MonsterPosition, Phase, Step } from "../../enums";
 import CardData from "../../interfaces/CardData";
-import LoggerFactory from "../../util/LoggerFactory";
-import Util from "../../util/Util";
+import LoggerFactory from "../../utils/LoggerFactory";
+import Utils from "../../utils/Utils";
 import Action from "../Action";
 import Attack from "../actions/Attack";
+import AttackSelector from "../actions/AttackSelector";
 import NormalSummon from "../actions/NormalSummon";
-import SelectTributeSummon from "../actions/SelectTributeSummon";
 import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
 import MonsterZone from "../field/MonsterZone";
@@ -31,10 +31,10 @@ export default class Monster extends Card {
       actions.push(this.getNormalSummonAction());
     }
     if (this.canTributeSummon()) {
-      actions.push(new SelectTributeSummon(this.controller, this));
+      // actions.push(new SelectTributeSummon(this.controller, this));
     }
     if (this.canAttack()) {
-      actions.push(...this.getAttackActions());
+      actions.push(this.getAttackSelectorAction());
     }
     return actions;
   }
@@ -52,12 +52,12 @@ export default class Monster extends Card {
     const zonesWithMonsters: MonsterZone[] =
       this.controller.field.getZonesWithMonsters();
     if (this.tributesRequired === 1) {
-      const tributeZone = Util.getRandomItemFromArray(zonesWithMonsters);
+      const tributeZone = Utils.getRandomItemFromArray(zonesWithMonsters);
       return [
         new TributeSummon(this.controller, this, tributeZone, tributeZone.card),
       ];
     }
-    const tributePairs = Util.getAllPairsFromArray(zonesWithMonsters);
+    const tributePairs = Utils.getAllPairsFromArray(zonesWithMonsters);
     return tributePairs.map(
       (pair) =>
         new TributeSummon(
@@ -85,6 +85,17 @@ export default class Monster extends Card {
     this.destroy();
   }
 
+  getAttackActions(): Attack[] {
+    const opponent = global.DUEL.getOpponentOf(this.controller);
+    const monsterTargets = opponent.field.getMonsters();
+    if (monsterTargets.length > 0) {
+      return monsterTargets.map(
+        (target) => new Attack(this.controller, this, target)
+      );
+    }
+    return [new Attack(this.controller, this, opponent)];
+  }
+
   private getTributesRequired(): number {
     const level = this.getLevel();
     if (level > 6) return 2;
@@ -106,6 +117,7 @@ export default class Monster extends Card {
   private canAttack(): boolean {
     return (
       global.DUEL.phase === Phase.Battle &&
+      global.DUEL.step === Step.Battle &&
       this.attacksRemaining > 0 &&
       this.controller.field.getZoneOf(this) != null
     );
@@ -119,14 +131,7 @@ export default class Monster extends Card {
     );
   }
 
-  private getAttackActions(): Attack[] {
-    const opponent = global.DUEL.getOpponentOf(this.controller);
-    const monsterTargets = opponent.field.getMonsters();
-    if (monsterTargets.length > 0) {
-      return monsterTargets.map(
-        (target) => new Attack(this.controller, this, target)
-      );
-    }
-    return [new Attack(this.controller, this, opponent)];
+  private getAttackSelectorAction(): Action {
+    return new AttackSelector(this.controller, this);
   }
 }

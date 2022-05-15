@@ -1,9 +1,8 @@
 import Effects from "../Effects";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
-import Destroy from "../actions/Destroy";
 import QuickEffect from "./QuickEffect";
-import Util from "../../util/Util";
+import Utils from "../../utils/Utils";
 
 export default class MysticalSpaceTyphoonEffects extends Effects {
   protected static logger = LoggerFactory.getLogger(
@@ -34,21 +33,23 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
     super.activate();
     const controller = this.card.controller;
     if (this.card.inHand()) {
-      const zone = Util.getRandomItemFromArray(
+      const zone = Utils.getRandomItemFromArray(
         controller.field.getFreeSpellTrapZones()
       );
       if (zone) {
         zone.card = this.card;
-        Util.removeItemFromArray(controller.hand, this.card);
+        Utils.removeItemFromArray(controller.hand, this.card);
       }
     }
   }
 
   override resolve(): void {
+    super.resolve();
     const opponent = global.DUEL.getOpponentOf(this.card.controller);
-    global.DUEL.actionSelection = opponent.field
-      .getSpellTraps()
-      .map((card) => new Destroy(this.card.controller, card, this));
+    // TODO: new Select(this.card.controller, card, this)
+    // global.DUEL.actionSelection = opponent.field
+    //   .getSpellTraps()
+    //   .map((card) => new Destroy(this.card.controller, card, this));
   }
 
   override after(): void {

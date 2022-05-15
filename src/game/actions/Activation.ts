@@ -1,23 +1,20 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import CardAction from "./CardAction";
-import Effect from "../Effect";
+import ActivationEffect from "../effects/ActivationEffect";
 
 export default class Activation extends CardAction {
   protected static logger = LoggerFactory.getLogger("Activation");
 
-  constructor(actor: Player, private effect: Effect) {
+  constructor(actor: Player, public effect: ActivationEffect) {
     super(actor, effect.card);
   }
 
   override perform() {
+    super.perform();
     Activation.logger.info(`Activating effect of ${this.card}`);
+    global.DUEL.chain.addLink(this.effect);
     this.effect.activate();
-  }
-
-  override finalise() {
-    Activation.logger.info(`Resolving effect of ${this.card}`);
-    this.effect.resolve();
   }
 
   override toString(): string {

@@ -1,5 +1,5 @@
 import Card from "../Card";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Action from "../Action";
 

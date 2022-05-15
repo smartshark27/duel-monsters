@@ -1,4 +1,4 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Zone from "./Zone";
 

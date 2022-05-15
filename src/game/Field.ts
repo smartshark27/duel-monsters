@@ -1,5 +1,5 @@
-import LoggerFactory from "../util/LoggerFactory";
-import Util from "../util/Util";
+import LoggerFactory from "../utils/LoggerFactory";
+import Utils from "../utils/Utils";
 import Card from "./Card";
 import Monster from "./cards/Monster";
 import MonsterZone from "./field/MonsterZone";
@@ -52,7 +52,7 @@ export default class Field {
   getRandomFreeMonsterZone(): MonsterZone | null {
     const freeZones = this.getFreeMonsterZones();
     if (freeZones) {
-      return Util.getRandomItemFromArray(freeZones);
+      return Utils.getRandomItemFromArray(freeZones);
     }
     return null;
   }
@@ -60,7 +60,7 @@ export default class Field {
   getRandomFreeSpellTrapZone(): SpellTrapZone | null {
     const freeZones = this.getFreeSpellTrapZones();
     if (freeZones) {
-      return Util.getRandomItemFromArray(freeZones);
+      return Utils.getRandomItemFromArray(freeZones);
     }
     return null;
   }

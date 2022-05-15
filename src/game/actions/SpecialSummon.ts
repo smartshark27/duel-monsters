@@ -1,8 +1,8 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import MonsterZone from "../field/MonsterZone";
 import Monster from "../cards/Monster";
-import Util from "../../util/Util";
+import Utils from "../../utils/Utils";
 import Summon from "./Summon";
 import Effect from "../Effect";
 
@@ -19,15 +19,12 @@ export default class SpecialSummon extends Summon {
   }
 
   override perform(): void {
+    super.perform();
     SpecialSummon.logger.info(`Special summoning ${this.card}`);
     this.card.controller = this.actor;
     this.monsterZone.card = this.card;
     // TODO: Handle special summoning from other places
-    Util.removeItemFromArray(this.card.owner.graveyard, this.card);
-  }
-
-  override finalise(): void {
-    this.effect.after();
+    Utils.removeItemFromArray(this.card.owner.graveyard, this.card);
   }
 
   override toString(): string {

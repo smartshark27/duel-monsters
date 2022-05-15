@@ -1,4 +1,4 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
 import SpecialSummon from "../actions/SpecialSummon";
@@ -32,6 +32,7 @@ class ResurrectionEffect extends QuickEffect {
   }
 
   override resolve(): void {
+    super.resolve();
     const controller = this.card.controller;
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>

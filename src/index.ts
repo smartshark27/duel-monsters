@@ -1,10 +1,10 @@
 import Deck from "./game/Deck";
 import Duel from "./game/Duel";
 import Player from "./game/Player";
-import Util from "./util/Util";
-import Input from "./util/Input";
+import Utils from "./utils/Utils";
+import Input from "./utils/Input";
 import Action from "./game/Action";
-import LoggerFactory from "./util/LoggerFactory";
+import LoggerFactory from "./utils/LoggerFactory";
 
 const logger = LoggerFactory.getLogger("index");
 
@@ -20,24 +20,23 @@ player2.setDeck(deck2);
 const duel = new Duel([player1, player2]);
 global.DUEL = duel;
 
-run(duel, Input.checkFlag("--step"));
+run(duel, Input.checkFlag("step"));
 
 async function run(duel: Duel, step = false) {
-  let actions = duel.getActions();
+  let actions = duel.performAction();
   while (duel.running) {
     logActions(actions);
     if (step) {
       await Input.getUserInput("Proceed?");
     }
-    const action = Util.getRandomItemFromArray(actions);
-    duel.performAction(action);
+    const action = Utils.getRandomItemFromArray(actions);
+    actions = duel.performAction(action);
     if (!duel.running) break;
-    actions = duel.getActions();
   }
   duel.printResults();
 }
 
 function logActions(actions: Action[]): void {
   logger.info(duel);
-  logger.info(`Actions for ${actions[0].actor} are [${actions}]`);
+  logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
 }

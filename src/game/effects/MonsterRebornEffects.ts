@@ -1,11 +1,11 @@
 import Effects from "../Effects";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
 import SpecialSummon from "../actions/SpecialSummon";
 import MonsterZone from "../field/MonsterZone";
 import IgnitionEffect from "./IgnitionEffect";
-import Util from "../../util/Util";
+import Utils from "../../utils/Utils";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -37,17 +37,18 @@ class ResurrectionEffect extends IgnitionEffect {
     super.activate();
     const controller = this.card.controller;
     if (this.card.inHand()) {
-      const zone = Util.getRandomItemFromArray(
+      const zone = Utils.getRandomItemFromArray(
         controller.field.getFreeSpellTrapZones()
       );
       if (zone) {
         zone.card = this.card;
-        Util.removeItemFromArray(controller.hand, this.card);
+        Utils.removeItemFromArray(controller.hand, this.card);
       }
     }
   }
 
   override resolve(): void {
+    super.resolve();
     const controller = this.card.controller;
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>

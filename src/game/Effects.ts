@@ -1,4 +1,4 @@
-import LoggerFactory from "../util/LoggerFactory";
+import LoggerFactory from "../utils/LoggerFactory";
 import Card from "./Card";
 import Effect from "./Effect";
 import ActivationEffect from "./effects/ActivationEffect";

@@ -1,5 +1,4 @@
-import { CardFace } from "../../enums";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Effect from "../Effect";
 
@@ -14,7 +13,7 @@ export default class ActivationEffect extends Effect {
     return true;
   }
 
-  toString(): string {
-    return this.card.getName() + " effect";
+  override resolve(): void {
+    ActivationEffect.logger.info(`Resolving ${this}`);
   }
 }

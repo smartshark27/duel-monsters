@@ -1,8 +1,8 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import MonsterZone from "../field/MonsterZone";
 import Monster from "../cards/Monster";
-import Util from "../../util/Util";
+import Utils from "../../utils/Utils";
 import Summon from "./Summon";
 
 export default class NormalSummon extends Summon {
@@ -17,9 +17,10 @@ export default class NormalSummon extends Summon {
   }
 
   override perform(): void {
+    super.perform();
     NormalSummon.logger.info(`Normal summoning ${this.card}`);
     this.monsterZone.card = this.card;
-    Util.removeItemFromArray(this.actor.hand, this.card);
+    Utils.removeItemFromArray(this.actor.hand, this.card);
     this.actor.normalSummonsRemaining--;
   }
 

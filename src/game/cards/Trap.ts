@@ -1,5 +1,5 @@
 import CardData from "../../interfaces/CardData";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
 import SpellTrapSet from "../actions/SpellTrapSet";
 import Card from "../Card";

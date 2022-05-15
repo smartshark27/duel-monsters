@@ -1,10 +1,11 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Monster from "../cards/Monster";
 import CardAction from "./CardAction";
 
 export default class Attack extends CardAction {
   protected static override logger = LoggerFactory.getLogger("Attack");
+  private monstersToDestroy: Monster[] = [];
 
   constructor(
     actor: Player,
@@ -15,10 +16,14 @@ export default class Attack extends CardAction {
   }
 
   override perform(): void {
-    Attack.logger.info(`${this.card} is declaring attack against ${this.target}`);
+    super.perform();
+    Attack.logger.info(
+      `${this.card} is declaring attack against ${this.target}`
+    );
   }
 
-  override finalise(): void {
+  performDamageCalculation(): void {
+    Attack.logger.info("Performing damage calculation")
     const attacker = this.card as Monster;
     attacker.attacksRemaining--;
     if (!this.actor.field.getZoneOf(this.card)) {
@@ -34,6 +39,12 @@ export default class Attack extends CardAction {
     }
   }
 
+  performEnd(): void {
+    Attack.logger.info("Performing battle end step")
+    this.monstersToDestroy.forEach((monster) => monster.destroyByBattle());
+    this.monstersToDestroy = [];
+  }
+
   private attackDirectly(attacker: Monster) {
     Attack.logger.info(`${attacker} is attacking ${this.target} directly`);
     (this.target as Player).receiveBattleDamage(attacker.getAttackPoints());
@@ -47,14 +58,14 @@ export default class Attack extends CardAction {
     const opponent = global.DUEL.getOpponentOf(this.actor);
     if (difference > 0) {
       opponent.receiveBattleDamage(difference);
-      target.destroyByBattle();
+      this.monstersToDestroy.push(target);
     } else if (difference < 0) {
       this.actor.receiveBattleDamage(-difference);
-      attacker.destroyByBattle();
+      this.monstersToDestroy.push(attacker);
     } else {
       Attack.logger.info("Both monsters have the same attack points");
-      target.destroyByBattle();
-      attacker.destroyByBattle();
+      this.monstersToDestroy.push(target);
+      this.monstersToDestroy.push(attacker);
     }
   }
 

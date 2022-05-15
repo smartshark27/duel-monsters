@@ -1,5 +1,5 @@
 import { CardFace } from "../enums";
-import LoggerFactory from "../util/LoggerFactory";
+import LoggerFactory from "../utils/LoggerFactory";
 import Card from "./Card";
 
 export default class Effect {
@@ -16,5 +16,9 @@ export default class Effect {
 
   after(): void {
     this.card.activating = false;
+  }
+
+  toString(): string {
+    return this.card.getName() + " effect";
   }
 }
