@@ -7,8 +7,8 @@ import ProceedPhase from "./actions/ProceedPhase";
 import Pass from "./actions/Pass";
 import Chain from "./Chain";
 import Player from "./Player";
-import ActionSelector from "./actions/ActionSelector";
 import Attack from "./actions/Attack";
+import Target from "./actions/Target";
 
 export default class Duel {
   actionSelection: Action[] = [];
@@ -37,7 +37,7 @@ export default class Duel {
   performAction(action?: Action): Action[] {
     if (action) {
       action.perform();
-      if (action instanceof ActionSelector) {
+      if (this.actionSelection.length > 0) {
         return this.getActionSelection();
       }
       if (action instanceof Attack) this.attack = action;
@@ -113,7 +113,7 @@ export default class Duel {
       return this.getTriggerStateActions();
     }
 
-    if (this.lastAction instanceof Activation)
+    if (this.lastAction.isFromActivation)
       return this.getChainStateActions();
     if (this.lastAction instanceof ProceedPhase)
       return this.getPassResponseActions();

@@ -4,7 +4,6 @@ import MonsterZone from "../field/MonsterZone";
 import Monster from "../cards/Monster";
 import Utils from "../../utils/Utils";
 import Summon from "./Summon";
-import Effect from "../Effect";
 
 export default class SpecialSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("SpecialSummon");
@@ -12,8 +11,7 @@ export default class SpecialSummon extends Summon {
   constructor(
     actor: Player,
     monster: Monster,
-    private monsterZone: MonsterZone,
-    private effect: Effect
+    private monsterZone: MonsterZone
   ) {
     super(actor, monster);
   }

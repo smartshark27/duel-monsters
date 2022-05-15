@@ -5,6 +5,7 @@ import ActivationEffect from "../effects/ActivationEffect";
 
 export default class Activation extends CardAction {
   protected static logger = LoggerFactory.getLogger("Activation");
+  override isFromActivation = true;
 
   constructor(actor: Player, public effect: ActivationEffect) {
     super(actor, effect.card);

@@ -2,10 +2,9 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
-import SpecialSummon from "../actions/SpecialSummon";
-import MonsterZone from "../field/MonsterZone";
 import IgnitionEffect from "./IgnitionEffect";
 import Utils from "../../utils/Utils";
+import Target from "../actions/Target";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -18,6 +17,7 @@ export default class MonsterRebornEffects extends Effects {
 
 class ResurrectionEffect extends IgnitionEffect {
   protected static logger = LoggerFactory.getLogger("ResurrectionEffect");
+  target: Monster | null = null;
 
   constructor(card: Card) {
     super(card);
@@ -45,20 +45,30 @@ class ResurrectionEffect extends IgnitionEffect {
         Utils.removeItemFromArray(controller.hand, this.card);
       }
     }
+
+    global.DUEL.actionSelection = this.getGraveyardMonsters().map(
+      (monster) =>
+        new Target(controller, monster, (card) =>
+          this.setTarget(card as Monster)
+        )
+    );
   }
 
   override resolve(): void {
     super.resolve();
     const controller = this.card.controller;
-    global.DUEL.actionSelection = this.getGraveyardMonsters().map(
-      (monster) =>
-        new SpecialSummon(
-          controller,
-          monster as Monster,
-          controller.field.getRandomFreeMonsterZone() as MonsterZone,
-          this
-        )
-    );
+    const monsterZone = controller.field.getRandomFreeMonsterZone();
+
+    if (this.target && monsterZone) {
+      ResurrectionEffect.logger.info(`Special summoning ${this.target}`);
+      this.target.controller = controller;
+      monsterZone.card = this.target;
+      Utils.removeItemFromArray(this.target.owner.graveyard, this.target);
+    } else
+      ResurrectionEffect.logger.warn(
+        `Can no longer special summon ${this.target}`
+      );
+    this.target = null;
   }
 
   override cleanup(): void {
@@ -71,5 +81,9 @@ class ResurrectionEffect extends IgnitionEffect {
     return this.card.controller.graveyard
       .concat(opponent.graveyard)
       .filter((card) => card instanceof Monster) as Monster[];
+  }
+
+  private setTarget(monster: Monster): void {
+    this.target = monster;
   }
 }
