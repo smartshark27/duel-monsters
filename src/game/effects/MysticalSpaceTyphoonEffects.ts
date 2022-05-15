@@ -3,6 +3,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import QuickEffect from "./QuickEffect";
 import Utils from "../../utils/Utils";
+import Target from "../actions/Target";
 
 export default class MysticalSpaceTyphoonEffects extends Effects {
   protected static logger = LoggerFactory.getLogger(
@@ -19,6 +20,7 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
   protected static logger = LoggerFactory.getLogger(
     "DestroySpellTrapQuickEffect"
   );
+  target: Card | null = null;
 
   constructor(card: Card) {
     super(card);
@@ -41,19 +43,32 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
         Utils.removeItemFromArray(controller.hand, this.card);
       }
     }
+
+    const opponent = global.DUEL.getOpponentOf(controller);
+    global.DUEL.actionSelection = opponent.field
+      .getSpellTraps()
+      .map(
+        (card) => new Target(controller, card, (card) => this.setTarget(card))
+      );
   }
 
   override resolve(): void {
     super.resolve();
-    const opponent = global.DUEL.getOpponentOf(this.card.controller);
-    // TODO: new Select(this.card.controller, card, this)
-    // global.DUEL.actionSelection = opponent.field
-    //   .getSpellTraps()
-    //   .map((card) => new Destroy(this.card.controller, card, this));
+    if (this.target) {
+      this.target.destroy();
+    } else
+      DestroySpellTrapQuickEffect.logger.warn(
+        `Can no longer destroy ${this.target}`
+      );
+    this.target = null;
   }
 
   override cleanup(): void {
     super.cleanup();
     this.card.sendToGraveyard();
+  }
+
+  private setTarget(card: Card): void {
+    this.target = card;
   }
 }

@@ -3,6 +3,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Attack from "../actions/Attack";
 import QuickEffect from "./QuickEffect";
+import { Phase, Step, Timing } from "../../enums";
 
 export default class MirrorForceEffect extends Effects {
   protected static logger = LoggerFactory.getLogger("MirrorForceEffect");
@@ -23,12 +24,13 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
   }
 
   override canActivate(): boolean {
-    const lastAction = global.DUEL.lastAction;
     return (
       super.canActivate() &&
       this.card.wasSetBeforeThisTurn() &&
-      lastAction instanceof Attack &&
-      lastAction.actor !== this.card.controller
+      global.DUEL.phase === Phase.Battle &&
+      global.DUEL.step === Step.Battle &&
+      global.DUEL.timing === Timing.StartDamageStep &&
+      global.DUEL.getActivePlayer() !== this.card.controller
     );
   }
 
@@ -37,7 +39,10 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
     global.DUEL.getOpponentOf(this.card.controller)
       .field.getMonsters()
       .forEach((monster) => monster.destroy());
+  }
 
+  override cleanup(): void {
+    super.cleanup();
     this.card.sendToGraveyard();
   }
 }
