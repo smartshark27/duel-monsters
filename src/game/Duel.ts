@@ -1,14 +1,12 @@
 import { Phase, State, Step, Timing } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Action from "./Action";
-import Activation from "./actions/Activation";
 import Draw from "./actions/Draw";
 import ProceedPhase from "./actions/ProceedPhase";
 import Pass from "./actions/Pass";
 import Chain from "./Chain";
 import Player from "./Player";
 import Attack from "./actions/Attack";
-import Target from "./actions/Target";
 
 export default class Duel {
   actionSelection: Action[] = [];
@@ -113,8 +111,7 @@ export default class Duel {
       return this.getTriggerStateActions();
     }
 
-    if (this.lastAction.isFromActivation)
-      return this.getChainStateActions();
+    if (this.lastAction.isFromActivation) return this.getChainStateActions();
     if (this.lastAction instanceof ProceedPhase)
       return this.getPassResponseActions();
     return this.getTriggerStateActions();
@@ -143,7 +140,7 @@ export default class Duel {
       const opponent = this.getOpponentOf(lastActor);
 
       const opponentActions = opponent.getSpeed2Actions();
-      if (opponentActions.length > 0)
+      if (opponentActions.length > 0 && !(this.lastAction instanceof Pass))
         return opponentActions.concat(new Pass(opponent));
 
       const lastActorActions = lastActor.getSpeed2Actions();
@@ -170,9 +167,13 @@ export default class Duel {
   private getOpponentResponseActions() {
     Duel.logger.debug("Checking opponent response state actions");
     this.state = State.OpponentResponse;
-    const opponentResponseActions: Action[] = [];
+    const opponent = this.getOpponentOf(this.activePlayer);
 
-    if (opponentResponseActions.length > 0) return opponentResponseActions;
+    if (this.lastAction?.isFromActivation) return this.getChainStateActions();
+
+    const actions = opponent.getSpeed2Actions();
+    if (actions.length > 0 && !(this.lastAction instanceof Pass))
+      return actions.concat(new Pass(opponent));
 
     this.lastAction = null;
     if (this.isMultipleOpenActionState()) return this.getOpenStateActions();
@@ -244,10 +245,18 @@ export default class Duel {
     Duel.logger.debug(`Step is ${this.step}`);
     if (this.step === Step.None) this.step = Step.Start;
     else if (this.step === Step.Start) this.step = Step.Battle;
-    else if (this.step === Step.Battle && this.attack) this.step = Step.Damage;
+    else if (
+      this.step === Step.Battle &&
+      this.attack &&
+      !this.attack.canProceedToDamageStep()
+    ) {
+      this.attack = null;
+      this.step = Step.Battle;
+    } else if (this.step === Step.Battle && this.attack)
+      this.step = Step.Damage;
     else if (this.step === Step.Battle) this.step = Step.End;
     else if (this.step === Step.Damage) {
-      this.startNextBattleStepTiming();
+      this.startNextDamageStepTiming();
       if (this.timing === Timing.None) {
         this.step = Step.Battle;
         this.attack = null;
@@ -256,7 +265,7 @@ export default class Duel {
     Duel.logger.debug(`Step is ${this.step}`);
   }
 
-  private startNextBattleStepTiming() {
+  private startNextDamageStepTiming() {
     Duel.logger.debug(`Timing is ${this.timing}`);
     if (this.timing === Timing.None) this.timing = Timing.StartDamageStep;
     else if (this.timing === Timing.StartDamageStep)

@@ -22,16 +22,14 @@ export default class Attack extends CardAction {
     );
   }
 
+  canProceedToDamageStep(): boolean {
+    return this.actor.field.getMonsters().includes(this.card as Monster);
+  }
+
   performDamageCalculation(): void {
-    Attack.logger.info("Performing damage calculation")
+    Attack.logger.info("Performing damage calculation");
     const attacker = this.card as Monster;
     attacker.attacksRemaining--;
-    if (!this.actor.field.getZoneOf(this.card)) {
-      Attack.logger.debug(
-        `Monster ${this.card} is no longer on field to make attack`
-      );
-      return;
-    }
     if (this.target instanceof Player) {
       this.attackDirectly(attacker);
     } else {
@@ -40,7 +38,7 @@ export default class Attack extends CardAction {
   }
 
   performEnd(): void {
-    Attack.logger.info("Performing battle end step")
+    Attack.logger.info("Performing battle end step");
     this.monstersToDestroy.forEach((monster) => monster.destroyByBattle());
     this.monstersToDestroy = [];
   }

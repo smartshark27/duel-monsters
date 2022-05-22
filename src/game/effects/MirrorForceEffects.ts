@@ -1,7 +1,6 @@
 import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
-import Attack from "../actions/Attack";
 import QuickEffect from "./QuickEffect";
 import { Phase, Step, Timing } from "../../enums";
 
@@ -29,7 +28,7 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
       this.card.wasSetBeforeThisTurn() &&
       global.DUEL.phase === Phase.Battle &&
       global.DUEL.step === Step.Battle &&
-      global.DUEL.timing === Timing.StartDamageStep &&
+      global.DUEL.attack !== null &&
       global.DUEL.getActivePlayer() !== this.card.controller
     );
   }

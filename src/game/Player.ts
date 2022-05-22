@@ -90,7 +90,6 @@ export default class Player {
   }
 
   getSpeed2Actions(): Action[] {
-    // TODO: Add ignore action
     return this.hand
       .concat(this.field.getCards())
       .flatMap((card) => card.getSpeed2Actions());
