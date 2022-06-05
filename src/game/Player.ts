@@ -1,12 +1,16 @@
-import { CardFace, Phase } from "../enums";
+import { CardFace } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
+import ActionSelector from "./actions/ActionSelector";
+import Activation from "./actions/Activation";
+import Pass from "./actions/Pass";
 import ProceedPhase from "./actions/ProceedPhase";
 import Card from "./Card";
 import Spell from "./cards/Spell";
 import Trap from "./cards/Trap";
 import Deck from "./Deck";
+import DuelEvent from "./DuelEvent";
 import Field from "./Field";
 
 export default class Player {
@@ -50,38 +54,6 @@ export default class Player {
     }
   }
 
-  startDrawPhase() {
-    Player.logger.info(`Starting draw phase for player ${this}`);
-  }
-
-  startStandbyPhase() {
-    Player.logger.info(`Starting standby phase for player ${this}`);
-  }
-
-  startMainPhase1() {
-    Player.logger.info(`Starting main phase 1 for player ${this}`);
-    this.normalSummonsRemaining++;
-  }
-
-  startBattlePhase() {
-    Player.logger.info(`Starting battle phase for player ${this}`);
-  }
-
-  startMainPhase2() {
-    Player.logger.info(`Starting main phase 2 for player ${this}`);
-  }
-
-  startEndPhase() {
-    Player.logger.info(`Starting end phase for player ${this}`);
-    this.normalSummonsRemaining = 0;
-    this.field
-      .getMonsters()
-      .forEach((monster) => (monster.attacksRemaining = 1));
-    while (this.hand.length > 6) {
-      this.discardRandom();
-    }
-  }
-
   getSpeed1Actions(): Action[] {
     return this.getSpeed2Actions()
       .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
@@ -93,6 +65,20 @@ export default class Player {
     return this.hand
       .concat(this.field.getCards())
       .flatMap((card) => card.getSpeed2Actions());
+  }
+
+  getMandatoryTriggeredActions(events: DuelEvent[]): Action[] {
+    return this.field
+      .getCards()
+      .flatMap((card) => card.getMandatoryTriggeredActions(events));
+  }
+
+  getOptionalTriggeredActions(events: DuelEvent[]): Action[] {
+    const actions: Action[] = this.field
+      .getCards()
+      .flatMap((card) => card.getOptionalTriggeredActions(events));
+    if (ActionSelector.length > 0) actions.concat(new Pass(this));
+    return actions;
   }
 
   canNormalSummon() {

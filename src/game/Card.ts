@@ -11,13 +11,14 @@ import MysticalSpaceTyphoonEffects from "./effects/MysticalSpaceTyphoonEffects";
 import CallOfTheHauntedEffects from "./effects/CallOfTheHauntedEffects";
 import SupplySquadEffects from "./effects/SupplySquadEffects";
 import Activation from "./actions/Activation";
+import DuelEvent from "./DuelEvent";
 
 export default class Card {
   activating = false;
   visibility = CardFace.Down;
   controller!: Player;
   turnSet!: number;
-  effects: Effects | undefined;
+  effects!: Effects;
   private name!: string;
 
   protected static logger = LoggerFactory.getLogger("Card");
@@ -42,6 +43,25 @@ export default class Card {
 
   getSpeed2Actions(): Action[] {
     return this.getActivationActions(2);
+  }
+
+  getActivationActions(speed: number): Action[] {
+    return (
+      (this.canActivate() &&
+        this.effects
+          ?.getActivationEffects()
+          .filter((effect) => effect.speed >= speed && effect.canActivate())
+          .map((effect) => new Activation(this.controller, effect))) ||
+      []
+    );
+  }
+
+  getMandatoryTriggeredActions(events: DuelEvent[]): Activation[] {
+    return this.effects.getMandatoryTriggeredEffects(events).map(effect => new Activation(this.controller, effect));
+  }
+
+  getOptionalTriggeredActions(events: DuelEvent[]): Activation[] {
+    return this.effects.getOptionalTriggeredEffects(events).map(effect => new Activation(this.controller, effect));
   }
 
   set(): void {
@@ -101,17 +121,6 @@ export default class Card {
     return !this.activating;
   }
 
-  protected getActivationActions(speed: number): Activation[] {
-    return (
-      (this.canActivate() &&
-        this.effects
-          ?.getActivationEffects()
-          .filter((effect) => effect.speed >= speed && effect.canActivate())
-          .map((effect) => new Activation(this.controller, effect))) ||
-      []
-    );
-  }
-
   private setEffects(): void {
     if (this.originalName === "Call of the Haunted") {
       this.effects = new CallOfTheHauntedEffects(this);
@@ -123,6 +132,8 @@ export default class Card {
       this.effects = new MysticalSpaceTyphoonEffects(this);
     } else if (this.originalName === "Supply Squad") {
       this.effects = new SupplySquadEffects(this);
+    } else {
+      this.effects = new Effects(this);
     }
   }
 }

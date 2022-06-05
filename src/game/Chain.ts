@@ -3,17 +3,19 @@ import ActivationEffect from "./effects/ActivationEffect";
 
 export default class Chain {
   protected static logger = LoggerFactory.getLogger("Chain");
-  effects: ActivationEffect[] = [];
+  links: ActivationEffect[] = [];
   effectsToCleanup: ActivationEffect[] = [];
   isResolving = false;
+  passCount = 0;
   speed = 0;
 
   addLink(effect: ActivationEffect) {
-    this.effects.push(effect);
+    this.links.push(effect);
+    this.speed = effect.speed;
   }
 
   resolveNext(): void {
-    const effect = this.effects.pop();
+    const effect = this.links.pop();
     if (effect) {
       this.effectsToCleanup.push(effect);
       effect.resolve();
@@ -28,13 +30,14 @@ export default class Chain {
 
   cleanup(): void {
     this.effectsToCleanup.forEach(effect => effect.cleanup());
+    this.speed = 0;
   }
 
   getLength(): number {
-    return this.effects.length;
+    return this.links.length;
   }
 
   toString(): string {
-    return `${this.effects}`;
+    return `${this.links}`;
   }
 }

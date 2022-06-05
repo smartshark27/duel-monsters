@@ -24,14 +24,13 @@ run(duel, Input.checkFlag("step"));
 
 async function run(duel: Duel, step = false) {
   let actions = duel.performAction();
-  while (duel.running) {
+  while (actions.length > 0) {
     logActions(actions);
     if (step) {
       await Input.getUserInput("Proceed?");
     }
     const action = Utils.getRandomItemFromArray(actions);
     actions = duel.performAction(action);
-    if (!duel.running) break;
   }
   duel.printResults();
 }
