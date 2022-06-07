@@ -1,9 +1,9 @@
-import { CardFace } from "../enums";
+import { CardFace, Phase } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
 import ActionSelector from "./actions/ActionSelector";
-import Activation from "./actions/Activation";
+import Draw from "./actions/Draw";
 import Pass from "./actions/Pass";
 import ProceedPhase from "./actions/ProceedPhase";
 import Card from "./Card";
@@ -16,12 +16,12 @@ import Field from "./Field";
 export default class Player {
   hand: Card[] = [];
   graveyard: Card[] = [];
-  havingTurn: boolean = false;
   normalSummonsRemaining = 0;
   name: string;
   field: Field;
 
   private static logger = LoggerFactory.getLogger("Player");
+  private canNormalDraw = false;
   private lifePoints: number = 8000;
   private deck: Deck | undefined;
 
@@ -42,19 +42,28 @@ export default class Player {
     }
   }
 
-  drawCard() {
+  startDrawPhase(): void {
+    this.canNormalDraw = true;
+  }
+
+  drawCard(): Card | null {
     Player.logger.debug("Drawing card");
     const card = this.deck?.drawCard();
     if (card) {
       Player.logger.info(`Drew card ${card}`);
       this.hand.push(card);
-    } else {
-      Player.logger.warn("No cards left to draw");
-      global.DUEL.end(global.DUEL.getOpponentOf(this));
+      return card;
     }
+    Player.logger.warn("No cards left to draw");
+    global.DUEL.end(global.DUEL.getOpponentOf(this));
+    return null;
   }
 
   getSpeed1Actions(): Action[] {
+    if (this.isTurnPlayer() && global.DUEL.phase === Phase.Draw && this.canNormalDraw) {
+      this.canNormalDraw = false;
+      return [new Draw(this)];
+    }
     return this.getSpeed2Actions()
       .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
       .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()))
@@ -83,7 +92,7 @@ export default class Player {
 
   canNormalSummon() {
     return (
-      this.havingTurn &&
+      this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
       this.normalSummonsRemaining > 0 &&
       this.field.getFreeMonsterZones().length > 0
@@ -113,14 +122,14 @@ export default class Player {
     this.reduceLifePoints(damage);
   }
 
-  discardRandom() {
+  discardRandom(): void {
     Player.logger.info("Discarding card");
     const card = Utils.getRandomItemFromArray(this.hand);
     this.graveyard.push(card);
     Utils.removeItemFromArray(this.hand, card);
   }
 
-  getFieldString() {
+  getFieldString(): string {
     let str = "|-|";
     for (let i = 0; i < 5; i++) {
       const zone = this.field.monsterZones[i];
@@ -141,7 +150,11 @@ export default class Player {
     return str;
   }
 
-  toString() {
+  isTurnPlayer(): boolean {
+    return global.DUEL.activePlayer === this;
+  }
+
+  toString(): string {
     return this.name;
   }
 

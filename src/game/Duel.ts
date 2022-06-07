@@ -13,12 +13,16 @@ import Player from "./Player";
 import NormalSummon from "./actions/NormalSummon";
 import Activation from "./actions/Activation";
 import Pass from "./actions/Pass";
+import DuelEvent from "./DuelEvent";
 
 export default class Duel {
   activePlayer: Player;
   actionSelection: Action[] = [];
+  queuedEvents: DuelEvent[] = [];
+  pastEvents: DuelEvent[] = [];
   chain = new Chain();
-  turn = 0;
+  turn = 1;
+  winner: Player | undefined;
 
   phase = Phase.Main1;
   state = State.Open;
@@ -26,6 +30,7 @@ export default class Duel {
   battlePhaseStep = BattlePhaseStep.None;
   battleStepTiming = BattleStepTiming.None;
   damageStepTiming = DamageStepTiming.None;
+
   private static logger = LoggerFactory.getLogger("Duel");
 
   constructor(private players: Player[]) {
@@ -36,16 +41,41 @@ export default class Duel {
 
   performAction(action?: Action): Action[] {
     if (action) action.perform();
-    if (this.actionSelection.length > 0) return this.getActionSelection();
-    return this.getActions(action);
+    if (this.winner) {
+      this.logResults();
+      return [];
+    }
+    const actions: Action[] =
+      this.actionSelection.length > 0
+        ? this.getActionSelection()
+        : this.getActions(action);
+    this.logActions(actions);
+    return actions;
   }
 
   getActions(performedAction?: Action): Action[] {
     switch (this.state) {
       case State.Open:
         return this.getOpenActions(performedAction);
+      case State.TurnPlayerMandatoryTrigger:
+        return this.getTurnPlayerMandatoryTriggeredActions();
+      case State.OpponentMandatoryTrigger:
+        return this.getOpponentMandatoryTriggeredActions();
+      case State.TurnPlayerOptionalTrigger:
+        return this.getTurnPlayerOptionalTriggeredActions();
+      case State.OpponentOptionalTrigger:
+        return this.getOpponentOptionalTriggeredActions();
+      case State.TurnPlayerResponse:
+        return this.getTurnPlayerResponseActions(performedAction);
+      case State.OpponentResponse:
+        return this.getOpponentResponseActions(performedAction);
+      case State.ChainBuild:
+        return this.getChainBuildActions(performedAction);
+      case State.ChainResolve:
+        return this.getChainResolveActions();
+      case State.PassResponse:
+        return this.getPassResponseActions(performedAction);
     }
-    return [];
   }
 
   getOpenActions(performedAction?: Action): Action[] {
@@ -72,8 +102,9 @@ export default class Duel {
   getTurnPlayerMandatoryTriggeredActions(): Action[] {
     this.state = State.TurnPlayerMandatoryTrigger;
 
-    const actions = this.activePlayer
-      .getMandatoryTriggeredActions(events);
+    const actions = this.activePlayer.getMandatoryTriggeredActions(
+      this.queuedEvents
+    );
     if (actions.length > 1) return actions;
     else if (actions.length === 1) {
       actions[0].perform();
@@ -86,8 +117,7 @@ export default class Duel {
     this.state = State.OpponentMandatoryTrigger;
 
     const opponent = this.getOpponentOf(this.activePlayer);
-    const actions = opponent
-      .getMandatoryTriggeredActions(events);
+    const actions = opponent.getMandatoryTriggeredActions(this.queuedEvents);
     if (actions.length > 1) return actions;
     else if (actions.length === 1) {
       actions[0].perform();
@@ -99,8 +129,9 @@ export default class Duel {
   getTurnPlayerOptionalTriggeredActions(): Action[] {
     this.state = State.TurnPlayerOptionalTrigger;
 
-    const actions = this.activePlayer
-      .getOptionalTriggeredActions(events);
+    const actions = this.activePlayer.getOptionalTriggeredActions(
+      this.queuedEvents
+    );
     if (actions.length > 0) {
       return actions;
     }
@@ -109,11 +140,10 @@ export default class Duel {
   }
 
   getOpponentOptionalTriggeredActions(): Action[] {
-    this.state = State.TurnPlayerOptionalTrigger;
+    this.state = State.OpponentOptionalTrigger;
 
     const opponent = this.getOpponentOf(this.activePlayer);
-    const actions = this.activePlayer
-      .getOptionalTriggeredActions(events);
+    const actions = opponent.getOptionalTriggeredActions(this.queuedEvents);
     if (actions.length > 0) {
       return actions;
     }
@@ -154,7 +184,8 @@ export default class Duel {
   getTurnPlayerResponseActions(performedAction?: Action): Action[] {
     this.state = State.TurnPlayerResponse;
 
-    if (performedAction instanceof Activation) return this.getChainBuildActions();
+    if (performedAction instanceof Activation)
+      return this.getChainBuildActions();
     if (!performedAction) return this.activePlayer.getSpeed2Actions();
     return this.getOpponentResponseActions();
   }
@@ -162,7 +193,8 @@ export default class Duel {
   getOpponentResponseActions(performedAction?: Action): Action[] {
     this.state = State.OpponentResponse;
 
-    if (performedAction instanceof Activation) return this.getChainBuildActions();
+    if (performedAction instanceof Activation)
+      return this.getChainBuildActions();
     const opponent = this.getOpponentOf(this.activePlayer);
     if (!performedAction) return opponent.getSpeed2Actions();
     return this.getOpenActions();
@@ -171,7 +203,8 @@ export default class Duel {
   getPassResponseActions(performedAction?: Action): Action[] {
     this.state = State.PassResponse;
 
-    if (performedAction instanceof Activation) return this.getChainBuildActions();
+    if (performedAction instanceof Activation)
+      return this.getChainBuildActions();
     const opponent = this.getOpponentOf(this.activePlayer);
     if (!performedAction) return opponent.getSpeed2Actions();
 
@@ -183,6 +216,10 @@ export default class Duel {
     return this.players.indexOf(player) === 0
       ? this.players[1]
       : this.players[0];
+  }
+
+  end(winner: Player): void {
+    this.winner = winner;
   }
 
   toString() {
@@ -197,45 +234,64 @@ export default class Duel {
   }
 
   private proceed(): void {
-    if (this.phase === Phase.End) this.switchTurns();
-
-    if (this.summonTiming === SummonTiming.NegationWindow)
+    if (this.phase === Phase.Draw) this.phase = Phase.Standby;
+    else if (this.phase === Phase.Standby) this.phase = Phase.Main1;
+    else if (this.summonTiming === SummonTiming.NegationWindow)
       this.summonTiming = SummonTiming.ResponseWindow;
     else if (this.summonTiming === SummonTiming.ResponseWindow)
       this.summonTiming = SummonTiming.None;
+    else if (this.phase === Phase.Main1) {
+      if (this.turn === 0) this.phase = Phase.End;
+      else {
+        this.phase = Phase.Battle;
+        this.battlePhaseStep = BattlePhaseStep.Start;
+      }
+    } else if (this.battlePhaseStep === BattlePhaseStep.Start)
+      this.battlePhaseStep = BattlePhaseStep.Battle;
     else if (this.battleStepTiming === BattleStepTiming.AttackDeclarationWindow)
       this.battleStepTiming = BattleStepTiming.BeforeDamageStep;
     else if (this.battleStepTiming === BattleStepTiming.BeforeDamageStep) {
-      
+      this.battleStepTiming = BattleStepTiming.None;
+      this.battlePhaseStep = BattlePhaseStep.Damage;
+      this.damageStepTiming = DamageStepTiming.Start;
+    } else if (this.damageStepTiming === DamageStepTiming.Start)
+      this.damageStepTiming = DamageStepTiming.BeforeDamageCalculation;
+    else if (this.damageStepTiming === DamageStepTiming.BeforeDamageCalculation)
+      this.damageStepTiming = DamageStepTiming.DuringDamageCalculation;
+    else if (this.damageStepTiming === DamageStepTiming.DuringDamageCalculation)
+      this.damageStepTiming = DamageStepTiming.AfterDamageCalculation;
+    else if (
+      this.damageStepTiming === DamageStepTiming.AfterDamageCalculation
+    ) {
+      this.damageStepTiming = DamageStepTiming.None;
+      this.battlePhaseStep = BattlePhaseStep.Battle;
+    } else if (
+      this.battlePhaseStep === BattlePhaseStep.Battle &&
+      this.battleStepTiming === BattleStepTiming.None
+    )
+      this.battlePhaseStep = BattlePhaseStep.End;
+    else if (this.battlePhaseStep === BattlePhaseStep.End) {
+      this.battlePhaseStep = BattlePhaseStep.None;
+      this.phase = Phase.Main2;
+    } else if (this.phase === Phase.Main2) this.phase = Phase.End;
+    else {
+      this.switchTurns();
+      this.phase = Phase.Draw;
     }
 
-    if (this.turn === 0 && this.phase === Phase.Main1) {
-      this.phase = Phase.End;
-    } else if (this.phase === Phase.End) {
-      this.phase = Phase.Draw;
-    } else if (this.phase === Phase.Draw) {
-      this.phase = Phase.Standby;
-    } else if (this.phase === Phase.Standby) {
-      this.phase = Phase.Main1;
-    } else if (this.phase === Phase.Main1) {
-      this.phase = Phase.Battle;
-      this.startNextBattleStep();
-    } else if (this.phase === Phase.Battle) {
-      this.startNextBattleStep();
-      if (this.step === Step.None) {
-        this.phase = Phase.Main2;
-        this.activePlayer.startMainPhase2();
-      }
-    } else {
-      this.phase = Phase.End;
-      this.activePlayer.startEndPhase();
-    }
+    Duel.logger.info(
+      `Switched to phase ${this.phase} for player ${this.activePlayer}`
+    );
   }
 
-  switchTurns() {
+  logActions(actions: Action[]): void {
+    Duel.logger.info(this);
+    Duel.logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
+  }
+
+  private switchTurns() {
     this.turn++;
     this.activePlayer = this.getOpponentOf(this.activePlayer);
-    Duel.logger.info(`Switched turn to player ${this.activePlayer}`);
   }
 
   private getActionSelection(): Action[] {
@@ -244,45 +300,7 @@ export default class Duel {
     return actions;
   }
 
-  // private startNextStep(): void {
-  //   Duel.logger.debug(`Step is ${this.step}`);
-  //   if (this.step === Step.None) this.step = Step.Start;
-  //   else if (this.step === Step.Start) this.step = Step.Battle;
-  //   else if (
-  //     this.step === Step.Battle &&
-  //     this.attack &&
-  //     !this.attack.canProceedToDamageStep()
-  //   ) {
-  //     this.attack = null;
-  //     this.step = Step.Battle;
-  //   } else if (this.step === Step.Battle && this.attack)
-  //     this.step = Step.Damage;
-  //   else if (this.step === Step.Battle) this.step = Step.End;
-  //   else if (this.step === Step.Damage) {
-  //     this.startNextDamageStepTiming();
-  //     if (this.timing === Timing.None) {
-  //       this.step = Step.Battle;
-  //       this.attack = null;
-  //     }
-  //   } else this.step = Step.None;
-  //   Duel.logger.debug(`Step is ${this.step}`);
-  // }
-
-  // private startNextDamageStepTiming() {
-  //   Duel.logger.debug(`Timing is ${this.timing}`);
-  //   if (this.timing === Timing.None) this.timing = Timing.StartDamageStep;
-  //   else if (this.timing === Timing.StartDamageStep)
-  //     this.timing = Timing.BeforeDamageCalculation;
-  //   else if (this.timing === Timing.BeforeDamageCalculation)
-  //     this.timing = Timing.DuringDamageCalculation;
-  //   else if (this.timing === Timing.DuringDamageCalculation) {
-  //     this.attack?.performDamageCalculation();
-  //     this.timing = Timing.AfterDamageCalculation;
-  //   } else if (this.timing === Timing.AfterDamageCalculation)
-  //     this.timing = Timing.EndDamageStep;
-  //   else if (this.timing === Timing.EndDamageStep) {
-  //     this.attack?.performEnd();
-  //     this.timing = Timing.None;
-  //   }
-  // }
+  private logResults(): void {
+    Duel.logger.warn(`Game has ended. The winner is ${this.winner}.`);
+  }
 }

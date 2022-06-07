@@ -16,7 +16,6 @@ export const enum State {
   TurnPlayerResponse = "turn player response",
   OpponentResponse = "opponent response",
   ChainBuild = "chain build",
-
   ChainResolve = "chain resolve",
   PassResponse = "pass response",
 }
@@ -75,4 +74,31 @@ export const enum SpellType {
 export const enum TrapType {
   Normal = "normal",
   Continuous = "continuous",
+}
+
+export const enum Place {
+  Hand = "hand",
+  Field = "field",
+  Deck = "deck",
+  Graveyard = "graveyard",
+}
+
+export const enum MoveMethod {
+  Added = "added",
+  Drawn = "drawn",
+  DestroyedByBattle = "destroyed by battle",
+  DestroyedByEffect = "destroyed by effect",
+  Discarded = "discarded",
+  Returned = "returned",
+  Sent = "sent",
+  Tributed = "tributed",
+  NormalSummoned = "normal summoned",
+  Set = "set",
+  TributeSummoned = "tribute summoned",
+  SpecialSummoned = "special summoned",
+}
+
+export const enum TargetMethod {
+  Attack = "attack",
+  Effect = "effect",
 }
