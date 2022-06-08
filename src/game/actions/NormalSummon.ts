@@ -1,27 +1,37 @@
 import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
-import MonsterZone from "../field/MonsterZone";
 import Monster from "../cards/Monster";
 import Utils from "../../utils/Utils";
 import Summon from "./Summon";
+import ZoneSelect from "./ZoneSelect";
+import Zone from "../field/Zone";
+import { SummonTiming } from "../../enums";
 
 export default class NormalSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
 
-  constructor(
-    actor: Player,
-    monster: Monster,
-    private monsterZone: MonsterZone
-  ) {
+  constructor(actor: Player, private monster: Monster) {
     super(actor, monster);
   }
 
   override perform(): void {
     super.perform();
-    NormalSummon.logger.info(`Normal summoning ${this.card}`);
-    this.monsterZone.card = this.card;
+    this.setActionSelection(
+      this.actor.field
+        .getFreeMonsterZones()
+        .map(
+          (zone) =>
+            new ZoneSelect(this.actor, zone, (zone) =>
+              this.normalSummonToZone(zone)
+            )
+        )
+    );
+  }
+
+  normalSummonToZone(zone: Zone) {
     Utils.removeItemFromArray(this.actor.hand, this.card);
-    this.actor.normalSummonsRemaining--;
+    zone.card = this.card;
+    global.DUEL.summonTiming = SummonTiming.NegationWindow;
   }
 
   override toString(): string {

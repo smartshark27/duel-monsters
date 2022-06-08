@@ -1,5 +1,5 @@
 import CardData from "../interfaces/CardData";
-import { CardType, SpellType, TrapType } from "../enums";
+import { CardType } from "../enums";
 import File from "../utils/File";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";

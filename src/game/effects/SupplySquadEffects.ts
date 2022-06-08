@@ -23,11 +23,12 @@ class SupplySquadPlayEffect extends IgnitionEffect {
   }
 
   override canActivate(): boolean {
-    return (
-      super.canActivate() &&
-      ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
-        this.card.wasSetBeforeThisTurn())
-    );
+    return false;
+    // return (
+    //   super.canActivate() &&
+    //   ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
+    //     this.card.wasSetBeforeThisTurn())
+    // );
   }
 
   override activate(): void {

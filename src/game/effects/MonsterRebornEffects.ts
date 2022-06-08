@@ -24,13 +24,14 @@ class ResurrectionEffect extends IgnitionEffect {
   }
 
   override canActivate(): boolean {
-    return (
-      super.canActivate() &&
-      ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
-        this.card.wasSetBeforeThisTurn()) &&
-      this.getGraveyardMonsters().length > 0 &&
-      this.card.controller.field.getFreeMonsterZones().length > 0
-    );
+    return false;
+    // return (
+    //   super.canActivate() &&
+    //   ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
+    //     this.card.wasSetBeforeThisTurn()) &&
+    //   this.getGraveyardMonsters().length > 0 &&
+    //   this.card.controller.field.getFreeMonsterZones().length > 0
+    // );
   }
 
   override activate(): void {
@@ -56,19 +57,19 @@ class ResurrectionEffect extends IgnitionEffect {
 
   override resolve(): void {
     super.resolve();
-    const controller = this.card.controller;
-    const monsterZone = controller.field.getRandomFreeMonsterZone();
+    // const controller = this.card.controller;
+    // const monsterZone = controller.field.getRandomFreeMonsterZone();
 
-    if (this.target && monsterZone) {
-      ResurrectionEffect.logger.info(`Special summoning ${this.target}`);
-      this.target.controller = controller;
-      monsterZone.card = this.target;
-      Utils.removeItemFromArray(this.target.owner.graveyard, this.target);
-    } else
-      ResurrectionEffect.logger.warn(
-        `Can no longer special summon ${this.target}`
-      );
-    this.target = null;
+    // if (this.target && monsterZone) {
+    //   ResurrectionEffect.logger.info(`Special summoning ${this.target}`);
+    //   this.target.controller = controller;
+    //   monsterZone.card = this.target;
+    //   Utils.removeItemFromArray(this.target.owner.graveyard, this.target);
+    // } else
+    //   ResurrectionEffect.logger.warn(
+    //     `Can no longer special summon ${this.target}`
+    //   );
+    // this.target = null;
   }
 
   override cleanup(): void {

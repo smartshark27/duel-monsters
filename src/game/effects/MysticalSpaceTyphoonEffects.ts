@@ -27,8 +27,9 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
   }
 
   override canActivate(): boolean {
-    const opponent = global.DUEL.getOpponentOf(this.card.controller);
-    return super.canActivate() && opponent.field.getSpellTraps().length > 0;
+    return false;
+    // const opponent = global.DUEL.getOpponentOf(this.card.controller);
+    // return super.canActivate() && opponent.field.getSpellTraps().length > 0;
   }
 
   override activate(): void {

@@ -2,7 +2,6 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import QuickEffect from "./QuickEffect";
-import { Phase, Step, Timing } from "../../enums";
 
 export default class MirrorForceEffect extends Effects {
   protected static logger = LoggerFactory.getLogger("MirrorForceEffect");
@@ -23,14 +22,15 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
   }
 
   override canActivate(): boolean {
-    return (
-      super.canActivate() &&
-      this.card.wasSetBeforeThisTurn() &&
-      global.DUEL.phase === Phase.Battle &&
-      global.DUEL.step === Step.Battle &&
-      global.DUEL.attack !== null &&
-      global.DUEL.getActivePlayer() !== this.card.controller
-    );
+    return false;
+    // return (
+    //   super.canActivate() &&
+    //   this.card.wasSetBeforeThisTurn() &&
+    //   global.DUEL.phase === Phase.Battle &&
+    //   global.DUEL.step === Step.Battle &&
+    //   global.DUEL.attack !== null &&
+    //   global.DUEL.getActivePlayer() !== this.card.controller
+    // );
   }
 
   override resolve(): void {

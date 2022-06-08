@@ -1,5 +1,4 @@
 import LoggerFactory from "../utils/LoggerFactory";
-import Utils from "../utils/Utils";
 import Card from "./Card";
 import Monster from "./cards/Monster";
 import MonsterZone from "./field/MonsterZone";
@@ -47,22 +46,6 @@ export default class Field {
 
   getFreeSpellTrapZones(): SpellTrapZone[] {
     return this.spellTrapZones.filter((zone) => zone.isEmpty());
-  }
-
-  getRandomFreeMonsterZone(): MonsterZone | null {
-    const freeZones = this.getFreeMonsterZones();
-    if (freeZones) {
-      return Utils.getRandomItemFromArray(freeZones);
-    }
-    return null;
-  }
-
-  getRandomFreeSpellTrapZone(): SpellTrapZone | null {
-    const freeZones = this.getFreeSpellTrapZones();
-    if (freeZones) {
-      return Utils.getRandomItemFromArray(freeZones);
-    }
-    return null;
   }
 
   getZoneOf(card: Card): Zone | undefined {

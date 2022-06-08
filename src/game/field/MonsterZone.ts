@@ -7,6 +7,10 @@ export default class MonsterZone extends Zone {
 
   constructor(owner: Player, private index: number) {
     super(owner);
-    MonsterZone.logger.debug(`Creating monster zone ${index}`);
+    Zone.logger.info(`Creating ${this}`);
+  }
+
+  override toString(): string {
+    return `${this.owner} monster zone ${this.index}`;
   }
 }

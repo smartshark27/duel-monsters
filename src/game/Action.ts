@@ -8,11 +8,15 @@ export default class Action {
   constructor(public actor: Player) {}
 
   perform(): void {
-    Action.logger.info(`Performing action ${this}`)
+    Action.logger.info(`Performing action ${this}`);
   }
 
   toString(): string {
     Action.logger.error("toString() not implemented for subclass of Action");
     return "";
+  }
+
+  protected setActionSelection(actionSelection: Action[]) {
+    global.DUEL.actionSelection = actionSelection;
   }
 }

@@ -1,11 +1,9 @@
-import { CardFace, Phase } from "../enums";
+import { CardFace, Phase, SummonTiming } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
-import ActionSelector from "./actions/ActionSelector";
 import Draw from "./actions/Draw";
 import Pass from "./actions/Pass";
-import ProceedPhase from "./actions/ProceedPhase";
 import Card from "./Card";
 import Spell from "./cards/Spell";
 import Trap from "./cards/Trap";
@@ -46,6 +44,10 @@ export default class Player {
     this.canNormalDraw = true;
   }
 
+  startMainPhase1(): void {
+    this.normalSummonsRemaining = 1;
+  }
+
   drawCard(): Card | null {
     Player.logger.debug("Drawing card");
     const card = this.deck?.drawCard();
@@ -60,14 +62,18 @@ export default class Player {
   }
 
   getSpeed1Actions(): Action[] {
-    if (this.isTurnPlayer() && global.DUEL.phase === Phase.Draw && this.canNormalDraw) {
+    if (
+      this.isTurnPlayer() &&
+      global.DUEL.phase === Phase.Draw &&
+      this.canNormalDraw
+    ) {
       this.canNormalDraw = false;
       return [new Draw(this)];
     }
     return this.getSpeed2Actions()
       .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
       .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()))
-      .concat(new ProceedPhase(this));
+      .concat(new Pass(this));
   }
 
   getSpeed2Actions(): Action[] {
@@ -86,7 +92,7 @@ export default class Player {
     const actions: Action[] = this.field
       .getCards()
       .flatMap((card) => card.getOptionalTriggeredActions(events));
-    if (ActionSelector.length > 0) actions.concat(new Pass(this));
+    if (global.DUEL.actionSelection.length > 0) actions.concat(new Pass(this));
     return actions;
   }
 
@@ -94,15 +100,11 @@ export default class Player {
     return (
       this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      ![SummonTiming.NegationWindow, SummonTiming.ResponseWindow].includes(
+        global.DUEL.summonTiming
+      ) &&
       this.normalSummonsRemaining > 0 &&
       this.field.getFreeMonsterZones().length > 0
-    );
-  }
-
-  canTributeSummon(tributesRequired: number) {
-    return (
-      this.canNormalSummon() &&
-      this.field.getMonsters().length >= tributesRequired
     );
   }
 
@@ -117,16 +119,15 @@ export default class Player {
     );
   }
 
-  receiveBattleDamage(damage: number): void {
-    Player.logger.info(`Inflicting ${damage} battle damage to ${this}`);
-    this.reduceLifePoints(damage);
-  }
-
   discardRandom(): void {
     Player.logger.info("Discarding card");
     const card = Utils.getRandomItemFromArray(this.hand);
     this.graveyard.push(card);
     Utils.removeItemFromArray(this.hand, card);
+  }
+
+  isTurnPlayer(): boolean {
+    return global.DUEL.activePlayer === this;
   }
 
   getFieldString(): string {
@@ -148,10 +149,6 @@ export default class Player {
     }
     str += `|${this.deck?.cards.length}|`;
     return str;
-  }
-
-  isTurnPlayer(): boolean {
-    return global.DUEL.activePlayer === this;
   }
 
   toString(): string {

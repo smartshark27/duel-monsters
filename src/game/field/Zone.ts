@@ -12,4 +12,9 @@ export default class Zone {
   isEmpty(): boolean {
     return !this.card;
   }
+
+  toString(): string {
+    Zone.logger.error("toString() not implemented for subclass of Zone");
+    return "";
+  }
 }
