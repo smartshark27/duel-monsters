@@ -13,6 +13,7 @@ import Player from "./Player";
 import Activation from "./actions/Activation";
 import Pass from "./actions/Pass";
 import DuelEvent from "./DuelEvent";
+import Draw from "./actions/Draw";
 
 export default class Duel {
   activePlayer: Player;
@@ -36,6 +37,7 @@ export default class Duel {
     Duel.logger.info("Creating duel");
     this.activePlayer = players[0];
     this.players.forEach((player) => player.init());
+    this.activePlayer.startMainPhase1();
   }
 
   performAction(action?: Action): Action[] {
@@ -88,7 +90,10 @@ export default class Duel {
       return this.getChainBuildActions(performedAction);
     if (performedAction instanceof Pass) return this.getPassResponseActions();
 
-    return this.activePlayer.getSpeed1Actions();
+    const actions = this.activePlayer.getSpeed1Actions();
+    return actions.length > 0 && !(actions[0] instanceof Draw)
+      ? actions.concat(new Pass(this.activePlayer))
+      : this.getPassResponseActions();
   }
 
   getTurnPlayerMandatoryTriggeredActions(): Action[] {
@@ -98,9 +103,7 @@ export default class Duel {
       this.queuedEvents
     );
     if (actions.length > 1) return actions;
-    else if (actions.length === 1) {
-      actions[0].perform();
-    }
+    else if (actions.length === 1) actions[0].perform();
 
     return this.getOpponentMandatoryTriggeredActions();
   }
@@ -111,9 +114,7 @@ export default class Duel {
     const opponent = this.getOpponentOf(this.activePlayer);
     const actions = opponent.getMandatoryTriggeredActions(this.queuedEvents);
     if (actions.length > 1) return actions;
-    else if (actions.length === 1) {
-      actions[0].perform();
-    }
+    else if (actions.length === 1) actions[0].perform();
 
     return this.getTurnPlayerOptionalTriggeredActions();
   }
@@ -124,9 +125,7 @@ export default class Duel {
     const actions = this.activePlayer.getOptionalTriggeredActions(
       this.queuedEvents
     );
-    if (actions.length > 0) {
-      return actions;
-    }
+    if (actions.length > 0) return actions;
 
     return this.getOpponentOptionalTriggeredActions();
   }
@@ -136,9 +135,7 @@ export default class Duel {
 
     const opponent = this.getOpponentOf(this.activePlayer);
     const actions = opponent.getOptionalTriggeredActions(this.queuedEvents);
-    if (actions.length > 0) {
-      return actions;
-    }
+    if (actions.length > 0) return actions;
 
     if (this.chain.getLength() > 0) return this.getChainBuildActions();
     return this.getTurnPlayerResponseActions();
@@ -178,7 +175,12 @@ export default class Duel {
 
     if (performedAction instanceof Activation)
       return this.getChainBuildActions();
-    if (!performedAction) return this.activePlayer.getSpeed2Actions();
+    if (!performedAction) {
+      const actions = this.activePlayer.getSpeed2Actions();
+      if (actions.length > 0)
+        return actions.concat(new Pass(this.activePlayer));
+    }
+
     return this.getOpponentResponseActions();
   }
 
@@ -188,7 +190,17 @@ export default class Duel {
     if (performedAction instanceof Activation)
       return this.getChainBuildActions();
     const opponent = this.getOpponentOf(this.activePlayer);
-    if (!performedAction) return opponent.getSpeed2Actions();
+    if (!performedAction) {
+      const actions = opponent.getSpeed2Actions();
+      if (actions.length > 0) return actions.concat(new Pass(opponent));
+    }
+
+    if (
+      [SummonTiming.NegationWindow, SummonTiming.ResponseWindow].includes(
+        this.summonTiming
+      )
+    )
+      this.proceed();
     return this.getOpenActions();
   }
 
@@ -198,7 +210,10 @@ export default class Duel {
     if (performedAction instanceof Activation)
       return this.getChainBuildActions();
     const opponent = this.getOpponentOf(this.activePlayer);
-    if (!performedAction) return opponent.getSpeed2Actions();
+    if (!performedAction) {
+      const actions = opponent.getSpeed2Actions();
+      if (actions.length > 0) return actions.concat(new Pass(opponent));
+    }
 
     this.proceed();
     return this.getOpenActions();
@@ -230,8 +245,7 @@ export default class Duel {
     else if (this.phase === Phase.Standby) {
       this.phase = Phase.Main1;
       this.activePlayer.startMainPhase1();
-    }
-    else if (this.summonTiming === SummonTiming.NegationWindow)
+    } else if (this.summonTiming === SummonTiming.NegationWindow)
       this.summonTiming = SummonTiming.ResponseWindow;
     else if (this.summonTiming === SummonTiming.ResponseWindow)
       this.summonTiming = SummonTiming.None;
@@ -276,12 +290,15 @@ export default class Duel {
     }
 
     Duel.logger.info(
-      `Switched to phase ${this.phase} for player ${this.activePlayer}`
+      `Switched to phase ${this.phase}, step ${this.battlePhaseStep} for player ${this.activePlayer}`
     );
   }
 
   logActions(actions: Action[]): void {
     Duel.logger.info(this);
+    Duel.logger.debug(
+      `Phase is ${this.phase}, Step is ${this.battlePhaseStep}`
+    );
     Duel.logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
   }
 

@@ -70,10 +70,11 @@ export default class Player {
       this.canNormalDraw = false;
       return [new Draw(this)];
     }
-    return this.getSpeed2Actions()
+
+    const actions = this.getSpeed2Actions()
       .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
-      .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()))
-      .concat(new Pass(this));
+      .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()));
+    return actions.length > 0 ? actions : [];
   }
 
   getSpeed2Actions(): Action[] {

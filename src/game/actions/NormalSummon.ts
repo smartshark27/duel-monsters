@@ -16,6 +16,7 @@ export default class NormalSummon extends Summon {
 
   override perform(): void {
     super.perform();
+    this.actor.normalSummonsRemaining--;
     this.setActionSelection(
       this.actor.field
         .getFreeMonsterZones()

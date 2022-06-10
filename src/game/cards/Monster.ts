@@ -49,7 +49,7 @@ export default class Monster extends Card {
   }
 
   private canNormalSummon(): boolean {
-    return this.controller.canNormalSummon() && this.tributesRequired === 0;
+    return this.controller.canNormalSummon();
   }
 
   private getNormalSummonAction(): NormalSummon {
