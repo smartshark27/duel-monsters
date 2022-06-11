@@ -254,6 +254,7 @@ export default class Duel {
       else {
         this.phase = Phase.Battle;
         this.battlePhaseStep = BattlePhaseStep.Start;
+        this.activePlayer.startBattlePhase();
       }
     } else if (this.battlePhaseStep === BattlePhaseStep.Start)
       this.battlePhaseStep = BattlePhaseStep.Battle;
@@ -294,14 +295,6 @@ export default class Duel {
     );
   }
 
-  logActions(actions: Action[]): void {
-    Duel.logger.info(this);
-    Duel.logger.debug(
-      `Phase is ${this.phase}, Step is ${this.battlePhaseStep}`
-    );
-    Duel.logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
-  }
-
   private switchTurns() {
     this.turn++;
     this.activePlayer = this.getOpponentOf(this.activePlayer);
@@ -316,6 +309,14 @@ export default class Duel {
   private setState(state: State) {
     Duel.logger.debug(`Setting state as ${state}`);
     this.state = state;
+  }
+
+  private logActions(actions: Action[]): void {
+    Duel.logger.info(this);
+    Duel.logger.debug(
+      `Phase is ${this.phase}, Step is ${this.battlePhaseStep}`
+    );
+    Duel.logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
   }
 
   private logResults(): void {

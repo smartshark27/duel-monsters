@@ -54,6 +54,10 @@ export default class Field {
       .find((zone) => zone.card === card);
   }
 
+  resetMonsterAttacksRemaining() {
+    this.getMonsters().forEach((monster) => (monster.attacksRemaining = 1));
+  }
+
   toString(): string {
     return `${this.owner}'s field`;
   }

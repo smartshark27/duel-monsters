@@ -1,19 +1,23 @@
-import { MonsterPosition } from "../../enums";
+import {
+  BattlePhaseStep,
+  BattleStepTiming,
+  MonsterPosition,
+} from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
+import Attack from "../actions/Attack";
 import NormalSummon from "../actions/NormalSummon";
 import Card from "../Card";
 import Player from "../Player";
 
 export default class Monster extends Card {
-  attacksRemaining!: number;
+  attacksRemaining = 1;
   position = MonsterPosition.Attack;
   protected static override logger = LoggerFactory.getLogger("Monster");
   private originalAttack!: number;
   private originalDefence!: number;
   private originalLevel!: number;
-  private tributesRequired!: number;
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
@@ -22,9 +26,8 @@ export default class Monster extends Card {
 
   override getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();
-    if (this.canNormalSummon()) {
-      actions.push(this.getNormalSummonAction());
-    }
+    if (this.canNormalSummon()) actions.push(this.getNormalSummonAction());
+    if (this.canAttack()) actions.push(this.getAttackAction());
     return actions;
   }
 
@@ -49,10 +52,28 @@ export default class Monster extends Card {
   }
 
   private canNormalSummon(): boolean {
-    return this.controller.canNormalSummon();
+    return this.controller.canNormalSummon() && this.isInHand();
   }
 
   private getNormalSummonAction(): NormalSummon {
     return new NormalSummon(this.controller, this);
+  }
+
+  private canAttack(): boolean {
+    return (
+      global.DUEL.battlePhaseStep === BattlePhaseStep.Battle &&
+      global.DUEL.battleStepTiming === BattleStepTiming.None &&
+      this.controller.isTurnPlayer() &&
+      this.isOnField() &&
+      this.attacksRemaining > 0
+    );
+  }
+
+  private getAttackAction(): Attack {
+    return new Attack(this.controller, this);
+  }
+
+  private isOnField(): boolean {
+    return this.controller.field.getMonsters().includes(this);
   }
 }

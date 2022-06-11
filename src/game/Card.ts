@@ -113,6 +113,10 @@ export default class Card {
     return this.getName();
   }
 
+  protected isInHand(): boolean {
+    return this.controller.hand.includes(this);
+  }
+
   protected hasEffects(): boolean {
     return this.effects instanceof Effects;
   }
@@ -120,6 +124,7 @@ export default class Card {
   protected canActivate(): boolean {
     return !this.activating;
   }
+
 
   private setEffects(): void {
     if (this.originalName === "Call of the Haunted") {

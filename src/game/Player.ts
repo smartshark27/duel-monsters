@@ -48,6 +48,10 @@ export default class Player {
     this.normalSummonsRemaining = 1;
   }
 
+  startBattlePhase(): void {
+    this.field.resetMonsterAttacksRemaining();
+  }
+
   drawCard(): Card | null {
     Player.logger.debug("Drawing card");
     const card = this.deck?.drawCard();
