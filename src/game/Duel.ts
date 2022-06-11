@@ -91,9 +91,9 @@ export default class Duel {
     if (performedAction instanceof Pass) return this.getPassResponseActions();
 
     const actions = this.activePlayer.getSpeed1Actions();
-    return actions.length > 0 && !(actions[0] instanceof Draw)
-      ? actions.concat(new Pass(this.activePlayer))
-      : this.getPassResponseActions();
+    if (actions.length === 0) return this.getPassResponseActions();
+    else if (actions.length === 1 && actions[0] instanceof Draw) return actions;
+    return actions.concat(new Pass(this.activePlayer));
   }
 
   getTurnPlayerMandatoryTriggeredActions(): Action[] {
@@ -250,7 +250,7 @@ export default class Duel {
     else if (this.summonTiming === SummonTiming.ResponseWindow)
       this.summonTiming = SummonTiming.None;
     else if (this.phase === Phase.Main1) {
-      if (this.turn === 0) this.phase = Phase.End;
+      if (this.turn === 1) this.phase = Phase.End;
       else {
         this.phase = Phase.Battle;
         this.battlePhaseStep = BattlePhaseStep.Start;
