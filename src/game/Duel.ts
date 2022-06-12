@@ -18,7 +18,7 @@ import Attack from "./actions/Attack";
 import Summon from "./actions/Summon";
 
 export default class Duel {
-  activePlayer: Player;
+  turnPlayer: Player;
   actionSelection: Action[] = [];
   queuedEvents: DuelEvent[] = [];
   pastEvents: DuelEvent[] = [];
@@ -40,9 +40,9 @@ export default class Duel {
 
   constructor(private players: Player[]) {
     Duel.logger.info("Creating duel");
-    this.activePlayer = players[0];
+    this.turnPlayer = players[0];
     this.players.forEach((player) => player.init());
-    this.activePlayer.startMainPhase1();
+    this.turnPlayer.startMainPhase1();
   }
 
   performAction(action?: Action): Action[] {
@@ -93,16 +93,16 @@ export default class Duel {
       return this.getChainBuildActions(performedAction);
     if (performedAction instanceof Pass) return this.getPassResponseActions();
 
-    const actions = this.activePlayer.getSpeed1Actions();
+    const actions = this.turnPlayer.getSpeed1Actions();
     if (actions.length === 0) return this.getPassResponseActions();
     else if (actions.length === 1 && actions[0] instanceof Draw) return actions;
-    return actions.concat(new Pass(this.activePlayer));
+    return actions.concat(new Pass(this.turnPlayer));
   }
 
   getTurnPlayerMandatoryTriggeredActions(): Action[] {
     this.setState(State.TurnPlayerMandatoryTrigger);
 
-    const actions = this.activePlayer.getMandatoryTriggeredActions(
+    const actions = this.turnPlayer.getMandatoryTriggeredActions(
       this.queuedEvents
     );
     if (actions.length > 1) return actions;
@@ -114,7 +114,7 @@ export default class Duel {
   getOpponentMandatoryTriggeredActions(): Action[] {
     this.setState(State.OpponentMandatoryTrigger);
 
-    const opponent = this.getOpponentOf(this.activePlayer);
+    const opponent = this.getOpponentOf(this.turnPlayer);
     const actions = opponent.getMandatoryTriggeredActions(this.queuedEvents);
     if (actions.length > 1) return actions;
     else if (actions.length === 1) actions[0].perform();
@@ -125,7 +125,7 @@ export default class Duel {
   getTurnPlayerOptionalTriggeredActions(): Action[] {
     this.setState(State.TurnPlayerOptionalTrigger);
 
-    const actions = this.activePlayer.getOptionalTriggeredActions(
+    const actions = this.turnPlayer.getOptionalTriggeredActions(
       this.queuedEvents
     );
     if (actions.length > 0) return actions;
@@ -136,7 +136,7 @@ export default class Duel {
   getOpponentOptionalTriggeredActions(): Action[] {
     this.setState(State.OpponentOptionalTrigger);
 
-    const opponent = this.getOpponentOf(this.activePlayer);
+    const opponent = this.getOpponentOf(this.turnPlayer);
     const actions = opponent.getOptionalTriggeredActions(this.queuedEvents);
     if (actions.length > 0) return actions;
 
@@ -179,9 +179,9 @@ export default class Duel {
     if (performedAction instanceof Activation)
       return this.getChainBuildActions();
     if (!performedAction) {
-      const actions = this.activePlayer.getSpeed2Actions();
+      const actions = this.turnPlayer.getSpeed2Actions();
       if (actions.length > 0)
-        return actions.concat(new Pass(this.activePlayer));
+        return actions.concat(new Pass(this.turnPlayer));
     }
 
     return this.getOpponentResponseActions();
@@ -192,7 +192,7 @@ export default class Duel {
 
     if (performedAction instanceof Activation)
       return this.getChainBuildActions();
-    const opponent = this.getOpponentOf(this.activePlayer);
+    const opponent = this.getOpponentOf(this.turnPlayer);
     if (!performedAction) {
       const actions = opponent.getSpeed2Actions();
       if (actions.length > 0) return actions.concat(new Pass(opponent));
@@ -208,7 +208,7 @@ export default class Duel {
 
     if (performedAction instanceof Activation)
       return this.getChainBuildActions();
-    const opponent = this.getOpponentOf(this.activePlayer);
+    const opponent = this.getOpponentOf(this.turnPlayer);
     if (!performedAction) {
       const actions = opponent.getSpeed2Actions();
       if (actions.length > 0) return actions.concat(new Pass(opponent));
@@ -243,7 +243,7 @@ export default class Duel {
     if (this.phase === Phase.Draw) this.phase = Phase.Standby;
     else if (this.phase === Phase.Standby) {
       this.phase = Phase.Main1;
-      this.activePlayer.startMainPhase1();
+      this.turnPlayer.startMainPhase1();
     } else if (this.summonTiming === SummonTiming.NegationWindow && this.summon)
       this.summonTiming = SummonTiming.ResponseWindow;
     else if (this.summonTiming === SummonTiming.NegationWindow && !this.summon)
@@ -256,7 +256,7 @@ export default class Duel {
       else {
         this.phase = Phase.Battle;
         this.battlePhaseStep = BattlePhaseStep.Start;
-        this.activePlayer.startBattlePhase();
+        this.turnPlayer.startBattlePhase();
       }
     } else if (this.battlePhaseStep === BattlePhaseStep.Start)
       this.battlePhaseStep = BattlePhaseStep.Battle;
@@ -304,7 +304,7 @@ export default class Duel {
     else {
       this.switchTurns();
       this.phase = Phase.Draw;
-      this.activePlayer.startDrawPhase();
+      this.turnPlayer.startDrawPhase();
     }
 
     Duel.logger.debug(`Proceeded to ${this.getPhaseInfoStr()}`);
@@ -312,8 +312,8 @@ export default class Duel {
 
   private switchTurns() {
     this.turn++;
-    this.activePlayer = this.getOpponentOf(this.activePlayer);
-    Duel.logger.info(`Switched turns to player ${this.activePlayer}`);
+    this.turnPlayer = this.getOpponentOf(this.turnPlayer);
+    Duel.logger.info(`Switched turns to player ${this.turnPlayer}`);
   }
 
   private getActionSelection(): Action[] {
@@ -350,7 +350,7 @@ export default class Duel {
   }
 
   private getPhaseInfoStr(): String {
-    var message = `Turn player is ${this.activePlayer}, phase is ${this.phase}`;
+    var message = `Turn player is ${this.turnPlayer}, phase is ${this.phase}`;
     if (this.battlePhaseStep !== BattlePhaseStep.None)
       message += `, step is ${this.battlePhaseStep}`;
     if (this.summonTiming !== SummonTiming.None)

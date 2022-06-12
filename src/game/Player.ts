@@ -132,7 +132,7 @@ export default class Player {
   }
 
   isTurnPlayer(): boolean {
-    return global.DUEL.activePlayer === this;
+    return global.DUEL.turnPlayer === this;
   }
 
   updateLifePoints(change: number): void {
