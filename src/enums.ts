@@ -102,3 +102,8 @@ export const enum TargetMethod {
   Attack = "attack",
   Effect = "effect",
 }
+
+export const enum LifePointsChangeMethod {
+  Battle = "battle",
+  Effect = "effect",
+}
