@@ -3,7 +3,7 @@ import Card from "../Card";
 import Monster from "../cards/Monster";
 import Effects from "../Effects";
 import QuickEffect from "./QuickEffect";
-import Target from "../actions/Target";
+import CardTarget from "../actions/CardTarget";
 import Utils from "../../utils/Utils";
 
 export default class CallOfTheHauntedEffects extends Effects {
@@ -34,7 +34,7 @@ class ResurrectionEffect extends QuickEffect {
     const controller = this.card.controller;
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
-        new Target(controller, monster, (card) =>
+        new CardTarget(controller, monster, (card) =>
           this.setTarget(card as Monster)
         )
     );

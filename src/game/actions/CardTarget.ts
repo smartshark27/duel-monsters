@@ -3,13 +3,12 @@ import Player from "../Player";
 import Action from "../Action";
 import Card from "../Card";
 
-export default class Target extends Action {
-  protected static override logger = LoggerFactory.getLogger("Target");
-  override isFromActivation = true;
+export default class CardTarget extends Action {
+  protected static override logger = LoggerFactory.getLogger("CardTarget");
 
   constructor(
     actor: Player,
-    private targetCard: Card,
+    private target: Card,
     private callback: (_: Card) => void
   ) {
     super(actor);
@@ -17,10 +16,10 @@ export default class Target extends Action {
 
   override perform(): void {
     super.perform();
-    this.callback(this.targetCard);
+    this.callback(this.target);
   }
 
   override toString(): string {
-    return `Target ${this.targetCard}`;
+    return `Target ${this.target}`;
   }
 }

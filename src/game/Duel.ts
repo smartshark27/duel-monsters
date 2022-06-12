@@ -14,6 +14,8 @@ import Activation from "./actions/Activation";
 import Pass from "./actions/Pass";
 import DuelEvent from "./DuelEvent";
 import Draw from "./actions/Draw";
+import Attack from "./actions/Attack";
+import Summon from "./actions/Summon";
 
 export default class Duel {
   activePlayer: Player;
@@ -31,6 +33,9 @@ export default class Duel {
   battleStepTiming = BattleStepTiming.None;
   damageStepTiming = DamageStepTiming.None;
 
+  summon: Summon | null = null;
+  attack: Attack | null = null;
+
   private static logger = LoggerFactory.getLogger("Duel");
 
   constructor(private players: Player[]) {
@@ -46,6 +51,7 @@ export default class Duel {
       this.logResults();
       return [];
     }
+
     const actions: Action[] =
       this.actionSelection.length > 0
         ? this.getActionSelection()
@@ -82,10 +88,9 @@ export default class Duel {
   getOpenActions(performedAction?: Action): Action[] {
     this.setState(State.Open);
 
-    if (this.summonTiming === SummonTiming.NegationWindow)
+    if (this.isDuringTiming())
       return this.getTurnPlayerMandatoryTriggeredActions();
-    if (this.summonTiming === SummonTiming.ResponseWindow)
-      return this.getTurnPlayerMandatoryTriggeredActions();
+
     if (performedAction instanceof Activation)
       return this.getChainBuildActions(performedAction);
     if (performedAction instanceof Pass) return this.getPassResponseActions();
@@ -195,12 +200,8 @@ export default class Duel {
       if (actions.length > 0) return actions.concat(new Pass(opponent));
     }
 
-    if (
-      [SummonTiming.NegationWindow, SummonTiming.ResponseWindow].includes(
-        this.summonTiming
-      )
-    )
-      this.proceed();
+    if (this.isDuringTiming()) this.proceed();
+
     return this.getOpenActions();
   }
 
@@ -245,11 +246,14 @@ export default class Duel {
     else if (this.phase === Phase.Standby) {
       this.phase = Phase.Main1;
       this.activePlayer.startMainPhase1();
-    } else if (this.summonTiming === SummonTiming.NegationWindow)
+    } else if (this.summonTiming === SummonTiming.NegationWindow && this.summon)
       this.summonTiming = SummonTiming.ResponseWindow;
-    else if (this.summonTiming === SummonTiming.ResponseWindow)
+    else if (this.summonTiming === SummonTiming.NegationWindow && !this.summon)
       this.summonTiming = SummonTiming.None;
-    else if (this.phase === Phase.Main1) {
+    else if (this.summonTiming === SummonTiming.ResponseWindow) {
+      this.summon = null;
+      this.summonTiming = SummonTiming.None;
+    } else if (this.phase === Phase.Main1) {
       if (this.turn === 1) this.phase = Phase.End;
       else {
         this.phase = Phase.Battle;
@@ -258,13 +262,21 @@ export default class Duel {
       }
     } else if (this.battlePhaseStep === BattlePhaseStep.Start)
       this.battlePhaseStep = BattlePhaseStep.Battle;
-    else if (this.battleStepTiming === BattleStepTiming.AttackDeclarationWindow)
+    else if (
+      this.battleStepTiming === BattleStepTiming.AttackDeclarationWindow &&
+      this.attack
+    )
       this.battleStepTiming = BattleStepTiming.BeforeDamageStep;
-    else if (this.battleStepTiming === BattleStepTiming.BeforeDamageStep) {
+    else if (
+      this.battleStepTiming === BattleStepTiming.BeforeDamageStep &&
+      this.attack
+    ) {
       this.battleStepTiming = BattleStepTiming.None;
       this.battlePhaseStep = BattlePhaseStep.Damage;
       this.damageStepTiming = DamageStepTiming.Start;
-    } else if (this.damageStepTiming === DamageStepTiming.Start)
+    } else if (this.battleStepTiming !== BattleStepTiming.None && !this.attack)
+      this.battleStepTiming = BattleStepTiming.None;
+    else if (this.damageStepTiming === DamageStepTiming.Start)
       this.damageStepTiming = DamageStepTiming.BeforeDamageCalculation;
     else if (this.damageStepTiming === DamageStepTiming.BeforeDamageCalculation)
       this.damageStepTiming = DamageStepTiming.DuringDamageCalculation;
@@ -273,6 +285,7 @@ export default class Duel {
     else if (
       this.damageStepTiming === DamageStepTiming.AfterDamageCalculation
     ) {
+      this.attack = null;
       this.damageStepTiming = DamageStepTiming.None;
       this.battlePhaseStep = BattlePhaseStep.Battle;
     } else if (
@@ -290,14 +303,13 @@ export default class Duel {
       this.activePlayer.startDrawPhase();
     }
 
-    Duel.logger.info(
-      `Switched to phase ${this.phase}, step ${this.battlePhaseStep} for player ${this.activePlayer}`
-    );
+    Duel.logger.debug(`Proceeded to ${this.getPhaseInfoStr()}`);
   }
 
   private switchTurns() {
     this.turn++;
     this.activePlayer = this.getOpponentOf(this.activePlayer);
+    Duel.logger.info(`Switched turns to player ${this.activePlayer}`);
   }
 
   private getActionSelection(): Action[] {
@@ -311,12 +323,31 @@ export default class Duel {
     this.state = state;
   }
 
+  private isDuringTiming() {
+    return (
+      this.summonTiming !== SummonTiming.None ||
+      this.battleStepTiming !== BattleStepTiming.None ||
+      this.damageStepTiming !== DamageStepTiming.None
+    );
+  }
+
   private logActions(actions: Action[]): void {
     Duel.logger.info(this);
-    Duel.logger.debug(
-      `Phase is ${this.phase}, Step is ${this.battlePhaseStep}`
-    );
+    Duel.logger.info(this.getPhaseInfoStr());
     Duel.logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
+  }
+
+  private getPhaseInfoStr(): String {
+    var message = `Turn player is ${this.activePlayer}, phase is ${this.phase}`;
+    if (this.battlePhaseStep !== BattlePhaseStep.None)
+      message += `, step is ${this.battlePhaseStep}`;
+    if (this.summonTiming !== SummonTiming.None)
+      message += `, timing is ${this.summonTiming}`;
+    if (this.battleStepTiming !== BattleStepTiming.None)
+      message += `, timing is ${this.summonTiming}`;
+    if (this.damageStepTiming !== DamageStepTiming.None)
+      message += `, timing is ${this.summonTiming}`;
+    return message;
   }
 
   private logResults(): void {

@@ -4,7 +4,7 @@ import Card from "../Card";
 import Monster from "../cards/Monster";
 import IgnitionEffect from "./IgnitionEffect";
 import Utils from "../../utils/Utils";
-import Target from "../actions/Target";
+import CardTarget from "../actions/CardTarget";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -49,7 +49,7 @@ class ResurrectionEffect extends IgnitionEffect {
 
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
-        new Target(controller, monster, (card) =>
+        new CardTarget(controller, monster, (card) =>
           this.setTarget(card as Monster)
         )
     );

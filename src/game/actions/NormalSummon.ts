@@ -10,7 +10,7 @@ import { SummonTiming } from "../../enums";
 export default class NormalSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
 
-  constructor(actor: Player, private monster: Monster) {
+  constructor(actor: Player, monster: Monster) {
     super(actor, monster);
   }
 
@@ -32,6 +32,7 @@ export default class NormalSummon extends Summon {
   normalSummonToZone(zone: Zone) {
     Utils.removeItemFromArray(this.actor.hand, this.card);
     zone.card = this.card;
+    global.DUEL.summon = this;
     global.DUEL.summonTiming = SummonTiming.NegationWindow;
   }
 

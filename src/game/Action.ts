@@ -3,7 +3,6 @@ import Player from "./Player";
 
 export default class Action {
   protected static logger = LoggerFactory.getLogger("Action");
-  isFromActivation = false;
 
   constructor(public actor: Player) {}
 

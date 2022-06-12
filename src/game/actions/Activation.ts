@@ -5,7 +5,6 @@ import Action from "../Action";
 
 export default class Activation extends Action {
   protected static logger = LoggerFactory.getLogger("Activation");
-  override isFromActivation = true;
 
   constructor(actor: Player, public effect: ActivationEffect) {
     super(actor);

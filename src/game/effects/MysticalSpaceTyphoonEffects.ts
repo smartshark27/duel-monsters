@@ -3,7 +3,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import QuickEffect from "./QuickEffect";
 import Utils from "../../utils/Utils";
-import Target from "../actions/Target";
+import CardTarget from "../actions/CardTarget";
 
 export default class MysticalSpaceTyphoonEffects extends Effects {
   protected static logger = LoggerFactory.getLogger(
@@ -49,7 +49,7 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
     global.DUEL.actionSelection = opponent.field
       .getSpellTraps()
       .map(
-        (card) => new Target(controller, card, (card) => this.setTarget(card))
+        (card) => new CardTarget(controller, card, (card) => this.setTarget(card))
       );
   }
 
