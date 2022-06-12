@@ -136,7 +136,10 @@ export default class Player {
   }
 
   updateLifePoints(change: number): void {
-    this.lifePoints -= change;
+    Player.logger.debug(
+      `Player ${this}'s lifepoints are changing by ${change}`
+    );
+    this.lifePoints += change;
     this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
     Player.logger.info(
       `Player ${this} has ${this.lifePoints} life points remaining`
