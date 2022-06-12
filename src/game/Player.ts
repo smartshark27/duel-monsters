@@ -135,6 +135,17 @@ export default class Player {
     return global.DUEL.activePlayer === this;
   }
 
+  updateLifePoints(change: number): void {
+    this.lifePoints -= change;
+    this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
+    Player.logger.info(
+      `Player ${this} has ${this.lifePoints} life points remaining`
+    );
+    if (this.lifePoints === 0) {
+      global.DUEL.end(global.DUEL.getOpponentOf(this));
+    }
+  }
+
   getFieldString(): string {
     let str = "|-|";
     for (let i = 0; i < 5; i++) {
@@ -158,20 +169,5 @@ export default class Player {
 
   toString(): string {
     return this.name;
-  }
-
-  private reduceLifePoints(damage: number): void {
-    this.lifePoints -= damage;
-    this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
-    Player.logger.info(
-      `Player ${this} has ${this.lifePoints} life points remaining`
-    );
-    this.checkLifePointsLoss();
-  }
-
-  private checkLifePointsLoss(): void {
-    if (this.lifePoints === 0) {
-      global.DUEL.end(global.DUEL.getOpponentOf(this));
-    }
   }
 }

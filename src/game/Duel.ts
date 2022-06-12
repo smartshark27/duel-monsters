@@ -47,15 +47,13 @@ export default class Duel {
 
   performAction(action?: Action): Action[] {
     if (action) action.perform();
-    if (this.winner) {
-      this.logResults();
-      return [];
-    }
+    if (this.checkWin()) return [];
 
     const actions: Action[] =
       this.actionSelection.length > 0
         ? this.getActionSelection()
         : this.getActions(action);
+    if (this.checkWin()) return [];
     this.logActions(actions);
     return actions;
   }
@@ -280,11 +278,17 @@ export default class Duel {
       this.damageStepTiming = DamageStepTiming.BeforeDamageCalculation;
     else if (this.damageStepTiming === DamageStepTiming.BeforeDamageCalculation)
       this.damageStepTiming = DamageStepTiming.DuringDamageCalculation;
-    else if (this.damageStepTiming === DamageStepTiming.DuringDamageCalculation)
-      this.damageStepTiming = DamageStepTiming.AfterDamageCalculation;
     else if (
+      this.damageStepTiming === DamageStepTiming.DuringDamageCalculation
+    ) {
+      this.attack?.applyDamageCalculation();
+      this.damageStepTiming = DamageStepTiming.AfterDamageCalculation;
+    } else if (
       this.damageStepTiming === DamageStepTiming.AfterDamageCalculation
     ) {
+      this.damageStepTiming = DamageStepTiming.End;
+      this.attack?.destroyMonsters();
+    } else if (this.damageStepTiming === DamageStepTiming.End) {
       this.attack = null;
       this.damageStepTiming = DamageStepTiming.None;
       this.battlePhaseStep = BattlePhaseStep.Battle;
@@ -331,6 +335,14 @@ export default class Duel {
     );
   }
 
+  private checkWin(): boolean {
+    if (this.winner) {
+      this.logResults();
+      return true;
+    }
+    return false;
+  }
+
   private logActions(actions: Action[]): void {
     Duel.logger.info(this);
     Duel.logger.info(this.getPhaseInfoStr());
@@ -344,9 +356,9 @@ export default class Duel {
     if (this.summonTiming !== SummonTiming.None)
       message += `, timing is ${this.summonTiming}`;
     if (this.battleStepTiming !== BattleStepTiming.None)
-      message += `, timing is ${this.summonTiming}`;
+      message += `, timing is ${this.battleStepTiming}`;
     if (this.damageStepTiming !== DamageStepTiming.None)
-      message += `, timing is ${this.summonTiming}`;
+      message += `, timing is ${this.damageStepTiming}`;
     return message;
   }
 
