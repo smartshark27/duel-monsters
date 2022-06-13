@@ -7,6 +7,8 @@ import Activation from "../actions/Activation";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
+import MoveCardEvent from "../events/MoveCardEvent";
+import { MoveMethod, Place } from "../../enums";
 
 export default class SupplySquadEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("SupplySquadEffects");
@@ -54,6 +56,15 @@ class SupplySquadPlayEffect extends IgnitionEffect {
     Utils.removeItemFromArray(this.card.controller.hand, this.card);
     zone.card = this.card;
     global.DUEL.chain.addLink(this);
+    new MoveCardEvent(
+      this.card.controller,
+      this.card,
+      Place.Hand,
+      Place.Field,
+      MoveMethod.Activated,
+      this.card,
+      this
+    ).publish();
   }
 }
 
