@@ -20,15 +20,11 @@ export default class Chain {
       this.effectsToCleanup.push(effect);
       effect.resolve();
     }
-
-    if (this.getLength() === 0) {
-      Chain.logger.info("Chain has resolved");
-      this.isResolving = false;
-      this.cleanup();
-    }
   }
 
   cleanup(): void {
+    Chain.logger.info("Chain has resolved");
+    this.isResolving = false;
     this.effectsToCleanup.forEach((effect) => effect.cleanup());
     this.speed = 0;
   }

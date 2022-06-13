@@ -176,9 +176,10 @@ export default class Duel {
   getChainResolveActions(): Action[] {
     this.setState(State.ChainResolve);
 
-    this.chain.resolveNext();
+    if (this.chain.getLength() > 0) this.chain.resolveNext();
     if (this.actionSelection.length > 0) return this.getActionSelection();
     if (this.chain.getLength() > 0) return this.getChainResolveActions();
+    else this.chain.cleanup();
     return this.getTurnPlayerMandatoryTriggeredActions();
   }
 

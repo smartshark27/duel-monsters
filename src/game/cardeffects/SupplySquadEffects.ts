@@ -4,8 +4,6 @@ import Card from "../Card";
 import IgnitionEffect from "../effects/IgnitionEffect";
 import Activation from "../actions/Activation";
 import ZoneSelect from "../actions/ZoneSelect";
-import Zone from "../field/Zone";
-import Utils from "../../utils/Utils";
 import CardMoveEvent from "../events/CardMoveEvent";
 import { CardFace, MoveMethod, Place } from "../../enums";
 import OptionalTriggerEffect from "../effects/OptionalTriggerEffect";
@@ -48,21 +46,6 @@ class SupplySquadPlayEffect extends IgnitionEffect {
         (zone) =>
           new ZoneSelect(controller, zone, (zone) => this.activateToZone(zone))
       );
-  }
-
-  activateToZone(zone: Zone): void {
-    Utils.removeItemFromArray(this.card.controller.hand, this.card);
-    zone.card = this.card;
-    global.DUEL.chain.addLink(this);
-    new CardMoveEvent(
-      this.card.controller,
-      this.card,
-      Place.Hand,
-      Place.Field,
-      MoveMethod.Activated,
-      this.card,
-      this
-    ).publish();
   }
 }
 
