@@ -6,7 +6,7 @@ import Summon from "./Summon";
 import ZoneSelect from "./ZoneSelect";
 import Zone from "../field/Zone";
 import { MoveMethod, Place, SummonTiming } from "../../enums";
-import MoveCardEvent from "../events/MoveCardEvent";
+import CardMoveEvent from "../events/CardMoveEvent";
 
 export default class NormalSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
@@ -42,8 +42,8 @@ export default class NormalSummon extends Summon {
     return `Normal summon ${this.card}`;
   }
 
-  protected getSummonEvent(): MoveCardEvent {
-    return new MoveCardEvent(
+  protected getSummonEvent(): CardMoveEvent {
+    return new CardMoveEvent(
       this.actor,
       this.monster,
       Place.Hand,

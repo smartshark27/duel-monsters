@@ -6,7 +6,7 @@ import Activation from "../actions/Activation";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
-import MoveCardEvent from "../events/MoveCardEvent";
+import CardMoveEvent from "../events/CardMoveEvent";
 import { CardFace, MoveMethod, Place } from "../../enums";
 import OptionalTriggerEffect from "../effects/OptionalTriggerEffect";
 import DuelEvent from "../DuelEvent";
@@ -54,7 +54,7 @@ class SupplySquadPlayEffect extends IgnitionEffect {
     Utils.removeItemFromArray(this.card.controller.hand, this.card);
     zone.card = this.card;
     global.DUEL.chain.addLink(this);
-    new MoveCardEvent(
+    new CardMoveEvent(
       this.card.controller,
       this.card,
       Place.Hand,
@@ -88,7 +88,7 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
     const controller = this.card.controller;
     const drawnCard = controller.drawCard();
     if (drawnCard)
-      new MoveCardEvent(
+      new CardMoveEvent(
         controller,
         drawnCard,
         Place.Deck,
@@ -106,7 +106,7 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
       this.turnLastActivated < global.DUEL.turn &&
       events.some((event) => {
         return (
-          event instanceof MoveCardEvent &&
+          event instanceof CardMoveEvent &&
           event.card instanceof Monster &&
           event.card.controller === this.card.controller &&
           [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(

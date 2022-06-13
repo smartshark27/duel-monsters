@@ -10,10 +10,10 @@ import {
 } from "../../enums";
 import Action from "../Action";
 import CardTarget from "./CardTarget";
-import TargetCardEvent from "../events/TargetCardEvent";
+import CardTargetEvent from "../events/CardTargetEvent";
 import PlayerTarget from "./PlayerTarget";
-import TargetPlayerEvent from "../events/TargetPlayerEvent";
-import MoveCardEvent from "../events/MoveCardEvent";
+import PlayerTargetEvent from "../events/PlayerTargetEvent";
+import CardMoveEvent from "../events/CardMoveEvent";
 import PlayerLifePointsEvent from "../events/PlayerLifePointsEvent";
 import Card from "../Card";
 
@@ -38,7 +38,7 @@ export default class Attack extends Action {
   attackMonster(monster: Monster): void {
     this.target = monster;
     this.monster.attacksRemaining--;
-    new TargetCardEvent(
+    new CardTargetEvent(
       this.actor,
       monster,
       TargetMethod.Attack,
@@ -51,7 +51,7 @@ export default class Attack extends Action {
   attackDirectly(player: Player): void {
     this.target = player;
     this.monster.attacksRemaining--;
-    new TargetPlayerEvent(
+    new PlayerTargetEvent(
       this.actor,
       player,
       TargetMethod.Attack,
@@ -73,7 +73,7 @@ export default class Attack extends Action {
   destroyMonsters(): void {
     if (this.wasTargetDestroyedByBattle) {
       (this.target as Monster).destroy();
-      new MoveCardEvent(
+      new CardMoveEvent(
         this.actor,
         this.target as Monster,
         Place.Field,
@@ -84,7 +84,7 @@ export default class Attack extends Action {
     }
     if (this.wasAttackerDestroyedByBattle) {
       this.monster.destroy();
-      new MoveCardEvent(
+      new CardMoveEvent(
         this.actor,
         this.monster as Monster,
         Place.Field,

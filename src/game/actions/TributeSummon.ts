@@ -4,7 +4,7 @@ import Monster from "../cards/Monster";
 import NormalSummon from "./NormalSummon";
 import CardTarget from "./CardTarget";
 import ZoneSelect from "./ZoneSelect";
-import MoveCardEvent from "../events/MoveCardEvent";
+import CardMoveEvent from "../events/CardMoveEvent";
 import { MoveMethod, Place } from "../../enums";
 
 export default class TributeSummon extends NormalSummon {
@@ -32,7 +32,7 @@ export default class TributeSummon extends NormalSummon {
 
   tributeMonster(monsterToTribute: Monster): void {
     monsterToTribute.sendToGraveyard();
-    new MoveCardEvent(
+    new CardMoveEvent(
       this.actor,
       monsterToTribute,
       Place.Field,
@@ -71,8 +71,8 @@ export default class TributeSummon extends NormalSummon {
     return `Tribute summon ${this.card}`;
   }
 
-  protected override getSummonEvent(): MoveCardEvent {
-    return new MoveCardEvent(
+  protected override getSummonEvent(): CardMoveEvent {
+    return new CardMoveEvent(
       this.actor,
       this.monster,
       Place.Hand,

@@ -5,8 +5,8 @@ import DuelEvent from "../DuelEvent";
 import Effect from "../Effect";
 import Player from "../Player";
 
-export default class MoveCardEvent extends DuelEvent {
-  protected static logger = LoggerFactory.getLogger("MoveCardEvent");
+export default class CardMoveEvent extends DuelEvent {
+  protected static logger = LoggerFactory.getLogger("CardMoveEvent");
 
   constructor(
     actor: Player,
