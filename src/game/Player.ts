@@ -99,7 +99,7 @@ export default class Player {
     return actions.length > 0 ? actions.concat(new Pass(this)) : [];
   }
 
-  canNormalSummon() {
+  canNormalSummon(tributesRequired: number) {
     return (
       this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
@@ -107,7 +107,9 @@ export default class Player {
         global.DUEL.summonTiming
       ) &&
       this.normalSummonsRemaining > 0 &&
-      this.field.getFreeMonsterZones().length > 0
+      ((tributesRequired === 0 &&
+        this.field.getFreeMonsterZones().length > 0) ||
+        this.field.getMonsters().length >= tributesRequired)
     );
   }
 

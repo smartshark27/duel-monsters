@@ -8,6 +8,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
 import Attack from "../actions/Attack";
 import NormalSummon from "../actions/NormalSummon";
+import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
 import Player from "../Player";
 
@@ -18,6 +19,7 @@ export default class Monster extends Card {
   private originalAttack!: number;
   private originalDefence!: number;
   private originalLevel!: number;
+  private level!: number;
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
@@ -37,6 +39,7 @@ export default class Monster extends Card {
     this.originalAttack = this.data.attack as number;
     this.originalDefence = this.data.defence as number;
     this.originalLevel = this.data.level as number;
+    this.level = this.originalLevel;
   }
 
   getAttackPoints(): number {
@@ -48,15 +51,27 @@ export default class Monster extends Card {
   }
 
   getLevel(): number {
-    return this.originalLevel;
+    return this.level;
+  }
+
+  getTributesRequired(): number {
+    const level = this.getLevel();
+    if (level < 5) return 0;
+    else if (level < 7) return 1;
+    return 2;
   }
 
   private canNormalSummon(): boolean {
-    return this.controller.canNormalSummon() && this.isInHand();
+    return (
+      this.controller.canNormalSummon(this.getTributesRequired()) &&
+      this.isInHand()
+    );
   }
 
   private getNormalSummonAction(): NormalSummon {
-    return new NormalSummon(this.controller, this);
+    return this.getTributesRequired() === 0
+      ? new NormalSummon(this.controller, this)
+      : new TributeSummon(this.controller, this);
   }
 
   private canAttack(): boolean {

@@ -5,12 +5,13 @@ import Utils from "../../utils/Utils";
 import Summon from "./Summon";
 import ZoneSelect from "./ZoneSelect";
 import Zone from "../field/Zone";
-import { SummonTiming } from "../../enums";
+import { MoveMethod, Place, SummonTiming } from "../../enums";
+import MoveCardEvent from "../events/MoveCardEvent";
 
 export default class NormalSummon extends Summon {
   protected static override logger = LoggerFactory.getLogger("NormalSummon");
 
-  constructor(actor: Player, monster: Monster) {
+  constructor(actor: Player, protected monster: Monster) {
     super(actor, monster);
   }
 
@@ -22,10 +23,8 @@ export default class NormalSummon extends Summon {
         .getFreeMonsterZones()
         .map(
           (zone) =>
-            new ZoneSelect(
-              this.actor,
-              zone,
-              (zone) => this.normalSummonToZone(zone)
+            new ZoneSelect(this.actor, zone, (zone) =>
+              this.normalSummonToZone(zone)
             )
         )
     );
@@ -34,11 +33,22 @@ export default class NormalSummon extends Summon {
   normalSummonToZone(zone: Zone) {
     Utils.removeItemFromArray(this.actor.hand, this.card);
     zone.card = this.card;
+    this.getSummonEvent().publish();
     global.DUEL.summon = this;
     global.DUEL.summonTiming = SummonTiming.NegationWindow;
   }
 
   override toString(): string {
     return `Normal summon ${this.card}`;
+  }
+
+  protected getSummonEvent(): MoveCardEvent {
+    return new MoveCardEvent(
+      this.actor,
+      this.monster,
+      Place.Hand,
+      Place.Field,
+      MoveMethod.NormalSummoned
+    );
   }
 }
