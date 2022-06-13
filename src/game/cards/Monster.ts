@@ -16,10 +16,12 @@ export default class Monster extends Card {
   attacksRemaining = 1;
   position = MonsterPosition.Attack;
   protected static override logger = LoggerFactory.getLogger("Monster");
-  private originalAttack!: number;
-  private originalDefence!: number;
-  private originalLevel!: number;
-  private level!: number;
+  originalAttackPoints!: number;
+  originalDefencePoints!: number;
+  originalLevel!: number;
+  attackPoints!: number;
+  defencePoints!: number;
+  level!: number;
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
@@ -36,18 +38,12 @@ export default class Monster extends Card {
   override reset(): void {
     super.reset();
     this.attacksRemaining = 1;
-    this.originalAttack = this.data.attack as number;
-    this.originalDefence = this.data.defence as number;
+    this.originalAttackPoints = this.data.attack as number;
+    this.originalDefencePoints = this.data.defence as number;
     this.originalLevel = this.data.level as number;
+    this.attackPoints = this.originalAttackPoints;
+    this.defencePoints = this.originalDefencePoints;
     this.level = this.originalLevel;
-  }
-
-  getAttackPoints(): number {
-    return this.originalAttack as number;
-  }
-
-  getDefencePoints(): number {
-    return this.originalDefence;
   }
 
   getLevel(): number {

@@ -120,7 +120,7 @@ export default class Attack extends Action {
 
   private performMonsterAttackDamageCalculation(target: Monster): void {
     const opponent = global.DUEL.getOpponentOf(this.actor);
-    const diff = this.monster.getAttackPoints() - target.getAttackPoints();
+    const diff = this.monster.attackPoints - target.attackPoints;
     if (diff > 0) {
       opponent.updateLifePoints(-diff);
       new PlayerLifePointsEvent(
@@ -148,7 +148,7 @@ export default class Attack extends Action {
   }
 
   private performDirectAttackDamageCalculation(target: Player): void {
-    const damage = -this.monster.getAttackPoints();
+    const damage = -this.monster.attackPoints;
     target.updateLifePoints(damage);
 
     new PlayerLifePointsEvent(
