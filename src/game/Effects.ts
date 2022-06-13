@@ -27,11 +27,13 @@ export default class Effects {
     );
   }
 
-  getMandatoryTriggeredEffects(events: DuelEvent[]): MandatoryTriggerEffect[] {
-    return this.effects.filter(
-      (effect) =>
-        effect instanceof MandatoryTriggerEffect && effect.isTriggered(events)
-    ) as MandatoryTriggerEffect[];
+  getMandatoryTriggeredActions(events: DuelEvent[]): Activation[] {
+    return (
+      this.effects.filter(
+        (effect) =>
+          effect instanceof MandatoryTriggerEffect && effect.isTriggered(events)
+      ) as MandatoryTriggerEffect[]
+    ).flatMap((effect) => effect.getActivationActions());
   }
 
   getOptionalTriggeredActions(events: DuelEvent[]): Activation[] {

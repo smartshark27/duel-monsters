@@ -51,9 +51,7 @@ export default class Card {
   }
 
   getMandatoryTriggeredActions(events: DuelEvent[]): Activation[] {
-    return this.effects
-      .getMandatoryTriggeredEffects(events)
-      .map((effect) => new Activation(this.controller, effect));
+    return this.effects.getMandatoryTriggeredActions(events);
   }
 
   getOptionalTriggeredActions(events: DuelEvent[]): Activation[] {
