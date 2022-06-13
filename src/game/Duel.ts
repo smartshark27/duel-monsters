@@ -319,6 +319,7 @@ export default class Duel {
       this.phase = Phase.Main2;
     } else if (this.phase === Phase.Main2) this.phase = Phase.End;
     else {
+      this.turnPlayer.checkHandLimit();
       this.switchTurns();
       this.phase = Phase.Draw;
       this.turnPlayer.startDrawPhase();

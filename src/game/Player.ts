@@ -1,4 +1,11 @@
-import { CardFace, MonsterPosition, Phase, SummonTiming } from "../enums";
+import {
+  CardFace,
+  MonsterPosition,
+  MoveMethod,
+  Phase,
+  Place,
+  SummonTiming,
+} from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
@@ -10,6 +17,7 @@ import Spell from "./cards/Spell";
 import Trap from "./cards/Trap";
 import Deck from "./Deck";
 import DuelEvent from "./DuelEvent";
+import CardMoveEvent from "./events/CardMoveEvent";
 import Field from "./Field";
 
 export default class Player {
@@ -53,19 +61,6 @@ export default class Player {
     this.field.resetMonsterAttacksRemaining();
   }
 
-  drawCard(): Card | null {
-    Player.logger.debug("Drawing card");
-    const card = this.deck?.drawCard();
-    if (card) {
-      Player.logger.info(`Drew card ${card}`);
-      this.hand.push(card);
-      return card;
-    }
-    Player.logger.warn("No cards left to draw");
-    global.DUEL.end(global.DUEL.getOpponentOf(this));
-    return null;
-  }
-
   getSpeed1Actions(): Action[] {
     if (
       this.isTurnPlayer() &&
@@ -100,6 +95,19 @@ export default class Player {
     return actions.length > 0 ? actions.concat(new Pass(this)) : [];
   }
 
+  drawCard(): Card | null {
+    Player.logger.debug("Drawing card");
+    const card = this.deck?.drawCard();
+    if (card) {
+      Player.logger.info(`Drew card ${card}`);
+      this.hand.push(card);
+      return card;
+    }
+    Player.logger.warn("No cards left to draw");
+    global.DUEL.end(global.DUEL.getOpponentOf(this));
+    return null;
+  }
+
   canNormalSummon(tributesRequired: number) {
     return (
       this.isTurnPlayer() &&
@@ -114,13 +122,6 @@ export default class Player {
 
   canPlaySpellTrap() {
     return this.field.getFreeSpellTrapZones().length > 0;
-  }
-
-  discardRandom(): void {
-    Player.logger.info("Discarding card");
-    const card = Utils.getRandomItemFromArray(this.hand);
-    this.graveyard.push(card);
-    Utils.removeItemFromArray(this.hand, card);
   }
 
   isTurnPlayer(): boolean {
@@ -138,6 +139,19 @@ export default class Player {
     );
     if (this.lifePoints === 0) {
       global.DUEL.end(global.DUEL.getOpponentOf(this));
+    }
+  }
+
+  checkHandLimit(): void {
+    while (this.hand.length > 6) {
+      const card = this.discardRandom();
+      new CardMoveEvent(
+        this,
+        card,
+        Place.Hand,
+        Place.Graveyard,
+        MoveMethod.Discarded
+      );
     }
   }
 
@@ -170,5 +184,13 @@ export default class Player {
 
   toString(): string {
     return this.name;
+  }
+
+  private discardRandom(): Card {
+    const card = Utils.getRandomItemFromArray(this.hand);
+    Player.logger.info(`Discarding ${card}`);
+    Utils.removeItemFromArray(this.hand, card);
+    this.graveyard.push(card);
+    return card;
   }
 }

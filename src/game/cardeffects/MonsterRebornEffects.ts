@@ -97,7 +97,7 @@ class MonsterRebornEffect extends IgnitionEffect {
         this.monster
       );
       zone.card = this.monster;
-      this.card.visibility = CardFace.Up;
+      this.monster.visibility = CardFace.Up;
       this.monster.turnPositionUpdated = global.DUEL.turn;
 
       new CardMoveEvent(
