@@ -12,8 +12,6 @@ export default class Activation extends Action {
 
   override perform() {
     super.perform();
-    Activation.logger.info(`Activating effect of ${this.effect.card}`);
-    global.DUEL.chain.addLink(this.effect);
     this.effect.activate();
   }
 

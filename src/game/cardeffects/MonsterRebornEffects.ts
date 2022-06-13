@@ -2,9 +2,9 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
-import IgnitionEffect from "./IgnitionEffect";
 import Utils from "../../utils/Utils";
 import CardTarget from "../actions/CardTarget";
+import IgnitionEffect from "../effects/IgnitionEffect";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -37,7 +37,7 @@ class ResurrectionEffect extends IgnitionEffect {
   override activate(): void {
     super.activate();
     const controller = this.card.controller;
-    if (this.card.inHand()) {
+    if (this.card.isInHand()) {
       const zone = Utils.getRandomItemFromArray(
         controller.field.getFreeSpellTrapZones()
       );

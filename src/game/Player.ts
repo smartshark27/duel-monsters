@@ -75,10 +75,9 @@ export default class Player {
       return [new Draw(this)];
     }
 
-    const actions = this.getSpeed2Actions()
+    return this.getSpeed2Actions()
       .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
       .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()));
-    return actions.length > 0 ? actions : [];
   }
 
   getSpeed2Actions(): Action[] {
@@ -115,13 +114,6 @@ export default class Player {
 
   canPlaySpellTrap() {
     return this.field.getFreeSpellTrapZones().length > 0;
-  }
-
-  canSetSpellTrap() {
-    return (
-      this.canPlaySpellTrap() &&
-      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase)
-    );
   }
 
   discardRandom(): void {

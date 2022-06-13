@@ -1,4 +1,5 @@
 import LoggerFactory from "../../utils/LoggerFactory";
+import Activation from "../actions/Activation";
 import Card from "../Card";
 import Effect from "../Effect";
 
@@ -9,11 +10,13 @@ export default class ActivationEffect extends Effect {
     super(card, speed);
   }
 
-  canActivate(): boolean {
-    return true;
+  resolve(): void {}
+
+  getActivationActions(): Activation[] {
+    return [];
   }
 
-  override resolve(): void {
-    ActivationEffect.logger.info(`Resolving ${this}`);
+  protected canActivate(): boolean {
+    return !global.DUEL.chain.includes(this);
   }
 }

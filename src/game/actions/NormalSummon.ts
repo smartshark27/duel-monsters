@@ -22,8 +22,10 @@ export default class NormalSummon extends Summon {
         .getFreeMonsterZones()
         .map(
           (zone) =>
-            new ZoneSelect(this.actor, zone, (zone) =>
-              this.normalSummonToZone(zone)
+            new ZoneSelect(
+              this.actor,
+              zone,
+              (zone) => this.normalSummonToZone(zone)
             )
         )
     );

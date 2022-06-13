@@ -29,12 +29,16 @@ export default class Chain {
   }
 
   cleanup(): void {
-    this.effectsToCleanup.forEach(effect => effect.cleanup());
+    this.effectsToCleanup.forEach((effect) => effect.cleanup());
     this.speed = 0;
   }
 
   getLength(): number {
     return this.links.length;
+  }
+
+  includes(effect: ActivationEffect): boolean {
+    return this.links.includes(effect);
   }
 
   toString(): string {

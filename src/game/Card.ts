@@ -3,18 +3,17 @@ import Player from "./Player";
 import Action from "./Action";
 import CardData from "../interfaces/CardData";
 import Effects from "./Effects";
-import MonsterRebornEffects from "./effects/MonsterRebornEffects";
+import MonsterRebornEffects from "./cardeffects/MonsterRebornEffects";
 import { CardFace } from "../enums";
-import MirrorForceEffect from "./effects/MirrorForceEffects";
+import MirrorForceEffect from "./cardeffects/MirrorForceEffects";
 import Zone from "./field/Zone";
-import MysticalSpaceTyphoonEffects from "./effects/MysticalSpaceTyphoonEffects";
-import CallOfTheHauntedEffects from "./effects/CallOfTheHauntedEffects";
-import SupplySquadEffects from "./effects/SupplySquadEffects";
+import MysticalSpaceTyphoonEffects from "./cardeffects/MysticalSpaceTyphoonEffects";
+import CallOfTheHauntedEffects from "./cardeffects/CallOfTheHauntedEffects";
+import SupplySquadEffects from "./cardeffects/SupplySquadEffects";
 import Activation from "./actions/Activation";
 import DuelEvent from "./DuelEvent";
 
 export default class Card {
-  activating = false;
   visibility = CardFace.Down;
   controller!: Player;
   turnSet!: number;
@@ -47,21 +46,20 @@ export default class Card {
 
   getActivationActions(speed: number): Action[] {
     return (
-      (this.canActivate() &&
-        this.effects
-          ?.getActivationEffects()
-          .filter((effect) => effect.speed >= speed && effect.canActivate())
-          .map((effect) => new Activation(this.controller, effect))) ||
-      []
+      (this.canActivate() && this.effects?.getActivationActions(speed)) || []
     );
   }
 
   getMandatoryTriggeredActions(events: DuelEvent[]): Activation[] {
-    return this.effects.getMandatoryTriggeredEffects(events).map(effect => new Activation(this.controller, effect));
+    return this.effects
+      .getMandatoryTriggeredEffects(events)
+      .map((effect) => new Activation(this.controller, effect));
   }
 
   getOptionalTriggeredActions(events: DuelEvent[]): Activation[] {
-    return this.effects.getOptionalTriggeredEffects(events).map(effect => new Activation(this.controller, effect));
+    return this.effects
+      .getOptionalTriggeredEffects(events)
+      .map((effect) => new Activation(this.controller, effect));
   }
 
   set(): void {
@@ -69,11 +67,11 @@ export default class Card {
     this.turnSet = global.DUEL.turn;
   }
 
-  inHand(): boolean {
+  isInHand(): boolean {
     return this.controller.hand.includes(this);
   }
 
-  onField(): boolean {
+  isOnField(): boolean {
     return this.controller.field.getZoneOf(this) instanceof Zone;
   }
 
@@ -105,7 +103,6 @@ export default class Card {
   reset(): void {
     this.name = this.originalName;
     this.controller = this.owner;
-    this.activating = false;
     this.turnSet = -1;
   }
 
@@ -113,18 +110,9 @@ export default class Card {
     return this.getName();
   }
 
-  protected isInHand(): boolean {
-    return this.controller.hand.includes(this);
-  }
-
-  protected hasEffects(): boolean {
-    return this.effects instanceof Effects;
-  }
-
   protected canActivate(): boolean {
-    return !this.activating;
+    return true;
   }
-
 
   private setEffects(): void {
     if (this.originalName === "Call of the Haunted") {

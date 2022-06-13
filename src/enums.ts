@@ -92,6 +92,7 @@ export const enum MoveMethod {
   Returned = "returned",
   Sent = "sent",
   Tributed = "tributed",
+  Activated = "activated",
   NormalSummoned = "normal summoned",
   Set = "set",
   TributeSummoned = "tribute summoned",

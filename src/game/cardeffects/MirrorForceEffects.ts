@@ -1,7 +1,7 @@
 import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
-import QuickEffect from "./QuickEffect";
+import QuickEffect from "../effects/QuickEffect";
 
 export default class MirrorForceEffect extends Effects {
   protected static logger = LoggerFactory.getLogger("MirrorForceEffect");

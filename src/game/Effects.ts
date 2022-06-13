@@ -1,4 +1,5 @@
 import LoggerFactory from "../utils/LoggerFactory";
+import Activation from "./actions/Activation";
 import Card from "./Card";
 import DuelEvent from "./DuelEvent";
 import Effect from "./Effect";
@@ -16,10 +17,12 @@ export default class Effects {
     return this.effects;
   }
 
-  getActivationEffects(): ActivationEffect[] {
-    return this.effects.filter(
-      (effect) => effect instanceof ActivationEffect
-    ) as ActivationEffect[];
+  getActivationActions(speed: number): Activation[] {
+    return (
+      this.effects.filter(
+        (effect) => effect instanceof ActivationEffect && effect.speed >= speed
+      ) as ActivationEffect[]
+    ).flatMap((effect) => effect.getActivationActions());
   }
 
   getMandatoryTriggeredEffects(events: DuelEvent[]): MandatoryTriggerEffect[] {

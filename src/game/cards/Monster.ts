@@ -72,8 +72,4 @@ export default class Monster extends Card {
   private getAttackAction(): Attack {
     return new Attack(this.controller, this);
   }
-
-  private isOnField(): boolean {
-    return this.controller.field.getMonsters().includes(this);
-  }
 }

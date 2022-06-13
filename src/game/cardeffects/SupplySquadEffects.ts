@@ -1,8 +1,11 @@
 import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
-import TriggerEffect from "./TriggerEffect";
-import IgnitionEffect from "./IgnitionEffect";
+import IgnitionEffect from "../effects/IgnitionEffect";
+import TriggerEffect from "../effects/TriggerEffect";
+import Activation from "../actions/Activation";
+import ZoneSelect from "../actions/ZoneSelect";
+import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
 
 export default class SupplySquadEffects extends Effects {
@@ -22,27 +25,38 @@ class SupplySquadPlayEffect extends IgnitionEffect {
     super(card);
   }
 
-  override canActivate(): boolean {
-    return false;
-    // return (
-    //   super.canActivate() &&
-    //   ((this.card.inHand() && this.card.controller.canPlaySpellTrap()) ||
-    //     this.card.wasSetBeforeThisTurn())
-    // );
+  override getActivationActions(): Activation[] {
+    if (this.canActivate()) {
+      const actions = super.getActivationActions();
+      actions.push(new Activation(this.card.controller, this));
+      return actions;
+    }
+    return [];
   }
 
   override activate(): void {
     super.activate();
     const controller = this.card.controller;
-    if (this.card.inHand()) {
-      const zone = Utils.getRandomItemFromArray(
-        controller.field.getFreeSpellTrapZones()
+    global.DUEL.actionSelection = controller.field
+      .getFreeSpellTrapZones()
+      .map(
+        (zone) =>
+          new ZoneSelect(controller, zone, (zone) => this.activateToZone(zone))
       );
-      if (zone) {
-        zone.card = this.card;
-        Utils.removeItemFromArray(controller.hand, this.card);
-      }
-    }
+  }
+
+  activateToZone(zone: Zone): void {
+    Utils.removeItemFromArray(this.card.controller.hand, this.card);
+    zone.card = this.card;
+    global.DUEL.chain.addLink(this);
+  }
+
+  protected override canActivate(): boolean {
+    return (
+      super.canActivate() &&
+      this.card.isInHand() &&
+      this.card.controller.canPlaySpellTrap()
+    );
   }
 }
 

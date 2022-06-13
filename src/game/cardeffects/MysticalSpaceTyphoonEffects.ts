@@ -1,9 +1,9 @@
 import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
-import QuickEffect from "./QuickEffect";
 import Utils from "../../utils/Utils";
 import CardTarget from "../actions/CardTarget";
+import QuickEffect from "../effects/QuickEffect";
 
 export default class MysticalSpaceTyphoonEffects extends Effects {
   protected static logger = LoggerFactory.getLogger(
@@ -35,7 +35,7 @@ class DestroySpellTrapQuickEffect extends QuickEffect {
   override activate(): void {
     super.activate();
     const controller = this.card.controller;
-    if (this.card.inHand()) {
+    if (this.card.isInHand()) {
       const zone = Utils.getRandomItemFromArray(
         controller.field.getFreeSpellTrapZones()
       );

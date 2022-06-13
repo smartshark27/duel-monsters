@@ -89,7 +89,7 @@ export default class Duel {
     if (this.isDuringTiming())
       return this.getTurnPlayerMandatoryTriggeredActions();
 
-    if (performedAction instanceof Activation)
+    if (this.chain.links.length > 0)
       return this.getChainBuildActions(performedAction);
     if (performedAction instanceof Pass) return this.getPassResponseActions();
 
@@ -218,6 +218,14 @@ export default class Duel {
     return this.getOpenActions();
   }
 
+  isDuringTiming() {
+    return (
+      this.summonTiming !== SummonTiming.None ||
+      this.battleStepTiming !== BattleStepTiming.None ||
+      this.damageStepTiming !== DamageStepTiming.None
+    );
+  }
+
   getOpponentOf(player: Player): Player {
     return this.players.indexOf(player) === 0
       ? this.players[1]
@@ -325,14 +333,6 @@ export default class Duel {
   private setState(state: State) {
     Duel.logger.debug(`Setting state as ${state}`);
     this.state = state;
-  }
-
-  private isDuringTiming() {
-    return (
-      this.summonTiming !== SummonTiming.None ||
-      this.battleStepTiming !== BattleStepTiming.None ||
-      this.damageStepTiming !== DamageStepTiming.None
-    );
   }
 
   private checkWin(): boolean {

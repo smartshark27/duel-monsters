@@ -2,9 +2,8 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
 import Effects from "../Effects";
-import QuickEffect from "./QuickEffect";
+import QuickEffect from "../effects/QuickEffect";
 import CardTarget from "../actions/CardTarget";
-import Utils from "../../utils/Utils";
 
 export default class CallOfTheHauntedEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffects");
