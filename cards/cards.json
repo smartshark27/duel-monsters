@@ -11,7 +11,7 @@
     "cardType": "monster",
     "attribute": "DARK",
     "level": 4,
-    "monsterTypes": ["normal", "dragon"],
+    "monsterTypes": ["dragon", "normal"],
     "attack": 1500,
     "defence": 800
   },
@@ -19,7 +19,7 @@
     "cardType": "monster",
     "attribute": "LIGHT",
     "level": 8,
-    "monsterTypes": ["normal", "dragon"],
+    "monsterTypes": ["dragon", "normal"],
     "attack": 3000,
     "defence": 2500
   },
@@ -27,6 +27,46 @@
     "cardType": "trap",
     "trapType": "continuous",
     "description": "Activate this card by targeting 1 monster in your GY; Special Summon that target in Attack Position. When this card leaves the field, destroy that monster. When that monster is destroyed, destroy this card."
+  },
+  "Elemental HERO Avian": {
+    "cardType": "monster",
+    "attribute": "WIND",
+    "level": 3,
+    "monsterTypes": ["warrior", "normal"],
+    "attack": 1000,
+    "defence": 1000
+  },
+  "Elemental HERO Burstinatrix": {
+    "cardType": "monster",
+    "attribute": "FIRE",
+    "level": 3,
+    "monsterTypes": ["warrior", "normal"],
+    "attack": 1200,
+    "defence": 800
+  },
+  "Elemental HERO Clayman": {
+    "cardType": "monster",
+    "attribute": "EARTH",
+    "level": 4,
+    "monsterTypes": ["warrior", "normal"],
+    "attack": 800,
+    "defence": 2000
+  },
+  "Elemental HERO Neos": {
+    "cardType": "monster",
+    "attribute": "LIGHT",
+    "level": 7,
+    "monsterTypes": ["warrior", "normal"],
+    "attack": 2500,
+    "defence": 2000
+  },
+  "Elemental HERO Sparkman": {
+    "cardType": "monster",
+    "attribute": "LIGHT",
+    "level": 4,
+    "monsterTypes": ["warrior", "normal"],
+    "attack": 1600,
+    "defence": 1400
   },
   "Mirror Force": {
     "cardType": "trap",
@@ -43,6 +83,14 @@
     "spellType": "quick-play",
     "description": "Target 1 Spell/Trap on the field; destroy that target."
   },
+  "Red-Eyes Black Dragon": {
+    "cardType": "monster",
+    "attribute": "DARK",
+    "level": 7,
+    "monsterTypes": ["dragon", "normal"],
+    "attack": 2400,
+    "defence": 2000
+  },
   "Supply Squad": {
     "cardType": "spell",
     "spellType": "continuous",
@@ -52,7 +100,7 @@
     "cardType": "monster",
     "attribute": "WIND",
     "level": 4,
-    "monsterTypes": ["normal", "dragon"],
+    "monsterTypes": ["dragon", "normal"],
     "attack": 1300,
     "defence": 2000
   }

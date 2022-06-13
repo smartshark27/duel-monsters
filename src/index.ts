@@ -7,7 +7,7 @@ import Input from "./utils/Input";
 const player1 = new Player("Top");
 const player2 = new Player("Bottom");
 
-const deck1 = new Deck(player1, "dragon_rage");
+const deck1 = new Deck(player1, "elemental_hero");
 const deck2 = new Deck(player2, "dragon_rage");
 
 player1.setDeck(deck1);
