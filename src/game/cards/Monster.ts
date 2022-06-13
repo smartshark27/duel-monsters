@@ -2,12 +2,14 @@ import {
   BattlePhaseStep,
   BattleStepTiming,
   MonsterPosition,
+  Phase,
 } from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
 import Attack from "../actions/Attack";
 import NormalSummon from "../actions/NormalSummon";
+import PositionChange from "../actions/PositionChange";
 import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
 import Player from "../Player";
@@ -31,6 +33,7 @@ export default class Monster extends Card {
   override getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();
     if (this.canNormalSummon()) actions.push(this.getNormalSummonAction());
+    if (this.canChangePosition()) actions.push(this.getPositionChangeAction());
     if (this.canAttack()) actions.push(this.getAttackAction());
     return actions;
   }
@@ -46,15 +49,23 @@ export default class Monster extends Card {
     this.level = this.originalLevel;
   }
 
-  getLevel(): number {
-    return this.level;
-  }
-
   getTributesRequired(): number {
-    const level = this.getLevel();
+    const level = this.level;
     if (level < 5) return 0;
     else if (level < 7) return 1;
     return 2;
+  }
+
+  getPoints(): number {
+    return (this.position === MonsterPosition.Attack) ? this.attackPoints : this.defencePoints;
+  }
+
+  changePosition(): void {
+    this.position =
+      this.position === MonsterPosition.Attack
+        ? MonsterPosition.Defence
+        : MonsterPosition.Attack;
+    this.turnPositionUpdated = global.DUEL.turn;
   }
 
   private canNormalSummon(): boolean {
@@ -68,6 +79,20 @@ export default class Monster extends Card {
     return this.getTributesRequired() === 0
       ? new NormalSummon(this.controller, this)
       : new TributeSummon(this.controller, this);
+  }
+
+  private canChangePosition(): boolean {
+    return (
+      this.controller.isTurnPlayer() &&
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      !global.DUEL.isDuringTiming() &&
+      this.isOnField() &&
+      this.turnPositionUpdated < global.DUEL.turn
+    );
+  }
+
+  private getPositionChangeAction(): PositionChange {
+    return new PositionChange(this.controller, this);
   }
 
   private canAttack(): boolean {

@@ -5,7 +5,7 @@ import Utils from "../../utils/Utils";
 import Summon from "./Summon";
 import ZoneSelect from "./ZoneSelect";
 import Zone from "../field/Zone";
-import { MoveMethod, Place, SummonTiming } from "../../enums";
+import { CardFace, MoveMethod, Place, SummonTiming } from "../../enums";
 import CardMoveEvent from "../events/CardMoveEvent";
 
 export default class NormalSummon extends Summon {
@@ -33,6 +33,8 @@ export default class NormalSummon extends Summon {
   normalSummonToZone(zone: Zone) {
     Utils.removeItemFromArray(this.actor.hand, this.card);
     zone.card = this.card;
+    this.card.visibility = CardFace.Up;
+    this.card.turnPositionUpdated = global.DUEL.turn;
     this.getSummonEvent().publish();
     global.DUEL.summon = this;
     global.DUEL.summonTiming = SummonTiming.NegationWindow;

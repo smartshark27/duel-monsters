@@ -4,6 +4,7 @@ import Monster from "../cards/Monster";
 import {
   BattleStepTiming,
   LifePointsChangeMethod,
+  MonsterPosition,
   MoveMethod,
   Place,
   TargetMethod,
@@ -120,16 +121,18 @@ export default class Attack extends Action {
 
   private performMonsterAttackDamageCalculation(target: Monster): void {
     const opponent = global.DUEL.getOpponentOf(this.actor);
-    const diff = this.monster.attackPoints - target.attackPoints;
+    const diff = this.monster.getPoints() - target.getPoints();
     if (diff > 0) {
-      opponent.updateLifePoints(-diff);
-      new PlayerLifePointsEvent(
-        this.actor,
-        opponent,
-        -diff,
-        LifePointsChangeMethod.Battle,
-        this.monster
-      ).publish();
+      if (target.position === MonsterPosition.Attack) {
+        opponent.updateLifePoints(-diff);
+        new PlayerLifePointsEvent(
+          this.actor,
+          opponent,
+          -diff,
+          LifePointsChangeMethod.Battle,
+          this.monster
+        ).publish();
+      }
       this.wasTargetDestroyedByBattle = true;
     } else if (diff < 0) {
       this.actor.updateLifePoints(diff);
@@ -140,7 +143,8 @@ export default class Attack extends Action {
         LifePointsChangeMethod.Battle,
         this.target as Card
       ).publish();
-      this.wasAttackerDestroyedByBattle = true;
+      if (target.position === MonsterPosition.Attack)
+        this.wasAttackerDestroyedByBattle = true;
     } else {
       this.wasTargetDestroyedByBattle = true;
       this.wasAttackerDestroyedByBattle = true;

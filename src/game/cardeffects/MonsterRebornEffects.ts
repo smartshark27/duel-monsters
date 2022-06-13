@@ -9,7 +9,7 @@ import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
 import CardMoveEvent from "../events/CardMoveEvent";
-import { MoveMethod, Place } from "../../enums";
+import { CardFace, MoveMethod, Place } from "../../enums";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -96,6 +96,8 @@ class MonsterRebornEffect extends IgnitionEffect {
         this.monster
       );
       zone.card = this.monster;
+      this.card.visibility = CardFace.Up;
+      this.monster.turnPositionUpdated = global.DUEL.turn;
 
       new CardMoveEvent(
         this.card.controller,

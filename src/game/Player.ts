@@ -1,10 +1,11 @@
-import { CardFace, Phase, SummonTiming } from "../enums";
+import { CardFace, MonsterPosition, Phase, SummonTiming } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
 import Draw from "./actions/Draw";
 import Pass from "./actions/Pass";
 import Card from "./Card";
+import Monster from "./cards/Monster";
 import Spell from "./cards/Spell";
 import Trap from "./cards/Trap";
 import Deck from "./Deck";
@@ -103,9 +104,7 @@ export default class Player {
     return (
       this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
-      ![SummonTiming.NegationWindow, SummonTiming.ResponseWindow].includes(
-        global.DUEL.summonTiming
-      ) &&
+      !global.DUEL.isDuringTiming() &&
       this.normalSummonsRemaining > 0 &&
       ((tributesRequired === 0 &&
         this.field.getFreeMonsterZones().length > 0) ||
@@ -146,7 +145,13 @@ export default class Player {
     let str = "|-|";
     for (let i = 0; i < 5; i++) {
       const zone = this.field.monsterZones[i];
-      str += zone.isEmpty() ? "-" : "M";
+      var char = "-";
+      if (!zone.isEmpty()) {
+        const monster = zone.card as Monster;
+        char = monster.position === MonsterPosition.Attack ? "a" : "d";
+        if (monster.visibility === CardFace.Up) char = char.toUpperCase();
+      }
+      str += char;
     }
     str += `|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints\n`;
     str += `|-|`;

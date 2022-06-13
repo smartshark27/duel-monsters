@@ -17,6 +17,6 @@ export default class Effect {
   cleanup(): void {}
 
   toString(): string {
-    return this.card.getName() + " effect";
+    return this.card.name + " effect";
   }
 }

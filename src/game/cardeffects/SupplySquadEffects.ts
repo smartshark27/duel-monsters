@@ -51,11 +51,7 @@ class SupplySquadPlayEffect extends IgnitionEffect {
 
 class SupplySquadTriggerEffect extends OptionalTriggerEffect {
   protected static logger = LoggerFactory.getLogger("SupplySquadTriggerEffect");
-  private turnLastActivated = -1;
-
-  override reset(): void {
-    this.turnLastActivated = -1;
-  }
+  private turnLastActivated = 0;
 
   override getActivationActions(): Activation[] {
     const actions = super.getActivationActions();

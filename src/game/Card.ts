@@ -18,7 +18,8 @@ export default class Card {
   controller!: Player;
   turnSet!: number;
   effects!: Effects;
-  private name!: string;
+  name!: string;
+  turnPositionUpdated = 0;
 
   protected static logger = LoggerFactory.getLogger("Card");
 
@@ -30,10 +31,6 @@ export default class Card {
     Card.logger.debug(`Creating card ${originalName}`);
     this.setEffects();
     this.reset();
-  }
-
-  getName(): string {
-    return this.name;
   }
 
   getSpeed1Actions(): Action[] {
@@ -104,7 +101,7 @@ export default class Card {
   }
 
   toString() {
-    return this.getName();
+    return this.name;
   }
 
   protected canActivate(): boolean {
