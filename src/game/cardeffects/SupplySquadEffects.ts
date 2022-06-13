@@ -25,13 +25,18 @@ class SupplySquadPlayEffect extends IgnitionEffect {
     super(card);
   }
 
+  override canActivate(): boolean {
+    return (
+      super.canActivate() &&
+      this.card.isInHand() &&
+      this.card.controller.canPlaySpellTrap()
+    );
+  }
+
   override getActivationActions(): Activation[] {
-    if (this.canActivate()) {
-      const actions = super.getActivationActions();
-      actions.push(new Activation(this.card.controller, this));
-      return actions;
-    }
-    return [];
+    const actions = super.getActivationActions();
+    actions.push(new Activation(this.card.controller, this));
+    return actions;
   }
 
   override activate(): void {
@@ -49,14 +54,6 @@ class SupplySquadPlayEffect extends IgnitionEffect {
     Utils.removeItemFromArray(this.card.controller.hand, this.card);
     zone.card = this.card;
     global.DUEL.chain.addLink(this);
-  }
-
-  protected override canActivate(): boolean {
-    return (
-      super.canActivate() &&
-      this.card.isInHand() &&
-      this.card.controller.canPlaySpellTrap()
-    );
   }
 }
 

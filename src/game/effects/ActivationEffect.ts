@@ -10,13 +10,13 @@ export default class ActivationEffect extends Effect {
     super(card, speed);
   }
 
-  resolve(): void {}
+  canActivate(): boolean {
+    return !global.DUEL.chain.includes(this);
+  }
 
   getActivationActions(): Activation[] {
     return [];
   }
 
-  protected canActivate(): boolean {
-    return !global.DUEL.chain.includes(this);
-  }
+  resolve(): void {}
 }

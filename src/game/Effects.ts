@@ -22,7 +22,7 @@ export default class Effects {
       this.effects.filter(
         (effect) => effect instanceof ActivationEffect && effect.speed >= speed
       ) as ActivationEffect[]
-    ).flatMap((effect) => effect.getActivationActions());
+    ).flatMap((effect) => (effect.canActivate()) ? effect.getActivationActions() : []);
   }
 
   getMandatoryTriggeredEffects(events: DuelEvent[]): MandatoryTriggerEffect[] {

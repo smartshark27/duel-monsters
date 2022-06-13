@@ -10,7 +10,7 @@ export default class IgnitionEffect extends ActivationEffect {
     super(card, 1);
   }
 
-  protected override canActivate(): boolean {
+  override canActivate(): boolean {
     return (
       super.canActivate() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
