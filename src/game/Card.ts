@@ -100,6 +100,7 @@ export default class Card {
     this.name = this.originalName;
     this.controller = this.owner;
     this.turnSet = -1;
+    this.effects.reset();
   }
 
   toString() {

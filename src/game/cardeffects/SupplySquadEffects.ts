@@ -53,6 +53,10 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
   protected static logger = LoggerFactory.getLogger("SupplySquadTriggerEffect");
   private turnLastActivated = -1;
 
+  override reset(): void {
+    this.turnLastActivated = -1;
+  }
+
   override getActivationActions(): Activation[] {
     const actions = super.getActivationActions();
     actions.push(new Activation(this.card.controller, this));

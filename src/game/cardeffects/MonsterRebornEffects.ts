@@ -22,10 +22,14 @@ export default class MonsterRebornEffects extends Effects {
 
 class MonsterRebornEffect extends IgnitionEffect {
   protected static logger = LoggerFactory.getLogger("ResurrectionEffect");
-  private monster: Monster | undefined;
+  private monster: Monster | null = null;
 
   constructor(card: Card) {
     super(card);
+  }
+
+  override reset(): void {
+    this.monster = null;
   }
 
   override canActivate(): boolean {

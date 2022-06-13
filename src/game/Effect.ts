@@ -7,7 +7,10 @@ export default class Effect {
 
   constructor(public card: Card, public speed: number) {}
 
+  reset(): void {}
+
   activate(): void {
+    this.reset();
     this.card.visibility = CardFace.Up;
   }
 

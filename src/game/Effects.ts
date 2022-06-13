@@ -13,8 +13,8 @@ export default class Effects {
 
   constructor(protected card: Card) {}
 
-  getEffects(): Effect[] {
-    return this.effects;
+  reset(): void {
+    this.effects.forEach((effect) => effect.reset());
   }
 
   getActivationActions(speed: number): Activation[] {
