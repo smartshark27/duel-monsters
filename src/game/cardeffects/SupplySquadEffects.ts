@@ -2,13 +2,15 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import IgnitionEffect from "../effects/IgnitionEffect";
-import TriggerEffect from "../effects/TriggerEffect";
 import Activation from "../actions/Activation";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
 import MoveCardEvent from "../events/MoveCardEvent";
-import { MoveMethod, Place } from "../../enums";
+import { CardFace, MoveMethod, Place } from "../../enums";
+import OptionalTriggerEffect from "../effects/OptionalTriggerEffect";
+import DuelEvent from "../DuelEvent";
+import Monster from "../cards/Monster";
 
 export default class SupplySquadEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("SupplySquadEffects");
@@ -22,10 +24,6 @@ export default class SupplySquadEffects extends Effects {
 
 class SupplySquadPlayEffect extends IgnitionEffect {
   protected static logger = LoggerFactory.getLogger("SupplySquadPlayEffect");
-
-  constructor(card: Card) {
-    super(card);
-  }
 
   override canActivate(): boolean {
     return (
@@ -68,27 +66,54 @@ class SupplySquadPlayEffect extends IgnitionEffect {
   }
 }
 
-class SupplySquadTriggerEffect extends TriggerEffect {
+class SupplySquadTriggerEffect extends OptionalTriggerEffect {
   protected static logger = LoggerFactory.getLogger("SupplySquadTriggerEffect");
-
   private turnLastActivated = -1;
 
-  constructor(card: Card) {
-    super(card);
-  }
-
-  override canActivate(): boolean {
-    return false;
-    // return this.card.onField() && this.turnLastActivated < global.DUEL.turn;
+  override getActivationActions(): Activation[] {
+    const actions = super.getActivationActions();
+    actions.push(new Activation(this.card.controller, this));
+    return actions;
   }
 
   override activate(): void {
     super.activate();
+    global.DUEL.chain.addLink(this);
     this.turnLastActivated = global.DUEL.turn;
   }
 
   override resolve(): void {
     super.resolve();
-    this.card.controller.drawCard();
+
+    const controller = this.card.controller;
+    const drawnCard = controller.drawCard();
+    if (drawnCard)
+      new MoveCardEvent(
+        controller,
+        drawnCard,
+        Place.Deck,
+        Place.Hand,
+        MoveMethod.Drawn,
+        this.card,
+        this
+      ).publish();
+  }
+
+  override isTriggered(events: DuelEvent[]): boolean {
+    return (
+      this.card.isOnField() &&
+      this.card.visibility === CardFace.Up &&
+      this.turnLastActivated < global.DUEL.turn &&
+      events.some((event) => {
+        return (
+          event instanceof MoveCardEvent &&
+          event.card instanceof Monster &&
+          event.card.controller === this.card.controller &&
+          [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(
+            event.how
+          )
+        );
+      })
+    );
   }
 }

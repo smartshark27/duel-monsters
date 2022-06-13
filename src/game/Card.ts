@@ -57,9 +57,7 @@ export default class Card {
   }
 
   getOptionalTriggeredActions(events: DuelEvent[]): Activation[] {
-    return this.effects
-      .getOptionalTriggeredEffects(events)
-      .map((effect) => new Activation(this.controller, effect));
+    return this.effects.getOptionalTriggeredActions(events);
   }
 
   set(): void {

@@ -67,9 +67,9 @@ export default class Duel {
       case State.OpponentMandatoryTrigger:
         return this.getOpponentMandatoryTriggeredActions();
       case State.TurnPlayerOptionalTrigger:
-        return this.getTurnPlayerOptionalTriggeredActions();
+        return this.getTurnPlayerOptionalTriggeredActions(performedAction);
       case State.OpponentOptionalTrigger:
-        return this.getOpponentOptionalTriggeredActions();
+        return this.getOpponentOptionalTriggeredActions(performedAction);
       case State.TurnPlayerResponse:
         return this.getTurnPlayerResponseActions(performedAction);
       case State.OpponentResponse:
@@ -122,25 +122,34 @@ export default class Duel {
     return this.getTurnPlayerOptionalTriggeredActions();
   }
 
-  getTurnPlayerOptionalTriggeredActions(): Action[] {
+  getTurnPlayerOptionalTriggeredActions(performedAction?: Action): Action[] {
     this.setState(State.TurnPlayerOptionalTrigger);
 
-    const actions = this.turnPlayer.getOptionalTriggeredActions(
-      this.queuedEvents
-    );
-    if (actions.length > 0) return actions;
+    if (!(performedAction instanceof Pass)) {
+      const actions = this.turnPlayer.getOptionalTriggeredActions(
+        this.queuedEvents
+      );
+      if (actions.length > 0) return actions;
+    }
 
     return this.getOpponentOptionalTriggeredActions();
   }
 
-  getOpponentOptionalTriggeredActions(): Action[] {
+  getOpponentOptionalTriggeredActions(performedAction?: Action): Action[] {
     this.setState(State.OpponentOptionalTrigger);
 
-    const opponent = this.getOpponentOf(this.turnPlayer);
-    const actions = opponent.getOptionalTriggeredActions(this.queuedEvents);
-    if (actions.length > 0) return actions;
+    if (!(performedAction instanceof Pass)) {
+      const opponent = this.getOpponentOf(this.turnPlayer);
+      const actions = opponent.getOptionalTriggeredActions(this.queuedEvents);
+      if (actions.length > 0) return actions;
+    }
 
-    if (this.chain.getLength() > 0) return this.getChainBuildActions();
+    this.pastEvents = this.pastEvents.concat(this.queuedEvents);
+    this.queuedEvents = [];
+
+    if (this.chain.getLength() > 0) {
+      return this.getChainBuildActions();
+    }
     return this.getTurnPlayerResponseActions();
   }
 
@@ -180,8 +189,7 @@ export default class Duel {
       return this.getChainBuildActions();
     if (!performedAction) {
       const actions = this.turnPlayer.getSpeed2Actions();
-      if (actions.length > 0)
-        return actions.concat(new Pass(this.turnPlayer));
+      if (actions.length > 0) return actions.concat(new Pass(this.turnPlayer));
     }
 
     return this.getOpponentResponseActions();

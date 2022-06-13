@@ -10,6 +10,10 @@ export default class TriggerEffect extends ActivationEffect {
     super(card, 1);
   }
 
+  override canActivate(): boolean {
+    return false;
+  }
+
   isTriggered(events: DuelEvent[]) {
     return false;
   }

@@ -22,7 +22,9 @@ export default class Effects {
       this.effects.filter(
         (effect) => effect instanceof ActivationEffect && effect.speed >= speed
       ) as ActivationEffect[]
-    ).flatMap((effect) => (effect.canActivate()) ? effect.getActivationActions() : []);
+    ).flatMap((effect) =>
+      effect.canActivate() ? effect.getActivationActions() : []
+    );
   }
 
   getMandatoryTriggeredEffects(events: DuelEvent[]): MandatoryTriggerEffect[] {
@@ -32,11 +34,13 @@ export default class Effects {
     ) as MandatoryTriggerEffect[];
   }
 
-  getOptionalTriggeredEffects(events: DuelEvent[]): OptionalTriggerEffect[] {
-    return this.effects.filter(
-      (effect) =>
-        effect instanceof MandatoryTriggerEffect && effect.isTriggered(events)
-    ) as OptionalTriggerEffect[];
+  getOptionalTriggeredActions(events: DuelEvent[]): Activation[] {
+    return (
+      this.effects.filter(
+        (effect) =>
+          effect instanceof OptionalTriggerEffect && effect.isTriggered(events)
+      ) as OptionalTriggerEffect[]
+    ).flatMap((effect) => effect.getActivationActions());
   }
 
   toString(): string {

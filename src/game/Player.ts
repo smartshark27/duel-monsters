@@ -96,8 +96,7 @@ export default class Player {
     const actions: Action[] = this.field
       .getCards()
       .flatMap((card) => card.getOptionalTriggeredActions(events));
-    if (global.DUEL.actionSelection.length > 0) actions.concat(new Pass(this));
-    return actions;
+    return actions.length > 0 ? actions.concat(new Pass(this)) : [];
   }
 
   canNormalSummon() {
