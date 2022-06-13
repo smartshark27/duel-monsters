@@ -57,7 +57,9 @@ export default class Monster extends Card {
   }
 
   getPoints(): number {
-    return (this.position === MonsterPosition.Attack) ? this.attackPoints : this.defencePoints;
+    return this.position === MonsterPosition.Attack
+      ? this.attackPoints
+      : this.defencePoints;
   }
 
   changePosition(): void {
@@ -101,7 +103,8 @@ export default class Monster extends Card {
       global.DUEL.battleStepTiming === BattleStepTiming.None &&
       this.controller.isTurnPlayer() &&
       this.isOnField() &&
-      this.attacksRemaining > 0
+      this.attacksRemaining > 0 &&
+      this.position === MonsterPosition.Attack
     );
   }
 

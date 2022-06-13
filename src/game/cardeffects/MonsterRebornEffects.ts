@@ -9,7 +9,8 @@ import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
 import CardMoveEvent from "../events/CardMoveEvent";
-import { CardFace, MoveMethod, Place } from "../../enums";
+import { CardFace, MonsterPosition, MoveMethod, Place } from "../../enums";
+import BattlePositionSelect from "../actions/BattlePositionSelect";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -108,7 +109,21 @@ class MonsterRebornEffect extends IgnitionEffect {
         this.card,
         this
       ).publish();
+
+      global.DUEL.actionSelection = [
+        MonsterPosition.Attack,
+        MonsterPosition.Defence,
+      ].map(
+        (position) =>
+          new BattlePositionSelect(this.card.controller, position, (position) =>
+            this.chooseBattlePosition(position)
+          )
+      );
     } else MonsterRebornEffect.logger.warn("Target is not set");
+  }
+
+  private chooseBattlePosition(position: MonsterPosition): void {
+    if (this.monster) this.monster.position = position;
   }
 
   override cleanup(): void {
