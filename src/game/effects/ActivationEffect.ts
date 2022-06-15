@@ -1,4 +1,4 @@
-import { MoveMethod, Place } from "../../enums";
+import { CardFace, MoveMethod, Place } from "../../enums";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Utils from "../../utils/Utils";
 import Activation from "../actions/Activation";
@@ -18,6 +18,11 @@ export default class ActivationEffect extends Effect {
     return !global.DUEL.chain.includes(this);
   }
 
+  override activate(): void {
+    this.card.visibility = CardFace.Up;
+    global.DUEL.chain.addLink(this);
+  }
+
   getActivationActions(): Activation[] {
     return [];
   }
@@ -27,7 +32,6 @@ export default class ActivationEffect extends Effect {
   protected activateToZone(zone: Zone): void {
     Utils.removeItemFromArray(this.card.controller.hand, this.card);
     zone.card = this.card;
-    global.DUEL.chain.addLink(this);
     new CardMoveEvent(
       this.card.controller,
       this.card,

@@ -16,10 +16,10 @@ import DuelEvent from "./DuelEvent";
 export default class Card {
   visibility = CardFace.Down;
   controller!: Player;
-  turnSet!: number;
   effects!: Effects;
   name!: string;
   turnPositionUpdated = 0;
+  turnSet = 0;
 
   protected static logger = LoggerFactory.getLogger("Card");
 
@@ -55,11 +55,6 @@ export default class Card {
     return this.effects.getOptionalTriggeredActions(events);
   }
 
-  set(): void {
-    this.visibility = CardFace.Down;
-    this.turnSet = global.DUEL.turn;
-  }
-
   isInHand(): boolean {
     return this.controller.hand.includes(this);
   }
@@ -74,6 +69,13 @@ export default class Card {
 
   wasSetBeforeThisTurn(): boolean {
     return this.isSet() && this.turnSet < global.DUEL.turn;
+  }
+
+  set(): void {
+    this.visibility = CardFace.Down;
+    const currentTurn = global.DUEL.turn;
+    this.turnPositionUpdated = currentTurn;
+    this.turnSet = currentTurn;
   }
 
   destroy(): void {
@@ -96,7 +98,8 @@ export default class Card {
   reset(): void {
     this.name = this.originalName;
     this.controller = this.owner;
-    this.turnSet = -1;
+    this.turnPositionUpdated = 0;
+    this.turnSet = 0;
     this.effects.reset();
   }
 

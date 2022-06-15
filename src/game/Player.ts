@@ -178,7 +178,7 @@ export default class Player {
       else if (card instanceof Trap) str += "t";
       else str += "-";
     }
-    str += `|${this.deck?.cards.length}|`;
+    str += `|${this.deck?.cards.length}|   Hand has ${this.hand.length} cards`;
     return str;
   }
 

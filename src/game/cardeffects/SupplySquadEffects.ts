@@ -61,7 +61,6 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
 
   override activate(): void {
     super.activate();
-    global.DUEL.chain.addLink(this);
     this.turnLastActivated = global.DUEL.turn;
   }
 

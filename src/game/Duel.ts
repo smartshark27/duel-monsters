@@ -167,7 +167,7 @@ export default class Duel {
       if (performedAction instanceof Pass || lastActorActions.length === 0)
         return this.getChainResolveActions();
 
-      return (opponentActions as Action[]).concat(new Pass(opponent));
+      return (lastActorActions as Action[]).concat(new Pass(opponent));
     }
 
     return this.getChainResolveActions();
