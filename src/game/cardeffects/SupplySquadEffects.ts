@@ -53,6 +53,24 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
   protected static logger = LoggerFactory.getLogger("SupplySquadTriggerEffect");
   private turnLastActivated = 0;
 
+  override isTriggered(events: DuelEvent[]): boolean {
+    return (
+      this.card.isOnField() &&
+      this.card.visibility === CardFace.Up &&
+      this.turnLastActivated < global.DUEL.turn &&
+      events.some((event) => {
+        return (
+          event instanceof CardMoveEvent &&
+          event.card instanceof Monster &&
+          event.card.controller === this.card.controller &&
+          [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(
+            event.how
+          )
+        );
+      })
+    );
+  }
+
   override getActivationActions(): Activation[] {
     const actions = super.getActivationActions();
     actions.push(new Activation(this.card.controller, this));
@@ -79,23 +97,5 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
         this.card,
         this
       ).publish();
-  }
-
-  override isTriggered(events: DuelEvent[]): boolean {
-    return (
-      this.card.isOnField() &&
-      this.card.visibility === CardFace.Up &&
-      this.turnLastActivated < global.DUEL.turn &&
-      events.some((event) => {
-        return (
-          event instanceof CardMoveEvent &&
-          event.card instanceof Monster &&
-          event.card.controller === this.card.controller &&
-          [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(
-            event.how
-          )
-        );
-      })
-    );
   }
 }

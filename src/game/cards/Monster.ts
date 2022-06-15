@@ -15,9 +15,9 @@ import Card from "../Card";
 import Player from "../Player";
 
 export default class Monster extends Card {
+  protected static override logger = LoggerFactory.getLogger("Monster");
   attacksRemaining = 1;
   position = MonsterPosition.Attack;
-  protected static override logger = LoggerFactory.getLogger("Monster");
   originalAttackPoints!: number;
   originalDefencePoints!: number;
   originalLevel!: number;
@@ -47,6 +47,7 @@ export default class Monster extends Card {
     this.attackPoints = this.originalAttackPoints;
     this.defencePoints = this.originalDefencePoints;
     this.level = this.originalLevel;
+    this.position = MonsterPosition.Attack;
   }
 
   getTributesRequired(): number {

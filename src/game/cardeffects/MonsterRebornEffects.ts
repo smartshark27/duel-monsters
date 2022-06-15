@@ -22,7 +22,7 @@ export default class MonsterRebornEffects extends Effects {
 }
 
 class MonsterRebornEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("ResurrectionEffect");
+  protected static logger = LoggerFactory.getLogger("MonsterRebornEffect");
   private monster: Monster | null = null;
 
   constructor(card: Card) {
