@@ -1,8 +1,9 @@
 import winston from "winston";
+import Input from "./Input";
 
 export default class LoggerFactory {
   private static logger = winston.createLogger({
-    level: 'info',
+    level: Input.checkFlag("debug") ? "debug" : "info",
     transports: [
       new winston.transports.Console({
         format: winston.format.printf((options) => {

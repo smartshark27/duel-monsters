@@ -1,8 +1,4 @@
-import LoggerFactory from "../util/LoggerFactory";
-
-export default class Util {
-  private static logger = LoggerFactory.getLogger("Util");
-
+export default class Utils {
   static removeItemFromArray(array: any[], item: any) {
     const index = array.indexOf(item);
     array.splice(index, 1);

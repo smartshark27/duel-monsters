@@ -1,4 +1,4 @@
-import LoggerFactory from "../util/LoggerFactory";
+import LoggerFactory from "./LoggerFactory";
 import { PathOrFileDescriptor, readFileSync } from "fs";
 
 export default class File {

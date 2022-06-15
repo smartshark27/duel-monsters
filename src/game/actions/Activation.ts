@@ -1,25 +1,21 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
-import CardAction from "./CardAction";
-import Card from "../Card";
+import ActivationEffect from "../effects/ActivationEffect";
+import Action from "../Action";
 
-export default class Activation extends CardAction {
-  protected static logger = LoggerFactory.getLogger("SpellActivation");
+export default class Activation extends Action {
+  protected static logger = LoggerFactory.getLogger("Activation");
 
-  constructor(actor: Player, card: Card) {
-    super(actor, card);
+  constructor(actor: Player, public effect: ActivationEffect) {
+    super(actor);
   }
 
   override perform() {
-    this.card.activate();
-  }
-
-  override finalise() {
-    Activation.logger.info(`Resolving effect of ${this.card}`);
-    this.card.resolve();
+    super.perform();
+    this.effect.activate();
   }
 
   override toString(): string {
-    return `Activate ${this.card}`;
+    return `Activate ${this.effect.card}`;
   }
 }

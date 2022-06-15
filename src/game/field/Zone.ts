@@ -1,4 +1,4 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Player from "../Player";
 
@@ -11,5 +11,10 @@ export default class Zone {
 
   isEmpty(): boolean {
     return !this.card;
+  }
+
+  toString(): string {
+    Zone.logger.error("toString() not implemented for subclass of Zone");
+    return "";
   }
 }

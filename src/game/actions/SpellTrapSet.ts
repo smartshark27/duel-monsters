@@ -1,30 +1,52 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
-import CardAction from "./CardAction";
-import Spell from "../cards/Spell";
-import SpellTrapZone from "../field/SpellTrapZone";
-import Util from "../../util/Util";
+import Utils from "../../utils/Utils";
+import ZoneSelect from "./ZoneSelect";
+import Zone from "../field/Zone";
+import { CardFace, MoveMethod, Place } from "../../enums";
+import CardMoveEvent from "../events/CardMoveEvent";
+import Action from "../Action";
 import Trap from "../cards/Trap";
+import Spell from "../cards/Spell";
 
-export default class SpellTrapSet extends CardAction {
-  protected static logger = LoggerFactory.getLogger("SpellTrapSet");
+export default class SpellTrapSet extends Action {
+  protected static override logger = LoggerFactory.getLogger("SpellTrapSet");
 
-  constructor(
-    actor: Player,
-    card: Spell | Trap,
-    private zone: SpellTrapZone
-  ) {
-    super(actor, card);
+  constructor(actor: Player, protected card: Spell | Trap) {
+    super(actor);
   }
 
-  override perform() {
-    SpellTrapSet.logger.info(`Setting ${this.card}`);
+  override perform(): void {
+    super.perform();
+    this.setActionSelection(
+      this.actor.field
+        .getFreeSpellTrapZones()
+        .map(
+          (zone) =>
+            new ZoneSelect(this.actor, zone, (zone) => this.setToZone(zone))
+        )
+    );
+  }
+
+  setToZone(zone: Zone) {
+    Utils.removeItemFromArray(this.actor.hand, this.card);
+    zone.card = this.card;
+    this.card.visibility = CardFace.Down;
     this.card.set();
-    this.zone.card = this.card;
-    Util.removeItemFromArray(this.actor.hand, this.card);
+    this.getSetEvent().publish();
   }
 
   override toString(): string {
     return `Set ${this.card}`;
+  }
+
+  protected getSetEvent(): CardMoveEvent {
+    return new CardMoveEvent(
+      this.actor,
+      this.card,
+      Place.Hand,
+      Place.Field,
+      MoveMethod.Set
+    );
   }
 }

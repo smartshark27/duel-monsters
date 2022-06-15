@@ -1,4 +1,4 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Zone from "./Zone";
 
@@ -7,6 +7,10 @@ export default class SpellTrapZone extends Zone {
 
   constructor(owner: Player, private index: number) {
     super(owner);
-    SpellTrapZone.logger.debug(`Creating spell/trap zone ${index}`);
+    Zone.logger.info(`Creating ${this}`);
+  }
+
+  override toString(): string {
+    return `${this.owner} spell & trap zone ${this.index}`;
   }
 }

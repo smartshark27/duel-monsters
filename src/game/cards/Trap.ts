@@ -1,12 +1,10 @@
 import CardData from "../../interfaces/CardData";
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
-import SpellTrapSet from "../actions/SpellTrapSet";
-import NormalTrapActivation from "../actions/NormalTrapActivation";
 import Card from "../Card";
-import SpellTrapZone from "../field/SpellTrapZone";
 import Player from "../Player";
-import { CardFace } from "../../enums";
+import SpellTrapSet from "../actions/SpellTrapSet";
+import { Phase } from "../../enums";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
@@ -17,42 +15,21 @@ export default class Trap extends Card {
 
   override getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();
-    if (this.canSet()) {
-      actions.push(this.getSetAction());
-    }
+    if (this.canSet()) actions.push(this.getSetAction());
     return actions;
   }
 
-  override getSpeed2Actions(): Action[] {
-    const actions = super.getSpeed2Actions();
-    if (this.canActivate()) {
-      actions.push(this.getActivationAction());
-    }
-    return actions;
-  }
-
-  protected override canActivate(): boolean {
+  private canSet(): boolean {
     return (
-      super.canActivate() &&
-      this.visibility === CardFace.Down &&
-      this.turnSet > 0 &&
-      this.turnSet < global.DUEL.turnCounter
+      this.controller.isTurnPlayer() &&
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      !global.DUEL.isDuringTiming() &&
+      this.isInHand() &&
+      this.controller.canPlaySpellTrap()
     );
-  }
-
-  protected getActivationAction(): NormalTrapActivation {
-    return new NormalTrapActivation(this.controller, this);
-  }
-
-  protected canSet(): boolean {
-    return this.turnSet < 0 && this.controller.canSetSpellTrap();
   }
 
   private getSetAction(): SpellTrapSet {
-    return new SpellTrapSet(
-      this.controller,
-      this,
-      this.controller.field.getRandomFreeSpellTrapZone() as SpellTrapZone
-    );
+    return new SpellTrapSet(this.controller, this);
   }
 }

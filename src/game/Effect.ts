@@ -1,22 +1,22 @@
-import LoggerFactory from "../util/LoggerFactory";
+import { CardFace } from "../enums";
+import LoggerFactory from "../utils/LoggerFactory";
 import Card from "./Card";
 
 export default class Effect {
   protected static logger = LoggerFactory.getLogger("Effect");
 
-  constructor(protected card: Card) {}
+  constructor(public card: Card, public speed: number) {}
 
-  canActivate(): boolean {
-    return false;
+  reset(): void {}
+
+  activate(): void {
+    this.reset();
+    this.card.visibility = CardFace.Up;
   }
 
-  activate(): void {}
-
-  resolve(): void {}
-
-  after(): void {}
+  cleanup(): void {}
 
   toString(): string {
-    return this.card.data.description || "No effect";
+    return this.card.name + " effect";
   }
 }

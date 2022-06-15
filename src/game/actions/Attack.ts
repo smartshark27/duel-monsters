@@ -1,64 +1,166 @@
-import LoggerFactory from "../../util/LoggerFactory";
+import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Monster from "../cards/Monster";
-import CardAction from "./CardAction";
+import {
+  BattleStepTiming,
+  LifePointsChangeMethod,
+  MonsterPosition,
+  MoveMethod,
+  Place,
+  TargetMethod,
+} from "../../enums";
+import Action from "../Action";
+import CardTarget from "./CardTarget";
+import CardTargetEvent from "../events/CardTargetEvent";
+import PlayerTarget from "./PlayerTarget";
+import PlayerTargetEvent from "../events/PlayerTargetEvent";
+import CardMoveEvent from "../events/CardMoveEvent";
+import PlayerLifePointsEvent from "../events/PlayerLifePointsEvent";
+import Card from "../Card";
 
-export default class Attack extends CardAction {
+export default class Attack extends Action {
   protected static override logger = LoggerFactory.getLogger("Attack");
+  private target: Monster | Player | undefined;
+  private wasTargetDestroyedByBattle = false;
+  private wasAttackerDestroyedByBattle = false;
 
-  constructor(
-    actor: Player,
-    monster: Monster,
-    private target: Monster | Player
-  ) {
-    super(actor, monster);
+  constructor(actor: Player, private monster: Monster) {
+    super(actor);
   }
 
   override perform(): void {
-    Attack.logger.info(`${this.card} is declaring attack against ${this.target}`);
+    super.perform();
+    const monsterAttackActions = this.getMonsterAttackActions();
+    if (monsterAttackActions.length > 0)
+      this.setActionSelection(monsterAttackActions);
+    else this.setActionSelection([this.getDirectAttackAction()]);
   }
 
-  override finalise(): void {
-    const attacker = this.card as Monster;
-    attacker.attacksRemaining--;
-    if (!this.actor.field.getZoneOf(this.card)) {
-      Attack.logger.debug(
-        `Monster ${this.card} is no longer on field to make attack`
-      );
-      return;
+  attackMonster(monster: Monster): void {
+    this.target = monster;
+    this.monster.attacksRemaining--;
+    new CardTargetEvent(
+      this.actor,
+      monster,
+      TargetMethod.Attack,
+      this.monster
+    ).publish();
+    global.DUEL.attack = this;
+    global.DUEL.battleStepTiming = BattleStepTiming.AttackDeclarationWindow;
+  }
+
+  attackDirectly(player: Player): void {
+    this.target = player;
+    this.monster.attacksRemaining--;
+    new PlayerTargetEvent(
+      this.actor,
+      player,
+      TargetMethod.Attack,
+      this.monster
+    ).publish();
+    global.DUEL.attack = this;
+    global.DUEL.battleStepTiming = BattleStepTiming.AttackDeclarationWindow;
+  }
+
+  applyDamageCalculation(): void {
+    Attack.logger.info("Applying damage calculation");
+    if (this.target instanceof Monster)
+      this.performMonsterAttackDamageCalculation(this.target as Monster);
+    else if (this.target instanceof Player)
+      this.performDirectAttackDamageCalculation(this.target as Player);
+    else Attack.logger.warn(`Attack target was not set`);
+  }
+
+  destroyMonsters(): void {
+    if (this.wasTargetDestroyedByBattle) {
+      (this.target as Monster).destroy();
+      new CardMoveEvent(
+        this.actor,
+        this.target as Monster,
+        Place.Field,
+        Place.Graveyard,
+        MoveMethod.DestroyedByBattle,
+        this.monster
+      ).publish();
     }
-    if (this.target instanceof Player) {
-      this.attackDirectly(attacker);
-    } else {
-      this.battle(attacker, this.target as Monster);
-    }
-  }
-
-  private attackDirectly(attacker: Monster) {
-    Attack.logger.info(`${attacker} is attacking ${this.target} directly`);
-    (this.target as Player).receiveBattleDamage(attacker.getAttackPoints());
-  }
-
-  private battle(attacker: Monster, target: Monster) {
-    Attack.logger.info(`${attacker} is attacking ${target}`);
-    const attackerPoints = attacker.getAttackPoints();
-    const targetPoints = target.getAttackPoints();
-    const difference = attackerPoints - targetPoints;
-    const opponent = global.DUEL.getOpponentOf(this.actor);
-    if (difference > 0) {
-      opponent.receiveBattleDamage(difference);
-      target.destroyByBattle();
-    } else if (difference < 0) {
-      this.actor.receiveBattleDamage(-difference);
-      attacker.destroyByBattle();
-    } else {
-      Attack.logger.info("Both monsters have the same attack points");
-      target.destroyByBattle();
-      attacker.destroyByBattle();
+    if (this.wasAttackerDestroyedByBattle) {
+      this.monster.destroy();
+      new CardMoveEvent(
+        this.actor,
+        this.monster as Monster,
+        Place.Field,
+        Place.Graveyard,
+        MoveMethod.DestroyedByBattle,
+        this.target as Monster
+      ).publish();
     }
   }
 
   override toString(): string {
-    return `Attack ${this.target} using ${this.card}`;
+    return `Attack using ${this.monster}`;
+  }
+
+  private getMonsterAttackActions(): CardTarget[] {
+    const opponent = global.DUEL.getOpponentOf(this.actor);
+    return opponent.field
+      .getMonsters()
+      .map(
+        (monster) =>
+          new CardTarget(this.actor, monster, (monster) =>
+            this.attackMonster(monster as Monster)
+          )
+      );
+  }
+
+  private getDirectAttackAction(): PlayerTarget {
+    const opponent = global.DUEL.getOpponentOf(this.actor);
+    return new PlayerTarget(this.actor, opponent, (opponent) =>
+      this.attackDirectly(opponent)
+    );
+  }
+
+  private performMonsterAttackDamageCalculation(target: Monster): void {
+    const opponent = global.DUEL.getOpponentOf(this.actor);
+    const diff = this.monster.getPoints() - target.getPoints();
+    if (diff > 0) {
+      if (target.position === MonsterPosition.Attack) {
+        opponent.updateLifePoints(-diff);
+        new PlayerLifePointsEvent(
+          this.actor,
+          opponent,
+          -diff,
+          LifePointsChangeMethod.Battle,
+          this.monster
+        ).publish();
+      }
+      this.wasTargetDestroyedByBattle = true;
+    } else if (diff < 0) {
+      this.actor.updateLifePoints(diff);
+      new PlayerLifePointsEvent(
+        opponent,
+        this.actor,
+        diff,
+        LifePointsChangeMethod.Battle,
+        this.target as Card
+      ).publish();
+      if (target.position === MonsterPosition.Attack)
+        this.wasAttackerDestroyedByBattle = true;
+    } else {
+      this.wasTargetDestroyedByBattle = true;
+      this.wasAttackerDestroyedByBattle = true;
+    }
+  }
+
+  private performDirectAttackDamageCalculation(target: Player): void {
+    const damage = -this.monster.attackPoints;
+    target.updateLifePoints(damage);
+
+    new PlayerLifePointsEvent(
+      this.actor,
+      global.DUEL.getOpponentOf(this.actor),
+      damage,
+      LifePointsChangeMethod.Battle,
+      this.monster
+    ).publish();
   }
 }

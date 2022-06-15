@@ -1,23 +1,34 @@
-import { Phase } from "../enums";
-import LoggerFactory from "../util/LoggerFactory";
-import Util from "../util/Util";
+import {
+  CardFace,
+  MonsterPosition,
+  MoveMethod,
+  Phase,
+  Place,
+  SummonTiming,
+} from "../enums";
+import LoggerFactory from "../utils/LoggerFactory";
+import Utils from "../utils/Utils";
 import Action from "./Action";
-import EndPhase from "./actions/EndPhase";
+import Draw from "./actions/Draw";
+import Pass from "./actions/Pass";
 import Card from "./Card";
+import Monster from "./cards/Monster";
 import Spell from "./cards/Spell";
 import Trap from "./cards/Trap";
 import Deck from "./Deck";
+import DuelEvent from "./DuelEvent";
+import CardMoveEvent from "./events/CardMoveEvent";
 import Field from "./Field";
 
 export default class Player {
   hand: Card[] = [];
   graveyard: Card[] = [];
-  havingTurn: boolean = false;
   normalSummonsRemaining = 0;
   name: string;
   field: Field;
 
   private static logger = LoggerFactory.getLogger("Player");
+  private canNormalDraw = false;
   private lifePoints: number = 8000;
   private deck: Deck | undefined;
 
@@ -38,72 +49,74 @@ export default class Player {
     }
   }
 
-  drawCard() {
+  startDrawPhase(): void {
+    this.canNormalDraw = true;
+  }
+
+  startMainPhase1(): void {
+    this.normalSummonsRemaining = 1;
+  }
+
+  startBattlePhase(): void {
+    this.field.resetMonsterAttacksRemaining();
+  }
+
+  getSpeed1Actions(): Action[] {
+    if (
+      this.isTurnPlayer() &&
+      global.DUEL.phase === Phase.Draw &&
+      this.canNormalDraw
+    ) {
+      this.canNormalDraw = false;
+      return [new Draw(this)];
+    }
+
+    return this.getSpeed2Actions()
+      .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
+      .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()));
+  }
+
+  getSpeed2Actions(): Action[] {
+    return this.hand
+      .concat(this.field.getCards())
+      .flatMap((card) => card.getSpeed2Actions());
+  }
+
+  getMandatoryTriggeredActions(events: DuelEvent[]): Action[] {
+    return this.field
+      .getCards()
+      .flatMap((card) => card.getMandatoryTriggeredActions(events));
+  }
+
+  getOptionalTriggeredActions(events: DuelEvent[]): Action[] {
+    const actions: Action[] = this.field
+      .getCards()
+      .flatMap((card) => card.getOptionalTriggeredActions(events));
+    return actions.length > 0 ? actions.concat(new Pass(this)) : [];
+  }
+
+  drawCard(): Card | null {
     Player.logger.debug("Drawing card");
     const card = this.deck?.drawCard();
     if (card) {
       Player.logger.info(`Drew card ${card}`);
       this.hand.push(card);
-    } else {
-      Player.logger.warn("No cards left to draw");
-      global.DUEL.end(global.DUEL.getOpponentOf(this));
+      return card;
     }
+    Player.logger.warn("No cards left to draw");
+    global.DUEL.end(global.DUEL.getOpponentOf(this));
+    return null;
   }
 
-  startDrawPhase() {
-    Player.logger.info(`Starting draw phase for player ${this}`);
-    this.drawCard();
-  }
-
-  startMainPhase1() {
-    Player.logger.info(`Starting main phase 1 for player ${this}`);
-    this.normalSummonsRemaining++;
-  }
-
-  startBattlePhase() {
-    Player.logger.info(`Starting battle phase for player ${this}`);
-  }
-
-  startMainPhase2() {
-    Player.logger.info(`Starting main phase 2 for player ${this}`);
-  }
-
-  startEndPhase() {
-    Player.logger.info(`Starting end phase for player ${this}`);
-    this.normalSummonsRemaining = 0;
-    this.field
-      .getMonsters()
-      .forEach((monster) => (monster.attacksRemaining = 1));
-    while (this.hand.length > 6) {
-      this.discardRandom();
-    }
-  }
-
-  getSpeed1Actions(): Action[] {
-    return this.getSpeed2Actions()
-      .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
-      .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()))
-      .concat(new EndPhase(this));
-  }
-
-  getSpeed2Actions(): Action[] {
-    // TODO: Add ignore action
-    return this.field.getCards().flatMap((card) => card.getSpeed2Actions());
-  }
-
-  canNormalSummon() {
+  canNormalSummon(tributesRequired: number) {
     return (
-      this.havingTurn &&
+      this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      !global.DUEL.isDuringTiming() &&
       this.normalSummonsRemaining > 0 &&
-      this.field.getFreeMonsterZones().length > 0
-    );
-  }
-
-  canTributeSummon(tributesRequired: number) {
-    return (
-      this.canNormalSummon() &&
-      this.field.getMonsters().length >= tributesRequired
+      ((tributesRequired === 0 &&
+        this.field.getFreeMonsterZones().length > 0) ||
+        this.field.getMonsters().length >= tributesRequired)
     );
   }
 
@@ -111,63 +124,73 @@ export default class Player {
     return this.field.getFreeSpellTrapZones().length > 0;
   }
 
-  canSetSpellTrap() {
-    return (
-      this.canPlaySpellTrap() &&
-      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase)
+  isTurnPlayer(): boolean {
+    return global.DUEL.turnPlayer === this;
+  }
+
+  updateLifePoints(change: number): void {
+    Player.logger.debug(
+      `Player ${this}'s lifepoints are changing by ${change}`
     );
-  }
-
-  receiveBattleDamage(damage: number): void {
-    Player.logger.info(`Inflicting ${damage} battle damage to ${this}`);
-    this.reduceLifePoints(damage);
-  }
-
-  discardRandom() {
-    Player.logger.info("Discarding card");
-    const card = Util.getRandomItemFromArray(this.hand);
-    this.graveyard.push(card);
-    Util.removeItemFromArray(this.hand, card);
-  }
-
-  getFieldString() {
-    let str = "|-|";
-    for (let i = 0; i < 5; i++) {
-      const zone = this.field.monsterZones[i];
-      str += zone.isEmpty() ? "-" : "M";
-    }
-    str += `|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints\n`;
-    str += `|-|`;
-    for (let i = 0; i < 5; i++) {
-      const zone = this.field.spellTrapZones[i];
-      if (zone.card instanceof Spell) {
-        str += "S";
-      } else if (zone.card instanceof Trap) {
-        str += "T";
-      } else {
-        str += "-";
-      }
-    }
-    str += `|${this.deck?.cards.length}|`;
-    return str;
-  }
-
-  toString() {
-    return this.name;
-  }
-
-  private reduceLifePoints(damage: number): void {
-    this.lifePoints -= damage;
+    this.lifePoints += change;
     this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
     Player.logger.info(
       `Player ${this} has ${this.lifePoints} life points remaining`
     );
-    this.checkLifePointsLoss();
-  }
-
-  private checkLifePointsLoss(): void {
     if (this.lifePoints === 0) {
       global.DUEL.end(global.DUEL.getOpponentOf(this));
     }
+  }
+
+  checkHandLimit(): void {
+    while (this.hand.length > 6) {
+      const card = this.discardRandom();
+      new CardMoveEvent(
+        this,
+        card,
+        Place.Hand,
+        Place.Graveyard,
+        MoveMethod.Discarded
+      );
+    }
+  }
+
+  getFieldString(): string {
+    let str = "|-|";
+    for (let i = 0; i < 5; i++) {
+      const zone = this.field.monsterZones[i];
+      var char = "-";
+      if (!zone.isEmpty()) {
+        const monster = zone.card as Monster;
+        char = monster.position === MonsterPosition.Attack ? "a" : "d";
+        if (monster.visibility === CardFace.Up) char = char.toUpperCase();
+      }
+      str += char;
+    }
+    str += `|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints\n`;
+    str += `|-|`;
+    for (let i = 0; i < 5; i++) {
+      const card = this.field.spellTrapZones[i].card;
+      if (card instanceof Spell && card.visibility === CardFace.Up) str += "S";
+      else if (card instanceof Spell) str += "s";
+      else if (card instanceof Trap && card.visibility === CardFace.Up)
+        str += "T";
+      else if (card instanceof Trap) str += "t";
+      else str += "-";
+    }
+    str += `|${this.deck?.cards.length}|   Hand has ${this.hand.length} cards`;
+    return str;
+  }
+
+  toString(): string {
+    return this.name;
+  }
+
+  private discardRandom(): Card {
+    const card = Utils.getRandomItemFromArray(this.hand);
+    Player.logger.info(`Discarding ${card}`);
+    Utils.removeItemFromArray(this.hand, card);
+    this.graveyard.push(card);
+    return card;
   }
 }
