@@ -182,6 +182,11 @@ export default class Duel {
     if (this.actionSelection.length > 0) return this.getActionSelection();
     if (this.chain.getLength() > 0) return this.getChainResolveActions();
     else this.chain.cleanup();
+
+    if (this.isDuringSingleChainTiming()) {
+      this.proceed();
+      return this.getOpenActions();
+    }
     return this.getTurnPlayerMandatoryTriggeredActions();
   }
 
@@ -255,6 +260,14 @@ export default class Duel {
       this.players[1].getFieldString() +
       "\n" +
       `Top monsters are ${this.players[0].field.getMonsters()}, Bottom monsters are ${this.players[1].field.getMonsters()}`
+    );
+  }
+
+  private isDuringSingleChainTiming() {
+    return (
+      this.summonTiming === SummonTiming.NegationWindow ||
+      this.battleStepTiming === BattleStepTiming.AttackDeclarationWindow ||
+      this.damageStepTiming === DamageStepTiming.DuringDamageCalculation
     );
   }
 
