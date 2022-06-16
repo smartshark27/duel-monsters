@@ -12,17 +12,16 @@ import Chain from "./Chain";
 import Player from "./Player";
 import Activation from "./actions/Activation";
 import Pass from "./actions/Pass";
-import DuelEvent from "./DuelEvent";
 import Draw from "./actions/Draw";
 import Attack from "./actions/Attack";
 import Summon from "./actions/Summon";
+import EventManager from "./EventManager";
 
 export default class Duel {
   turnPlayer: Player;
   actionSelection: Action[] = [];
-  queuedEvents: DuelEvent[] = [];
-  pastEvents: DuelEvent[] = [];
   chain = new Chain();
+  eventManager = new EventManager();
   turn = 1;
   winner: Player | undefined;
 
@@ -103,7 +102,7 @@ export default class Duel {
     this.setState(State.TurnPlayerMandatoryTrigger);
 
     const actions = this.turnPlayer.getMandatoryTriggeredActions(
-      this.queuedEvents
+      this.eventManager.queuedEvents
     );
     if (actions.length > 1) return actions;
     else if (actions.length === 1) actions[0].perform();
@@ -115,7 +114,9 @@ export default class Duel {
     this.setState(State.OpponentMandatoryTrigger);
 
     const opponent = this.getOpponentOf(this.turnPlayer);
-    const actions = opponent.getMandatoryTriggeredActions(this.queuedEvents);
+    const actions = opponent.getMandatoryTriggeredActions(
+      this.eventManager.queuedEvents
+    );
     if (actions.length > 1) return actions;
     else if (actions.length === 1) actions[0].perform();
 
@@ -127,7 +128,7 @@ export default class Duel {
 
     if (!(performedAction instanceof Pass)) {
       const actions = this.turnPlayer.getOptionalTriggeredActions(
-        this.queuedEvents
+        this.eventManager.queuedEvents
       );
       if (actions.length > 0) return actions;
     }
@@ -140,12 +141,13 @@ export default class Duel {
 
     if (!(performedAction instanceof Pass)) {
       const opponent = this.getOpponentOf(this.turnPlayer);
-      const actions = opponent.getOptionalTriggeredActions(this.queuedEvents);
+      const actions = opponent.getOptionalTriggeredActions(
+        this.eventManager.queuedEvents
+      );
       if (actions.length > 0) return actions;
     }
 
-    this.pastEvents = this.pastEvents.concat(this.queuedEvents);
-    this.queuedEvents = [];
+    this.eventManager.clearQueuedEvents();
 
     if (this.chain.getLength() > 0) {
       return this.getChainBuildActions();

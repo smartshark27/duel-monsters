@@ -11,7 +11,7 @@ export default class DuelEvent {
 
   publish(): void {
     DuelEvent.logger.info(this);
-    global.DUEL.queuedEvents.push(this);
+    global.DUEL.eventManager.push(this);
   }
 
   toString(): string {
