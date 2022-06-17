@@ -2,7 +2,6 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Monster from "../cards/Monster";
 import {
-  BattleStepTiming,
   LifePointsChangeMethod,
   MonsterPosition,
   MoveMethod,
@@ -46,7 +45,6 @@ export default class Attack extends Action {
       this.monster
     ).publish();
     global.DUEL.attack = this;
-    global.DUEL.battleStepTiming = BattleStepTiming.AttackDeclarationWindow;
   }
 
   attackDirectly(player: Player): void {
@@ -59,7 +57,6 @@ export default class Attack extends Action {
       this.monster
     ).publish();
     global.DUEL.attack = this;
-    global.DUEL.battleStepTiming = BattleStepTiming.AttackDeclarationWindow;
   }
 
   applyDamageCalculation(): void {

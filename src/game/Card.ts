@@ -33,17 +33,15 @@ export default class Card {
     this.reset();
   }
 
-  getSpeed1Actions(): Action[] {
-    return this.getActivationActions(1);
+  getActions(speed: number, events: DuelEvent[]): Action[] {
+    const actions = [];
+    if (speed <= 1) actions.push(...this.getSpeed1Actions());
+    return actions.concat(this.getActivationActions(speed, events));
   }
 
-  getSpeed2Actions(): Action[] {
-    return this.getActivationActions(2);
-  }
-
-  getActivationActions(speed: number): Action[] {
+  getActivationActions(speed: number, events: DuelEvent[]): Action[] {
     return (
-      (this.canActivate() && this.effects?.getActivationActions(speed)) || []
+      (this.canActivate() && this.effects?.getActivationActions(speed, events)) || []
     );
   }
 
@@ -109,6 +107,10 @@ export default class Card {
 
   protected canActivate(): boolean {
     return true;
+  }
+
+  protected getSpeed1Actions(): Action[] {
+    return [];
   }
 
   private setEffects(): void {

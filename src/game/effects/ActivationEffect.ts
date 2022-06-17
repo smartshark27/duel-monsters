@@ -3,6 +3,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Utils from "../../utils/Utils";
 import Activation from "../actions/Activation";
 import Card from "../Card";
+import DuelEvent from "../DuelEvent";
 import Effect from "../Effect";
 import CardMoveEvent from "../events/CardMoveEvent";
 import Zone from "../field/Zone";
@@ -14,8 +15,8 @@ export default class ActivationEffect extends Effect {
     super(card, speed);
   }
 
-  canActivate(): boolean {
-    return !global.DUEL.chain.includes(this);
+  canActivate(events: DuelEvent[]): boolean {
+    return !global.DUEL.chain.includes(this) && this.canActivateFromEvents(events);
   }
 
   override activate(): void {
@@ -24,10 +25,14 @@ export default class ActivationEffect extends Effect {
   }
 
   getActivationActions(): Activation[] {
-    return [];
+    return [new Activation(this.card.controller, this)];
   }
 
   resolve(): void {}
+
+  protected canActivateFromEvents(events: DuelEvent[]): boolean {
+    return true;
+  }
 
   protected activateToZone(zone: Zone): void {
     Utils.removeItemFromArray(this.card.controller.hand, this.card);

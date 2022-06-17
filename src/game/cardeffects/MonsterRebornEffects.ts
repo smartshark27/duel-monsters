@@ -4,13 +4,14 @@ import Card from "../Card";
 import Monster from "../cards/Monster";
 import CardTarget from "../actions/CardTarget";
 import IgnitionEffect from "../effects/IgnitionEffect";
-import Activation from "../actions/Activation";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
 import CardMoveEvent from "../events/CardMoveEvent";
 import { CardFace, MonsterPosition, MoveMethod, Place } from "../../enums";
 import BattlePositionSelect from "../actions/BattlePositionSelect";
+import DuelEvent from "../DuelEvent";
+import Attack from "../actions/Attack";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -33,20 +34,14 @@ class MonsterRebornEffect extends IgnitionEffect {
     this.monster = null;
   }
 
-  override canActivate(): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
-      super.canActivate() &&
+      super.canActivate(events) &&
       this.card.isInHand() &&
       this.card.controller.canPlaySpellTrap() &&
       this.getGraveyardMonsters().length > 0 &&
       this.card.controller.field.getFreeMonsterZones().length > 0
     );
-  }
-
-  override getActivationActions(): Activation[] {
-    const actions = super.getActivationActions();
-    actions.push(new Activation(this.card.controller, this));
-    return actions;
   }
 
   override activate(): void {
@@ -73,6 +68,12 @@ class MonsterRebornEffect extends IgnitionEffect {
             this.specialSummonMonsterToZone(zone)
           )
       );
+  }
+
+  protected override canActivateFromEvents(events: DuelEvent[]): boolean {
+    return events.some(
+      (event) => event instanceof Attack && event.actor !== this.card.controller
+    );
   }
 
   protected override activateToZone(zone: Zone): void {

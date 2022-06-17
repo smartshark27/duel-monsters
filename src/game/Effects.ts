@@ -17,13 +17,13 @@ export default class Effects {
     this.effects.forEach((effect) => effect.reset());
   }
 
-  getActivationActions(speed: number): Activation[] {
+  getActivationActions(speed: number, events: DuelEvent[]): Activation[] {
     return (
       this.effects.filter(
         (effect) => effect instanceof ActivationEffect && effect.speed >= speed
       ) as ActivationEffect[]
     ).flatMap((effect) =>
-      effect.canActivate() ? effect.getActivationActions() : []
+      effect.canActivate(events) ? effect.getActivationActions() : []
     );
   }
 

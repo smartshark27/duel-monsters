@@ -1,10 +1,4 @@
-import {
-  CardFace,
-  MonsterPosition,
-  MoveMethod,
-  Phase,
-  Place,
-} from "../enums";
+import { CardFace, MonsterPosition, MoveMethod, Phase, Place } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
@@ -60,7 +54,7 @@ export default class Player {
     this.field.resetMonsterAttacksRemaining();
   }
 
-  getSpeed1Actions(): Action[] {
+  getSpeed1Actions(events: DuelEvent[] = []): Action[] {
     if (
       this.isTurnPlayer() &&
       global.DUEL.phase === Phase.Draw &&
@@ -70,15 +64,17 @@ export default class Player {
       return [new Draw(this)];
     }
 
-    return this.getSpeed2Actions()
-      .concat(this.hand.flatMap((card) => card.getSpeed1Actions()))
-      .concat(this.field.getCards().flatMap((card) => card.getSpeed1Actions()));
+    return this.hand
+      .flatMap((card) => card.getActions(1, events))
+      .concat(
+        this.field.getCards().flatMap((card) => card.getActions(1, events))
+      );
   }
 
-  getSpeed2Actions(): Action[] {
+  getSpeed2Actions(events: DuelEvent[] = []): Action[] {
     return this.hand
       .concat(this.field.getCards())
-      .flatMap((card) => card.getSpeed2Actions());
+      .flatMap((card) => card.getActions(2, events));
   }
 
   getMandatoryTriggeredActions(events: DuelEvent[]): Action[] {
