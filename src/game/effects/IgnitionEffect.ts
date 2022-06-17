@@ -2,6 +2,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import ActivationEffect from "./ActivationEffect";
 import Card from "../Card";
 import { Phase } from "../../enums";
+import DuelEvent from "../DuelEvent";
 
 export default class IgnitionEffect extends ActivationEffect {
   protected static logger = LoggerFactory.getLogger("IgnitionEffect");
@@ -10,9 +11,9 @@ export default class IgnitionEffect extends ActivationEffect {
     super(card, 1);
   }
 
-  override canActivate(): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
-      super.canActivate() &&
+      super.canActivate(events) &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
       !global.DUEL.isDuringTiming()
     );

@@ -3,13 +3,12 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import QuickEffect from "../effects/QuickEffect";
 import {
-  BattleStepTiming,
   MonsterPosition,
   MoveMethod,
   Place,
 } from "../../enums";
 import CardMoveEvent from "../events/CardMoveEvent";
-import Activation from "../actions/Activation";
+import DuelEvent from "../DuelEvent";
 
 export default class MirrorForceEffect extends Effects {
   protected static logger = LoggerFactory.getLogger("MirrorForceEffect");
@@ -29,21 +28,13 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
     super(card);
   }
 
-  override canActivate(): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
-      super.canActivate() &&
+      super.canActivate(events) &&
       !this.card.controller.isTurnPlayer() &&
-      global.DUEL.battleStepTiming ===
-        BattleStepTiming.AttackDeclarationWindow &&
       global.DUEL.attack !== null &&
       this.card.wasSetBeforeThisTurn()
     );
-  }
-
-  override getActivationActions(): Activation[] {
-    const actions = super.getActivationActions();
-    actions.push(new Activation(this.card.controller, this));
-    return actions;
   }
 
   override resolve(): void {

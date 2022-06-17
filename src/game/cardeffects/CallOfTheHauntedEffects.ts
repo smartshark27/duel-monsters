@@ -4,14 +4,7 @@ import Monster from "../cards/Monster";
 import Effects from "../Effects";
 import QuickEffect from "../effects/QuickEffect";
 import CardTarget from "../actions/CardTarget";
-import {
-  BattlePhaseStep,
-  CardFace,
-  MoveMethod,
-  Place,
-  SummonTiming,
-} from "../../enums";
-import Activation from "../actions/Activation";
+import { BattlePhaseStep, CardFace, MoveMethod, Place } from "../../enums";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
@@ -35,20 +28,14 @@ class CallOfTheHauntedEffect1 extends QuickEffect {
   protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffect1");
   private monster: Monster | null = null;
 
-  override canActivate(): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
-      super.canActivate() &&
+      super.canActivate(events) &&
       this.card.wasSetBeforeThisTurn() &&
       this.canActivateDuringTiming() &&
       this.getGraveyardMonsters().length > 0 &&
       this.card.controller.field.getFreeMonsterZones().length > 0
     );
-  }
-
-  override getActivationActions(): Activation[] {
-    const actions = super.getActivationActions();
-    actions.push(new Activation(this.card.controller, this));
-    return actions;
   }
 
   override activate(): void {
@@ -79,8 +66,7 @@ class CallOfTheHauntedEffect1 extends QuickEffect {
   private canActivateDuringTiming(): boolean {
     return (
       global.DUEL.chain.getLength() > 0 ||
-      (global.DUEL.summonTiming !== SummonTiming.NegationWindow &&
-        global.DUEL.battlePhaseStep !== BattlePhaseStep.Damage)
+      global.DUEL.battlePhaseStep !== BattlePhaseStep.Damage
     );
   }
 
@@ -140,12 +126,6 @@ class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
         );
       })
     );
-  }
-
-  override getActivationActions(): Activation[] {
-    const actions = super.getActivationActions();
-    actions.push(new Activation(this.card.controller, this));
-    return actions;
   }
 
   override resolve(): void {

@@ -5,6 +5,7 @@ import Card from "../Card";
 import Player from "../Player";
 import SpellTrapSet from "../actions/SpellTrapSet";
 import { Phase } from "../../enums";
+import DuelEvent from "../DuelEvent";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
@@ -13,7 +14,7 @@ export default class Trap extends Card {
     super(owner, name, data);
   }
 
-  override getSpeed1Actions(): Action[] {
+  protected override getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();
     if (this.canSet()) actions.push(this.getSetAction());
     return actions;

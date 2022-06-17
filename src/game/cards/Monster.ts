@@ -1,9 +1,4 @@
-import {
-  BattlePhaseStep,
-  BattleStepTiming,
-  MonsterPosition,
-  Phase,
-} from "../../enums";
+import { BattlePhaseStep, MonsterPosition, Phase } from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
@@ -12,6 +7,7 @@ import NormalSummon from "../actions/NormalSummon";
 import PositionChange from "../actions/PositionChange";
 import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
+import DuelEvent from "../DuelEvent";
 import Player from "../Player";
 
 export default class Monster extends Card {
@@ -28,14 +24,6 @@ export default class Monster extends Card {
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
     this.reset();
-  }
-
-  override getSpeed1Actions(): Action[] {
-    const actions = super.getSpeed1Actions();
-    if (this.canNormalSummon()) actions.push(this.getNormalSummonAction());
-    if (this.canChangePosition()) actions.push(this.getPositionChangeAction());
-    if (this.canAttack()) actions.push(this.getAttackAction());
-    return actions;
   }
 
   override reset(): void {
@@ -71,6 +59,14 @@ export default class Monster extends Card {
     this.turnPositionUpdated = global.DUEL.turn;
   }
 
+  protected getSpeed1Actions(): Action[] {
+    const actions = super.getSpeed1Actions();
+    if (this.canNormalSummon()) actions.push(this.getNormalSummonAction());
+    if (this.canChangePosition()) actions.push(this.getPositionChangeAction());
+    if (this.canAttack()) actions.push(this.getAttackAction());
+    return actions;
+  }
+
   private canNormalSummon(): boolean {
     return (
       this.controller.canNormalSummon(this.getTributesRequired()) &&
@@ -101,7 +97,7 @@ export default class Monster extends Card {
   private canAttack(): boolean {
     return (
       global.DUEL.battlePhaseStep === BattlePhaseStep.Battle &&
-      global.DUEL.battleStepTiming === BattleStepTiming.None &&
+      global.DUEL.attack === null &&
       this.controller.isTurnPlayer() &&
       this.isOnField() &&
       this.attacksRemaining > 0 &&

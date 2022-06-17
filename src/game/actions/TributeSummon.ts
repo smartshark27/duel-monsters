@@ -17,6 +17,7 @@ export default class TributeSummon extends NormalSummon {
   }
 
   override perform(): void {
+    TributeSummon.logger.info(`Performing action ${this}`);
     this.actor.normalSummonsRemaining--;
     this.setActionSelection(
       this.actor.field

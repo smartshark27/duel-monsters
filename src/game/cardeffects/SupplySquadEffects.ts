@@ -2,7 +2,6 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import IgnitionEffect from "../effects/IgnitionEffect";
-import Activation from "../actions/Activation";
 import ZoneSelect from "../actions/ZoneSelect";
 import CardMoveEvent from "../events/CardMoveEvent";
 import { CardFace, MoveMethod, Place } from "../../enums";
@@ -23,18 +22,12 @@ export default class SupplySquadEffects extends Effects {
 class SupplySquadPlayEffect extends IgnitionEffect {
   protected static logger = LoggerFactory.getLogger("SupplySquadPlayEffect");
 
-  override canActivate(): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
-      super.canActivate() &&
+      super.canActivate(events) &&
       this.card.isInHand() &&
       this.card.controller.canPlaySpellTrap()
     );
-  }
-
-  override getActivationActions(): Activation[] {
-    const actions = super.getActivationActions();
-    actions.push(new Activation(this.card.controller, this));
-    return actions;
   }
 
   override activate(): void {
@@ -69,12 +62,6 @@ class SupplySquadTriggerEffect extends OptionalTriggerEffect {
         );
       })
     );
-  }
-
-  override getActivationActions(): Activation[] {
-    const actions = super.getActivationActions();
-    actions.push(new Activation(this.card.controller, this));
-    return actions;
   }
 
   override activate(): void {

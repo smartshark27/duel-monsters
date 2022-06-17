@@ -20,24 +20,12 @@ export const enum State {
   PassResponse = "pass response",
 }
 
-export const enum SummonTiming {
-  None = "none",
-  NegationWindow = "negation window",
-  ResponseWindow = "response window",
-}
-
 export const enum BattlePhaseStep {
   None = "none",
   Start = "start",
   Battle = "battle",
   Damage = "damage",
   End = "end",
-}
-
-export const enum BattleStepTiming {
-  None = "none",
-  AttackDeclarationWindow = "attack declaration window",
-  BeforeDamageStep = "before damage step",
 }
 
 export const enum DamageStepTiming {
