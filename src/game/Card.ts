@@ -4,7 +4,7 @@ import Action from "./Action";
 import CardData from "../interfaces/CardData";
 import Effects from "./Effects";
 import MonsterRebornEffects from "./cardeffects/MonsterRebornEffects";
-import { CardFace } from "../enums";
+import { CardFace, Phase } from "../enums";
 import MirrorForceEffect from "./cardeffects/MirrorForceEffects";
 import Zone from "./field/Zone";
 import MysticalSpaceTyphoonEffects from "./cardeffects/MysticalSpaceTyphoonEffects";
@@ -41,7 +41,9 @@ export default class Card {
 
   getActivationActions(speed: number, events: DuelEvent[]): Action[] {
     return (
-      (this.canActivate() && this.effects?.getActivationActions(speed, events)) || []
+      (this.canActivate() &&
+        this.effects?.getActivationActions(speed, events)) ||
+      []
     );
   }
 
@@ -105,12 +107,20 @@ export default class Card {
     return this.name;
   }
 
+  protected getSpeed1Actions(): Action[] {
+    return [];
+  }
+
   protected canActivate(): boolean {
     return true;
   }
 
-  protected getSpeed1Actions(): Action[] {
-    return [];
+  protected canSet(): boolean {
+    return (
+      this.controller.isTurnPlayer() &&
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      this.isInHand()
+    );
   }
 
   private setEffects(): void {

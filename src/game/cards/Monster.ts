@@ -7,7 +7,6 @@ import NormalSummon from "../actions/NormalSummon";
 import PositionChange from "../actions/PositionChange";
 import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
-import DuelEvent from "../DuelEvent";
 import Player from "../Player";
 
 export default class Monster extends Card {

@@ -141,6 +141,6 @@ class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
       MoveMethod.DestroyedByEffect,
       this.card,
       this
-    );
+    ).publish();
   }
 }

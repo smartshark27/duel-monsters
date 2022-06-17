@@ -55,6 +55,6 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
       Place.Field,
       Place.Graveyard,
       MoveMethod.Sent
-    );
+    ).publish();
   }
 }

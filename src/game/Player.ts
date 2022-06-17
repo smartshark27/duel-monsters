@@ -146,7 +146,7 @@ export default class Player {
         Place.Hand,
         Place.Graveyard,
         MoveMethod.Discarded
-      );
+      ).publish();
     }
   }
 

@@ -25,20 +25,25 @@ class SupplySquadPlayEffect extends IgnitionEffect {
   override canActivate(events: DuelEvent[]): boolean {
     return (
       super.canActivate(events) &&
-      this.card.isInHand() &&
-      this.card.controller.canPlaySpellTrap()
+      (this.card.wasSetBeforeThisTurn() ||
+        (this.card.isInHand() && this.card.controller.canPlaySpellTrap()))
     );
   }
 
   override activate(): void {
     super.activate();
     const controller = this.card.controller;
-    global.DUEL.actionSelection = controller.field
-      .getFreeSpellTrapZones()
-      .map(
-        (zone) =>
-          new ZoneSelect(controller, zone, (zone) => this.activateToZone(zone))
-      );
+
+    if (!this.card.wasSetBeforeThisTurn()) {
+      global.DUEL.actionSelection = controller.field
+        .getFreeSpellTrapZones()
+        .map(
+          (zone) =>
+            new ZoneSelect(controller, zone, (zone) =>
+              this.activateToZone(zone)
+            )
+        );
+    }
   }
 }
 

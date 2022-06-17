@@ -37,8 +37,8 @@ class MonsterRebornEffect extends IgnitionEffect {
   override canActivate(events: DuelEvent[]): boolean {
     return (
       super.canActivate(events) &&
-      this.card.isInHand() &&
-      this.card.controller.canPlaySpellTrap() &&
+      (this.card.wasSetBeforeThisTurn() ||
+        (this.card.isInHand() && this.card.controller.canPlaySpellTrap())) &&
       this.getGraveyardMonsters().length > 0 &&
       this.card.controller.field.getFreeMonsterZones().length > 0
     );
@@ -48,12 +48,23 @@ class MonsterRebornEffect extends IgnitionEffect {
     super.activate();
     const controller = this.card.controller;
 
-    global.DUEL.actionSelection = controller.field
-      .getFreeSpellTrapZones()
-      .map(
-        (zone) =>
-          new ZoneSelect(controller, zone, (zone) => this.activateToZone(zone))
+    if (this.card.wasSetBeforeThisTurn()) {
+      global.DUEL.actionSelection = this.getGraveyardMonsters().map(
+        (monster) =>
+          new CardTarget(controller, monster, (monster) =>
+            this.targetGraveyardMonster(monster as Monster)
+          )
       );
+    } else {
+      global.DUEL.actionSelection = controller.field
+        .getFreeSpellTrapZones()
+        .map(
+          (zone) =>
+            new ZoneSelect(controller, zone, (zone) =>
+              this.activateToZone(zone)
+            )
+        );
+    }
   }
 
   override resolve(): void {
@@ -78,10 +89,9 @@ class MonsterRebornEffect extends IgnitionEffect {
 
   protected override activateToZone(zone: Zone): void {
     super.activateToZone(zone);
-    const controller = this.card.controller;
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
-        new CardTarget(controller, monster, (monster) =>
+        new CardTarget(this.card.controller, monster, (monster) =>
           this.targetGraveyardMonster(monster as Monster)
         )
     );
@@ -137,7 +147,7 @@ class MonsterRebornEffect extends IgnitionEffect {
       Place.Field,
       Place.Graveyard,
       MoveMethod.Sent
-    );
+    ).publish();
   }
 
   private getGraveyardMonsters(): Monster[] {

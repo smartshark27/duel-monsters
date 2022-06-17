@@ -16,7 +16,9 @@ export default class ActivationEffect extends Effect {
   }
 
   canActivate(events: DuelEvent[]): boolean {
-    return !global.DUEL.chain.includes(this) && this.canActivateFromEvents(events);
+    return (
+      !global.DUEL.chain.includes(this) && this.canActivateFromEvents(events)
+    );
   }
 
   override activate(): void {

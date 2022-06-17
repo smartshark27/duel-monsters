@@ -1,10 +1,10 @@
 export default class Utils {
-  static removeItemFromArray(array: any[], item: any) {
+  static removeItemFromArray(array: any[], item: any): void {
     const index = array.indexOf(item);
-    array.splice(index, 1);
+    if (index >= 0) array.splice(index, 1);
   }
 
-  static shuffleArray(array: any[]) {
+  static shuffleArray(array: any[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];

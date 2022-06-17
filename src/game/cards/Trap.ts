@@ -4,8 +4,6 @@ import Action from "../Action";
 import Card from "../Card";
 import Player from "../Player";
 import SpellTrapSet from "../actions/SpellTrapSet";
-import { Phase } from "../../enums";
-import DuelEvent from "../DuelEvent";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
@@ -20,14 +18,8 @@ export default class Trap extends Card {
     return actions;
   }
 
-  private canSet(): boolean {
-    return (
-      this.controller.isTurnPlayer() &&
-      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
-      !global.DUEL.isDuringTiming() &&
-      this.isInHand() &&
-      this.controller.canPlaySpellTrap()
-    );
+  protected canSet(): boolean {
+    return super.canSet() && this.controller.canPlaySpellTrap();
   }
 
   private getSetAction(): SpellTrapSet {
