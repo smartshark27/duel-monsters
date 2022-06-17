@@ -26,6 +26,7 @@ export default class Chain {
     Chain.logger.info("Chain has resolved");
     this.isResolving = false;
     this.effectsToCleanup.forEach((effect) => effect.cleanup());
+    this.effectsToCleanup = [];
     this.speed = 0;
   }
 
