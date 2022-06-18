@@ -96,3 +96,8 @@ export const enum LifePointsChangeMethod {
   Battle = "battle",
   Effect = "effect",
 }
+
+export const enum MonsterPositionChangeMethod {
+  Normal = "normal",
+  Effect = "effect",
+}
