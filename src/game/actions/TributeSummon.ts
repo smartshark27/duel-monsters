@@ -3,9 +3,9 @@ import Player from "../Player";
 import Monster from "../cards/Monster";
 import NormalSummon from "./NormalSummon";
 import CardTarget from "./CardTarget";
-import ZoneSelect from "./ZoneSelect";
 import CardMoveEvent from "../events/CardMoveEvent";
-import { MoveMethod, Place } from "../../enums";
+import { BattlePosition, MoveMethod, Place } from "../../enums";
+import BattlePositionSelect from "./BattlePositionSelect";
 
 export default class TributeSummon extends NormalSummon {
   protected static override logger = LoggerFactory.getLogger("TributeSummon");
@@ -43,29 +43,18 @@ export default class TributeSummon extends NormalSummon {
     ).publish();
     this.tributesRemaining--;
 
-    const actions =
-      this.tributesRemaining > 0
-        ? this.actor.field
-            .getMonsters()
-            .map(
-              (monsterToTribute) =>
-                new CardTarget(
-                  this.actor,
-                  monsterToTribute,
-                  (monsterToTribute) =>
-                    this.tributeMonster(monsterToTribute as Monster)
-                )
-            )
-        : this.actor.field
-            .getFreeMonsterZones()
-            .map(
-              (zone) =>
-                new ZoneSelect(this.actor, zone, (zone) =>
-                  this.normalSummonToZone(zone)
-                )
-            );
-
-    this.setActionSelection(actions);
+    if (this.tributesRemaining > 0)
+      this.setActionSelection(
+        this.actor.field
+          .getMonsters()
+          .map(
+            (monsterToTribute) =>
+              new CardTarget(this.actor, monsterToTribute, (monsterToTribute) =>
+                this.tributeMonster(monsterToTribute as Monster)
+              )
+          )
+      );
+    else this.selectPosition();
   }
 
   override toString(): string {
@@ -78,7 +67,9 @@ export default class TributeSummon extends NormalSummon {
       this.monster,
       Place.Hand,
       Place.Field,
-      MoveMethod.TributeSummoned
+      this.monster.position === BattlePosition.Attack
+        ? MoveMethod.TributeSummoned
+        : MoveMethod.TributeSet
     );
   }
 }

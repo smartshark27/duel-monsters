@@ -51,6 +51,7 @@ export const enum CardFace {
 export const enum BattlePosition {
   Attack = "attack",
   Defence = "defence",
+  Set = "set",
 }
 
 export const enum SpellType {
@@ -84,6 +85,7 @@ export const enum MoveMethod {
   NormalSummoned = "normal summoned",
   Set = "set",
   TributeSummoned = "tribute summoned",
+  TributeSet = "tribute set",
   SpecialSummoned = "special summoned",
 }
 

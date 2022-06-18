@@ -1,4 +1,4 @@
-import { BattlePhaseStep, BattlePosition, Phase } from "../../enums";
+import { BattlePhaseStep, BattlePosition, CardFace, Phase } from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
@@ -50,25 +50,37 @@ export default class Monster extends Card {
       : this.defencePoints;
   }
 
+  setPosition(position: BattlePosition): void {
+    this.visibility =
+      position === BattlePosition.Set ? CardFace.Down : CardFace.Up;
+    this.position = position;
+    this.turnPositionUpdated = global.DUEL.turn;
+  }
+
   changePosition(): void {
-    this.position =
-      this.position === BattlePosition.Attack
-        ? BattlePosition.Defence
-        : BattlePosition.Attack;
+    if (this.position === BattlePosition.Attack)
+      this.position = BattlePosition.Defence;
+    else if (this.position === BattlePosition.Defence)
+      this.position = BattlePosition.Attack;
+    else {
+      this.position = BattlePosition.Attack;
+      this.visibility = CardFace.Up;
+    }
+
     this.turnPositionUpdated = global.DUEL.turn;
   }
 
   protected getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();
-    if (this.canNormalSummon()) actions.push(this.getNormalSummonAction());
+    if (this.canNormalSummonOrSet()) actions.push(this.getNormalSummonAction());
     if (this.canChangePosition()) actions.push(this.getPositionChangeAction());
     if (this.canAttack()) actions.push(this.getAttackAction());
     return actions;
   }
 
-  private canNormalSummon(): boolean {
+  private canNormalSummonOrSet(): boolean {
     return (
-      this.controller.canNormalSummon(this.getTributesRequired()) &&
+      this.controller.canNormalSummonOrSet(this.getTributesRequired()) &&
       this.isInHand()
     );
   }

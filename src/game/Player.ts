@@ -103,7 +103,7 @@ export default class Player {
     return null;
   }
 
-  canNormalSummon(tributesRequired: number) {
+  canNormalSummonOrSet(tributesRequired: number) {
     return (
       this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&

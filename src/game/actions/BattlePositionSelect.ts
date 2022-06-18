@@ -20,6 +20,6 @@ export default class BattlePositionSelect extends Action {
   }
 
   override toString(): string {
-    return `Summon in ${this.position} position`;
+    return `Select ${this.position} position`;
   }
 }

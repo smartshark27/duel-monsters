@@ -7,21 +7,17 @@ import OptionalTriggerEffect from "../effects/OptionalTriggerEffect";
 import Monster from "../cards/Monster";
 import Utils from "../../utils/Utils";
 import CardTarget from "../actions/CardTarget";
-import { MoveMethod, Place } from "../../enums";
+import { CardFace, MoveMethod, Place } from "../../enums";
 
 export default class ElementalHEROStratosEffects extends Effects {
   protected static logger = LoggerFactory.getLogger(
     "ElementalHEROStratosEffects"
   );
-  effect1: ElementalHEROStratosEffect1;
-  effect2: ElementalHEROStratosEffect2;
 
   constructor(protected card: Card) {
     super(card);
-    this.effect1 = new ElementalHEROStratosEffect1(card);
-    this.effect2 = new ElementalHEROStratosEffect2(card);
-    this.effects.push(this.effect1);
-    this.effects.push(this.effect2);
+    this.effects.push(new ElementalHEROStratosEffect1(card));
+    this.effects.push(new ElementalHEROStratosEffect2(card));
   }
 }
 
@@ -33,6 +29,7 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
 
   override isTriggered(events: DuelEvent[]): boolean {
     return (
+      this.card.visibility === CardFace.Up &&
       !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
       events.some((event) => {
         return (
@@ -106,6 +103,7 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
 
   override isTriggered(events: DuelEvent[]): boolean {
     return (
+      this.card.visibility === CardFace.Up &&
       !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
       events.some((event) => {
         return (
