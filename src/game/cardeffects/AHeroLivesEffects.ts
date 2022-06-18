@@ -11,50 +11,37 @@ import CardMoveEvent from "../events/CardMoveEvent";
 import { CardFace, BattlePosition, MoveMethod, Place } from "../../enums";
 import BattlePositionSelect from "../actions/BattlePositionSelect";
 import DuelEvent from "../DuelEvent";
-import Attack from "../actions/Attack";
 
-export default class MonsterRebornEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
+export default class AHeroLivesEffects extends Effects {
+  protected static logger = LoggerFactory.getLogger("AHeroLivesEffects");
 
   constructor(protected card: Card) {
     super(card);
-    this.effects.push(new MonsterRebornEffect(card));
+    this.effects.push(new AHeroLivesEffect1(card));
   }
 }
 
-class MonsterRebornEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("MonsterRebornEffect");
-  private monster: Monster | null = null;
-
-  constructor(card: Card) {
-    super(card);
-  }
-
-  override reset(): void {
-    this.monster = null;
-  }
+class AHeroLivesEffect1 extends IgnitionEffect {
+  protected static logger = LoggerFactory.getLogger("AHeroLivesEffect1");
+  private target: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {
+    const controller = this.card.controller;
     return (
       super.canActivate(events) &&
       (this.card.wasSetBeforeThisTurn() ||
-        (this.card.isInHand() && this.card.controller.canPlaySpellTrap())) &&
-      this.getGraveyardMonsters().length > 0 &&
-      this.card.controller.field.getFreeMonsterZones().length > 0
+        (this.card.isInHand() && controller.canPlaySpellTrap())) &&
+      controller.field.getMonsters().length === 0 &&
+      this.getDeckHEROMonsters().length > 0
     );
   }
 
   override activate(): void {
     super.activate();
-    const controller = this.card.controller;
 
+    const controller = this.card.controller;
     if (this.card.wasSetBeforeThisTurn()) {
-      global.DUEL.actionSelection = this.getGraveyardMonsters().map(
-        (monster) =>
-          new CardTarget(controller, monster, (monster) =>
-            this.targetGraveyardMonster(monster as Monster)
-          )
-      );
+      this.halveLifePoints();
     } else {
       global.DUEL.actionSelection = controller.field
         .getFreeSpellTrapZones()
@@ -67,48 +54,63 @@ class MonsterRebornEffect extends IgnitionEffect {
     }
   }
 
+  protected override activateToZone(zone: Zone): void {
+    super.activateToZone(zone);
+    this.halveLifePoints();
+  }
+
   override resolve(): void {
     super.resolve();
-    const controller = this.card.controller;
 
+    global.DUEL.actionSelection = this.getDeckHEROMonsters().map(
+      (monster) =>
+        new CardTarget(this.card.controller, monster, (monster) =>
+          this.selectMonster(monster as Monster)
+        )
+    );
+  }
+
+  private getDeckHEROMonsters(): Monster[] {
+    return (
+      this.card.controller.deck?.cards
+        .filter(
+          (card) =>
+            card instanceof Monster &&
+            card.level <= 4 &&
+            card.name.includes("Elemental HERO")
+        )
+        .map((card) => card as Monster) || []
+    );
+  }
+
+  private halveLifePoints(): void {
+    const controller = this.card.controller;
+    controller.updateLifePoints(-~~(controller.lifePoints / 2));
+  }
+
+  private selectMonster(monster: Monster): void {
+    this.target = monster;
+    const controller = this.card.controller;
     global.DUEL.actionSelection = controller.field
       .getFreeMonsterZones()
       .map(
         (zone) =>
           new ZoneSelect(controller, zone, (zone) =>
-            this.specialSummonMonsterToZone(zone)
+            this.specialSummonToZone(zone)
           )
       );
   }
 
-  protected override activateToZone(zone: Zone): void {
-    super.activateToZone(zone);
-    global.DUEL.actionSelection = this.getGraveyardMonsters().map(
-      (monster) =>
-        new CardTarget(this.card.controller, monster, (monster) =>
-          this.targetGraveyardMonster(monster as Monster)
-        )
-    );
-  }
-
-  private targetGraveyardMonster(monster: Monster): void {
-    this.monster = monster;
-  }
-
-  private specialSummonMonsterToZone(zone: Zone): void {
-    if (this.monster) {
-      Utils.removeItemFromArray(
-        this.monster.controller.graveyard,
-        this.monster
-      );
-      zone.card = this.monster;
-      this.monster.controller = this.card.controller;
-      this.monster.visibility = CardFace.Up;
-      this.monster.turnPositionUpdated = global.DUEL.turn;
+  private specialSummonToZone(zone: Zone): void {
+    if (this.target) {
+      Utils.removeItemFromArray(this.target.controller.graveyard, this.target);
+      zone.card = this.target;
+      this.target.controller = this.card.controller;
+      this.target.turnPositionUpdated = global.DUEL.turn;
 
       new CardMoveEvent(
         this.card.controller,
-        this.monster,
+        this.target,
         Place.Graveyard,
         Place.Field,
         MoveMethod.SpecialSummoned,
@@ -125,11 +127,11 @@ class MonsterRebornEffect extends IgnitionEffect {
             this.chooseBattlePosition(position)
           )
       );
-    } else MonsterRebornEffect.logger.warn("Target is not set");
+    } else AHeroLivesEffect1.logger.warn("Target is not set");
   }
 
   private chooseBattlePosition(position: BattlePosition): void {
-    if (this.monster) this.monster.setPosition(position);
+    if (this.target) this.target.setPosition(position);
   }
 
   override cleanup(): void {
@@ -142,13 +144,5 @@ class MonsterRebornEffect extends IgnitionEffect {
       Place.Graveyard,
       MoveMethod.Sent
     ).publish();
-  }
-
-  private getGraveyardMonsters(): Monster[] {
-    const player = this.card.controller;
-    const opponent = global.DUEL.getOpponentOf(player);
-    return player.graveyard
-      .concat(opponent.graveyard)
-      .filter((card) => card instanceof Monster) as Monster[];
   }
 }

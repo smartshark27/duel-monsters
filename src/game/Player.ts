@@ -20,10 +20,10 @@ export default class Player {
   normalSummonsRemaining = 0;
   name: string;
   field: Field;
+  lifePoints: number = 8000;
 
   private static logger = LoggerFactory.getLogger("Player");
   private canNormalDraw = false;
-  private lifePoints: number = 8000;
 
   constructor(name: string) {
     this.name = name;

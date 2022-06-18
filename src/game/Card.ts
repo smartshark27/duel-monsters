@@ -13,6 +13,7 @@ import SupplySquadEffects from "./cardeffects/SupplySquadEffects";
 import Activation from "./actions/Activation";
 import DuelEvent from "./DuelEvent";
 import ElementalHEROStratosEffects from "./cardeffects/ElementalHEROStratosEffects";
+import AHeroLivesEffects from "./cardeffects/AHeroLivesEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -125,7 +126,9 @@ export default class Card {
   }
 
   private setEffects(): void {
-    if (this.originalName === "Call of the Haunted")
+    if (this.originalName === "A Hero Lives")
+      this.effects = new AHeroLivesEffects(this);
+    else if (this.originalName === "Call of the Haunted")
       this.effects = new CallOfTheHauntedEffects(this);
     else if (this.originalName === "Elemental HERO Stratos")
       this.effects = new ElementalHEROStratosEffects(this);
