@@ -13,11 +13,15 @@ export default class ElementalHEROStratosEffects extends Effects {
   protected static logger = LoggerFactory.getLogger(
     "ElementalHEROStratosEffects"
   );
+  effect1: ElementalHEROStratosEffect1;
+  effect2: ElementalHEROStratosEffect2;
 
   constructor(protected card: Card) {
     super(card);
-    this.effects.push(new ElementalHEROStratosEffect1(card));
-    // this.effects.push(new ElementalHEROStratosEffect2(card));
+    this.effect1 = new ElementalHEROStratosEffect1(card);
+    this.effect2 = new ElementalHEROStratosEffect2(card);
+    this.effects.push(this.effect1);
+    this.effects.push(this.effect2);
   }
 }
 
@@ -29,7 +33,7 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
 
   override isTriggered(events: DuelEvent[]): boolean {
     return (
-      !global.DUEL.chain.includes(this) &&
+      !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
       events.some((event) => {
         return (
           event instanceof CardMoveEvent &&
@@ -95,38 +99,58 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
   }
 }
 
-// class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
-//   protected static logger = LoggerFactory.getLogger(
-//     "ElementalHEROStratosEffect2"
-//   );
+class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
+  protected static logger = LoggerFactory.getLogger(
+    "ElementalHEROStratosEffect2"
+  );
 
-//   override isTriggered(events: DuelEvent[]): boolean {
-//     return events.some((event) => {
-//       return (
-//         event instanceof CardMoveEvent &&
-//         event.card === this.card &&
-//         this.getDeckHEROMonsters.length > 0
-//       );
-//     });
-//   }
+  override isTriggered(events: DuelEvent[]): boolean {
+    return (
+      !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
+      events.some((event) => {
+        return (
+          event instanceof CardMoveEvent &&
+          event.card === this.card &&
+          this.getDeckHEROMonsters().length > 0
+        );
+      })
+    );
+  }
 
-//   override activate(): void {
-//     super.activate();
-//   }
+  override resolve(): void {
+    super.resolve();
+    const controller = this.card.controller;
+    global.DUEL.actionSelection = this.getDeckHEROMonsters().map(
+      (monster) =>
+        new CardTarget(controller, monster, (monster) =>
+          this.addToHand(monster)
+        )
+    );
+  }
 
-//   override resolve(): void {
-//     super.resolve();
-//   }
+  override toString(): string {
+    return `${this.card.name} add HERO to hand effect`;
+  }
 
-//   override toString(): string {
-//     return `${this.card.name} add HERO to hand effect`;
-//   }
+  private getDeckHEROMonsters(): Monster[] {
+    return (
+      this.card.controller.deck?.cards
+        .filter((card) => card instanceof Monster && card.name.includes("HERO"))
+        .map((card) => card as Monster) || []
+    );
+  }
 
-//   private getDeckHEROMonsters(): Monster[] {
-//     return (
-//       this.card.controller.deck?.cards
-//         .filter((card) => card instanceof Monster && card.name.includes("HERO"))
-//         .map((card) => card as Monster) || []
-//     );
-//   }
-// }
+  private addToHand(card: Card): void {
+    const controller = this.card.controller;
+    controller.hand.push(card);
+    new CardMoveEvent(
+      controller,
+      card,
+      Place.Deck,
+      Place.Hand,
+      MoveMethod.Added,
+      this.card,
+      this
+    ).publish();
+  }
+}
