@@ -9,6 +9,7 @@ import Draw from "./actions/Draw";
 import Attack from "./actions/Attack";
 import Summon from "./actions/Summon";
 import EventManager from "./EventManager";
+import Utils from "../utils/Utils";
 
 export default class Duel {
   turnPlayer: Player;
@@ -30,8 +31,9 @@ export default class Duel {
 
   constructor(private players: Player[]) {
     Duel.logger.info("Creating duel");
-    this.turnPlayer = players[0];
     this.players.forEach((player) => player.init());
+    this.turnPlayer = Utils.getRandomItemFromArray(players);
+    Duel.logger.info(`${this.turnPlayer} will go first`);
     this.turnPlayer.startMainPhase1();
   }
 
@@ -44,8 +46,11 @@ export default class Duel {
         ? this.getActionSelection()
         : this.getActions(action);
     if (this.checkWin()) return [];
-    this.logActions(actions);
     this.eventManager.clearLastEvents();
+
+    Duel.logger.info(this);
+    this.logActions(actions);
+
     return actions;
   }
 
@@ -257,7 +262,7 @@ export default class Duel {
       "\n" +
       this.players[1].getFieldString() +
       "\n" +
-      `Top monsters are ${this.players[0].field.getMonsters()}, Bottom monsters are ${this.players[1].field.getMonsters()}`
+      `${this.getPhaseInfoStr()}`
     );
   }
 
@@ -342,9 +347,10 @@ export default class Duel {
   }
 
   private logActions(actions: Action[]): void {
-    Duel.logger.info(this);
-    Duel.logger.info(this.getPhaseInfoStr());
-    Duel.logger.info(`Actions for ${actions[0]?.actor} are [${actions}]`);
+    var message = `Actions for ${actions[0]?.actor} are:`;
+    for (var i = 0; i < actions.length; i++)
+      message += `\n  ${i + 1}) ${actions[i]}`;
+    Duel.logger.info(message);
   }
 
   private getPhaseInfoStr(): String {

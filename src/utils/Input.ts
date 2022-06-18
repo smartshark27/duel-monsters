@@ -7,7 +7,10 @@ export default class Input {
     return this.commandLineArgs.some((arg) => arg.replace("--", "") === flag);
   }
 
-  static getUserInput(question: string) {
+  static getUserInput(
+    question: string,
+    handle: (_: string) => void = () => {}
+  ) {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -16,6 +19,7 @@ export default class Input {
     return new Promise((resolve) =>
       rl.question(question, (answer) => {
         rl.close();
+        handle(answer);
         resolve(answer);
       })
     );

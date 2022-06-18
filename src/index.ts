@@ -1,8 +1,8 @@
 import Deck from "./game/Deck";
 import Duel from "./game/Duel";
 import Player from "./game/Player";
-import Utils from "./utils/Utils";
 import Input from "./utils/Input";
+import Utils from "./utils/Utils";
 
 const player1 = new Player("Top");
 const player2 = new Player("Bottom");
@@ -16,15 +16,26 @@ player2.setDeck(deck2);
 const duel = new Duel([player1, player2]);
 global.DUEL = duel;
 
-run(duel, Input.checkFlag("step"));
+run(duel, Input.checkFlag("auto"));
 
-async function run(duel: Duel, step = false) {
+async function run(duel: Duel, auto: boolean) {
   let actions = duel.performAction();
+
   while (actions.length > 0) {
-    if (step) {
-      await Input.getUserInput("Proceed?");
+    if (auto) {
+      const action = Utils.getRandomItemFromArray(actions);
+      actions = duel.performAction(action);
+    } else {
+      await Input.getUserInput("Select an action: ", (input) => {
+        const index: number = parseInt(input);
+
+        const action =
+          index >= 1 && index <= actions.length
+            ? actions[index - 1]
+            : Utils.getRandomItemFromArray(actions);
+
+        actions = duel.performAction(action);
+      });
     }
-    const action = Utils.getRandomItemFromArray(actions);
-    actions = duel.performAction(action);
   }
 }
