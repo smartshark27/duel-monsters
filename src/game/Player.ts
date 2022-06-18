@@ -14,6 +14,7 @@ import CardMoveEvent from "./events/CardMoveEvent";
 import Field from "./Field";
 
 export default class Player {
+  deck: Deck | undefined;
   hand: Card[] = [];
   graveyard: Card[] = [];
   normalSummonsRemaining = 0;
@@ -23,7 +24,6 @@ export default class Player {
   private static logger = LoggerFactory.getLogger("Player");
   private canNormalDraw = false;
   private lifePoints: number = 8000;
-  private deck: Deck | undefined;
 
   constructor(name: string) {
     this.name = name;
@@ -111,7 +111,8 @@ export default class Player {
       this.normalSummonsRemaining > 0 &&
       ((tributesRequired === 0 &&
         this.field.getFreeMonsterZones().length > 0) ||
-        this.field.getMonsters().length >= tributesRequired)
+        (tributesRequired > 0 &&
+          this.field.getMonsters().length >= tributesRequired))
     );
   }
 

@@ -12,6 +12,7 @@ import CallOfTheHauntedEffects from "./cardeffects/CallOfTheHauntedEffects";
 import SupplySquadEffects from "./cardeffects/SupplySquadEffects";
 import Activation from "./actions/Activation";
 import DuelEvent from "./DuelEvent";
+import ElementalHEROStratosEffects from "./cardeffects/ElementalHEROStratosEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -124,18 +125,18 @@ export default class Card {
   }
 
   private setEffects(): void {
-    if (this.originalName === "Call of the Haunted") {
+    if (this.originalName === "Call of the Haunted")
       this.effects = new CallOfTheHauntedEffects(this);
-    } else if (this.originalName === "Mirror Force") {
+    else if (this.originalName === "Elemental HERO Stratos")
+      this.effects = new ElementalHEROStratosEffects(this);
+    else if (this.originalName === "Mirror Force")
       this.effects = new MirrorForceEffect(this);
-    } else if (this.originalName === "Monster Reborn") {
+    else if (this.originalName === "Monster Reborn")
       this.effects = new MonsterRebornEffects(this);
-    } else if (this.originalName === "Mystical Space Typhoon") {
+    else if (this.originalName === "Mystical Space Typhoon")
       this.effects = new MysticalSpaceTyphoonEffects(this);
-    } else if (this.originalName === "Supply Squad") {
+    else if (this.originalName === "Supply Squad")
       this.effects = new SupplySquadEffects(this);
-    } else {
-      this.effects = new Effects(this);
-    }
+    else this.effects = new Effects(this);
   }
 }

@@ -3,8 +3,10 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import QuickEffect from "../effects/QuickEffect";
 import {
+  BattlePhaseStep,
   BattlePosition,
   MoveMethod,
+  Phase,
   Place,
 } from "../../enums";
 import CardMoveEvent from "../events/CardMoveEvent";
@@ -31,6 +33,7 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
   override canActivate(events: DuelEvent[]): boolean {
     return (
       super.canActivate(events) &&
+      global.DUEL.battlePhaseStep === BattlePhaseStep.Battle &&
       !this.card.controller.isTurnPlayer() &&
       global.DUEL.attack !== null &&
       this.card.wasSetBeforeThisTurn()

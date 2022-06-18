@@ -68,6 +68,15 @@
     "attack": 1600,
     "defence": 1400
   },
+  "Elemental HERO Stratos": {
+    "cardType": "monster",
+    "attribute": "WIND",
+    "level": 4,
+    "monsterTypes": ["warrior", "effect"],
+    "attack": 1800,
+    "defence": 300,
+    "description": "When this card is Normal or Special Summoned: You can activate 1 of these effects.\n●Destroy Spells/Traps on the field, up to the number of \"HERO\" monsters you control, except this card.\n●Add 1 \"HERO\" monster from your Deck to your hand."
+  },
   "Mirror Force": {
     "cardType": "trap",
     "trapType": "normal",
