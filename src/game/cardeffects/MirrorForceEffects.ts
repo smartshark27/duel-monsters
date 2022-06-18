@@ -3,7 +3,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import QuickEffect from "../effects/QuickEffect";
 import {
-  MonsterPosition,
+  BattlePosition,
   MoveMethod,
   Place,
 } from "../../enums";
@@ -41,7 +41,7 @@ class DestroyAllOpponentsMonstersQuickEffect extends QuickEffect {
     super.resolve();
     global.DUEL.getOpponentOf(this.card.controller)
       .field.getMonsters()
-      .filter((monster) => monster.position === MonsterPosition.Attack)
+      .filter((monster) => monster.position === BattlePosition.Attack)
       .forEach((monster) => monster.destroy());
     global.DUEL.attack = null;
   }

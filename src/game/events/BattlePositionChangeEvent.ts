@@ -1,4 +1,4 @@
-import { CardFace, MonsterPosition, MonsterPositionChangeMethod } from "../../enums";
+import { CardFace, BattlePosition, BattlePositionChangeMethod } from "../../enums";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
@@ -6,19 +6,19 @@ import DuelEvent from "../DuelEvent";
 import Effect from "../Effect";
 import Player from "../Player";
 
-export default class MonsterPositionChangeEvent extends DuelEvent {
+export default class BattlePositionChangeEvent extends DuelEvent {
   protected static override logger = LoggerFactory.getLogger(
-    "MonsterPositionChangeEvent"
+    "BattlePositionChangeEvent"
   );
 
   constructor(
     actor: Player,
     public monster: Monster,
-    public oldPosition: MonsterPosition,
+    public oldPosition: BattlePosition,
     public oldVisibility: CardFace,
-    public newPosition: MonsterPosition,
+    public newPosition: BattlePosition,
     public newVisibility: CardFace,
-    public how: MonsterPositionChangeMethod,
+    public how: BattlePositionChangeMethod,
     public by?: Card,
     public effect?: Effect
   ) {

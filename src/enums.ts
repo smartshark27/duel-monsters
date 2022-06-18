@@ -48,7 +48,7 @@ export const enum CardFace {
   Down = "down",
 }
 
-export const enum MonsterPosition {
+export const enum BattlePosition {
   Attack = "attack",
   Defence = "defence",
 }
@@ -97,7 +97,7 @@ export const enum LifePointsChangeMethod {
   Effect = "effect",
 }
 
-export const enum MonsterPositionChangeMethod {
+export const enum BattlePositionChangeMethod {
   Normal = "normal",
   Effect = "effect",
 }

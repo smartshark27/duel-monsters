@@ -1,10 +1,10 @@
-import { BattlePhaseStep, MonsterPosition, Phase } from "../../enums";
+import { BattlePhaseStep, BattlePosition, Phase } from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
 import Attack from "../actions/Attack";
 import NormalSummon from "../actions/NormalSummon";
-import PositionChange from "../actions/PositionChange";
+import PositionChange from "../actions/BattlePositionChange";
 import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
 import Player from "../Player";
@@ -12,7 +12,7 @@ import Player from "../Player";
 export default class Monster extends Card {
   protected static override logger = LoggerFactory.getLogger("Monster");
   attacksRemaining = 1;
-  position = MonsterPosition.Attack;
+  position = BattlePosition.Attack;
   originalAttackPoints!: number;
   originalDefencePoints!: number;
   originalLevel!: number;
@@ -34,7 +34,7 @@ export default class Monster extends Card {
     this.attackPoints = this.originalAttackPoints;
     this.defencePoints = this.originalDefencePoints;
     this.level = this.originalLevel;
-    this.position = MonsterPosition.Attack;
+    this.position = BattlePosition.Attack;
   }
 
   getTributesRequired(): number {
@@ -45,16 +45,16 @@ export default class Monster extends Card {
   }
 
   getPoints(): number {
-    return this.position === MonsterPosition.Attack
+    return this.position === BattlePosition.Attack
       ? this.attackPoints
       : this.defencePoints;
   }
 
   changePosition(): void {
     this.position =
-      this.position === MonsterPosition.Attack
-        ? MonsterPosition.Defence
-        : MonsterPosition.Attack;
+      this.position === BattlePosition.Attack
+        ? BattlePosition.Defence
+        : BattlePosition.Attack;
     this.turnPositionUpdated = global.DUEL.turn;
   }
 
@@ -100,7 +100,7 @@ export default class Monster extends Card {
       this.controller.isTurnPlayer() &&
       this.isOnField() &&
       this.attacksRemaining > 0 &&
-      this.position === MonsterPosition.Attack
+      this.position === BattlePosition.Attack
     );
   }
 

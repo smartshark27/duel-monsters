@@ -2,11 +2,11 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Monster from "../cards/Monster";
 import Action from "../Action";
-import MonsterPositionChangeEvent from "../events/MonsterPositionChangeEvent";
-import { MonsterPositionChangeMethod } from "../../enums";
+import BattlePositionChangeEvent from "../events/BattlePositionChangeEvent";
+import { BattlePositionChangeMethod } from "../../enums";
 
-export default class PositionChange extends Action {
-  protected static override logger = LoggerFactory.getLogger("PositionChange");
+export default class BattlePositionChange extends Action {
+  protected static override logger = LoggerFactory.getLogger("BattlePositionChange");
 
   constructor(actor: Player, protected monster: Monster) {
     super(actor);
@@ -17,14 +17,14 @@ export default class PositionChange extends Action {
     const oldPosition = this.monster.position;
     const oldVisibility = this.monster.visibility;
     this.monster.changePosition();
-    new MonsterPositionChangeEvent(
+    new BattlePositionChangeEvent(
       this.actor,
       this.monster,
       oldPosition,
       oldVisibility,
       this.monster.position,
       this.monster.visibility,
-      MonsterPositionChangeMethod.Normal
+      BattlePositionChangeMethod.Normal
     ).publish();
   }
 

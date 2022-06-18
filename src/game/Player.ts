@@ -1,4 +1,4 @@
-import { CardFace, MonsterPosition, MoveMethod, Phase, Place } from "../enums";
+import { CardFace, BattlePosition, MoveMethod, Phase, Place } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Action from "./Action";
@@ -157,7 +157,7 @@ export default class Player {
       var char = "-";
       if (!zone.isEmpty()) {
         const monster = zone.card as Monster;
-        char = monster.position === MonsterPosition.Attack ? "a" : "d";
+        char = monster.position === BattlePosition.Attack ? "a" : "d";
         if (monster.visibility === CardFace.Up) char = char.toUpperCase();
       }
       str += char;
