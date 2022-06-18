@@ -6,7 +6,6 @@ import {
   BattlePhaseStep,
   BattlePosition,
   MoveMethod,
-  Phase,
   Place,
 } from "../../enums";
 import CardMoveEvent from "../events/CardMoveEvent";

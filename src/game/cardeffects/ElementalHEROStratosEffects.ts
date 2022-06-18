@@ -47,6 +47,10 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
     this.targetSpellTrap();
   }
 
+  override toString(): string {
+    return `${this.card.name} destory spell/trap effect`;
+  }
+
   private getOtherFieldHEROMonsters(): Monster[] {
     const monsters = this.card.controller.field
       .getMonsters()
@@ -112,6 +116,10 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
 
 //   override resolve(): void {
 //     super.resolve();
+//   }
+
+//   override toString(): string {
+//     return `${this.card.name} add HERO to hand effect`;
 //   }
 
 //   private getDeckHEROMonsters(): Monster[] {

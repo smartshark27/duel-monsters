@@ -16,6 +16,6 @@ export default class Activation extends Action {
   }
 
   override toString(): string {
-    return `Activate ${this.effect.card}`;
+    return `Activate ${this.effect}`;
   }
 }
