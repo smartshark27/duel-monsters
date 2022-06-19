@@ -1,10 +1,6 @@
 A Hero Lives
 A Hero Lives
 A Hero Lives
-A Hero Lives
-A Hero Lives
-A Hero Lives
-A Hero Lives
 Call of the Haunted
 Call of the Haunted
 Call of the Haunted
@@ -20,6 +16,10 @@ Elemental HERO Clayman
 Elemental HERO Neos
 Elemental HERO Neos
 Elemental HERO Neos
+Elemental HERO Sparkman
+Elemental HERO Sparkman
+Elemental HERO Sparkman
+Elemental HERO Sparkman
 Elemental HERO Sparkman
 Elemental HERO Sparkman
 Elemental HERO Sparkman
