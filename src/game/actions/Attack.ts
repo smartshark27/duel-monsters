@@ -143,8 +143,10 @@ export default class Attack extends Action {
       if (target.position === BattlePosition.Attack)
         this.wasAttackerDestroyedByBattle = true;
     } else {
-      this.wasTargetDestroyedByBattle = true;
-      this.wasAttackerDestroyedByBattle = true;
+      if (target.position === BattlePosition.Attack) {
+        this.wasTargetDestroyedByBattle = true;
+        this.wasAttackerDestroyedByBattle = true;
+      }
     }
   }
 
