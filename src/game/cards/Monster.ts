@@ -97,7 +97,8 @@ export default class Monster extends Card {
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
       !global.DUEL.isDuringTiming() &&
       this.isOnField() &&
-      this.turnPositionUpdated < global.DUEL.turn
+      this.turnPositionUpdated < global.DUEL.turn &&
+      this.attacksRemaining > 0
     );
   }
 

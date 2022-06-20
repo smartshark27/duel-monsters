@@ -48,9 +48,6 @@ export default class Player {
 
   startMainPhase1(): void {
     this.normalSummonsRemaining = 1;
-  }
-
-  startBattlePhase(): void {
     this.field.resetMonsterAttacksRemaining();
   }
 

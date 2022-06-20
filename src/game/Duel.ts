@@ -38,7 +38,6 @@ export default class Duel {
   }
 
   performAction(action?: Action): Action[] {
-    Duel.logger.debug(this.eventManager);
     if (action) action.perform();
     if (this.checkWin()) return [];
 
@@ -281,7 +280,6 @@ export default class Duel {
       else {
         this.phase = Phase.Battle;
         this.battlePhaseStep = BattlePhaseStep.Start;
-        this.turnPlayer.startBattlePhase();
       }
     } else if (this.battlePhaseStep === BattlePhaseStep.Start)
       this.battlePhaseStep = BattlePhaseStep.Battle;
@@ -323,6 +321,7 @@ export default class Duel {
   }
 
   private switchTurns() {
+    this.eventManager.clearTurnEvents();
     this.turn++;
     this.turnPlayer = this.getOpponentOf(this.turnPlayer);
     Duel.logger.info(`Switched turns to player ${this.turnPlayer}`);

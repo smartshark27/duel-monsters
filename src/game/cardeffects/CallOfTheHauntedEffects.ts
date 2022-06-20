@@ -115,6 +115,7 @@ class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
       this.monster !== null &&
       this.card.isOnField() &&
       this.card.visibility === CardFace.Up &&
+      !global.DUEL.chain.links.includes(this) &&
       events.some((event) => {
         return (
           event instanceof CardMoveEvent &&

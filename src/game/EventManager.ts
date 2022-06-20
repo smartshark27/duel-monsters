@@ -4,11 +4,13 @@ import DuelEvent from "./DuelEvent";
 
 export default class EventManager {
   protected static logger = LoggerFactory.getLogger("EventManager");
+  turnEvents: DuelEvent[] = [];
   queuedEvents: DuelEvent[] = [];
   openEvents: DuelEvent[] = [];
   lastEvents: DuelEvent[] = [];
 
   push(event: DuelEvent): void {
+    this.turnEvents.push(event);
     this.queuedEvents.push(event);
     this.lastEvents.push(event);
     if (global.DUEL.state === State.Open) this.openEvents.push(event);
@@ -16,6 +18,10 @@ export default class EventManager {
 
   getRespondableEvents(): DuelEvent[] {
     return [...new Set(this.lastEvents.concat(this.openEvents))];
+  }
+
+  clearTurnEvents(): void {
+    this.turnEvents = [];
   }
 
   clearQueuedEvents(): void {
@@ -31,6 +37,6 @@ export default class EventManager {
   }
 
   toString(): string {
-    return `Events: queued: ${this.queuedEvents.length}, last: ${this.lastEvents.length}, open: ${this.openEvents.length}`;
+    return `Events: turn: ${this.turnEvents.length}, queued: ${this.queuedEvents.length}, last: ${this.lastEvents.length}, open: ${this.openEvents.length}`;
   }
 }
