@@ -31,7 +31,7 @@ export default class Effects {
     return (
       this.effects.filter(
         (effect) =>
-          effect instanceof MandatoryTriggerEffect && effect.isTriggered(events)
+          effect instanceof MandatoryTriggerEffect && effect.canActivate(events)
       ) as MandatoryTriggerEffect[]
     ).flatMap((effect) => effect.getActivationActions());
   }
@@ -40,7 +40,7 @@ export default class Effects {
     return (
       this.effects.filter(
         (effect) =>
-          effect instanceof OptionalTriggerEffect && effect.isTriggered(events)
+          effect instanceof OptionalTriggerEffect && effect.canActivate(events)
       ) as OptionalTriggerEffect[]
     ).flatMap((effect) => effect.getActivationActions());
   }

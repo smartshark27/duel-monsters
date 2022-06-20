@@ -27,17 +27,11 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
   );
   private destroysRemaining = 0;
 
-  override isTriggered(events: DuelEvent[]): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
+      super.canActivate(events) &&
       this.card.visibility === CardFace.Up &&
       !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
-      events.some((event) => {
-        return (
-          event instanceof CardMoveEvent &&
-          event.card === this.card &&
-          this.getOtherFieldHEROMonsters().length > 0
-        );
-      }) &&
       this.getSpellTraps().length > 0
     );
   }
@@ -49,13 +43,28 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
   }
 
   override toString(): string {
-    return `${this.card.name} destory spell/trap effect`;
+    return `${this.card.name} destroy spell/trap effect`;
+  }
+
+  protected override canActivateFromEvents(events: DuelEvent[]): boolean {
+    return events.some((event) => {
+      return (
+        event instanceof CardMoveEvent &&
+        event.card === this.card &&
+        this.getOtherFieldHEROMonsters().length > 0
+      );
+    });
   }
 
   private getOtherFieldHEROMonsters(): Monster[] {
     const monsters = this.card.controller.field
       .getMonsters()
-      .filter((card) => card.name.includes("HERO"));
+      .filter(
+        (card) =>
+          card instanceof Monster &&
+          card.visibility === CardFace.Up &&
+          card.name.includes("HERO")
+      );
     Utils.removeItemFromArray(monsters, this.card);
     return monsters;
   }
@@ -101,17 +110,11 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
     "ElementalHEROStratosEffect2"
   );
 
-  override isTriggered(events: DuelEvent[]): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
+      super.canActivate(events) &&
       this.card.visibility === CardFace.Up &&
-      !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
-      events.some((event) => {
-        return (
-          event instanceof CardMoveEvent &&
-          event.card === this.card &&
-          this.getDeckHEROMonsters().length > 0
-        );
-      })
+      !global.DUEL.chain.links.some((effect) => effect.card === this.card)
     );
   }
 
@@ -128,6 +131,16 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
 
   override toString(): string {
     return `${this.card.name} add HERO to hand effect`;
+  }
+
+  protected override canActivateFromEvents(events: DuelEvent[]): boolean {
+    return events.some((event) => {
+      return (
+        event instanceof CardMoveEvent &&
+        event.card === this.card &&
+        this.getDeckHEROMonsters().length > 0
+      );
+    });
   }
 
   private getDeckHEROMonsters(): Monster[] {

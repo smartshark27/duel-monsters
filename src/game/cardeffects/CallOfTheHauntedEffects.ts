@@ -110,22 +110,12 @@ class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
   protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffect2");
   monster: Monster | null = null;
 
-  override isTriggered(events: DuelEvent[]): boolean {
+  override canActivate(events: DuelEvent[]): boolean {
     return (
+      super.canActivate(events) &&
       this.monster !== null &&
       this.card.isOnField() &&
-      this.card.visibility === CardFace.Up &&
-      !global.DUEL.chain.links.includes(this) &&
-      events.some((event) => {
-        return (
-          event instanceof CardMoveEvent &&
-          event.card instanceof Monster &&
-          event.card === this.monster &&
-          [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(
-            event.how
-          )
-        );
-      })
+      this.card.visibility === CardFace.Up
     );
   }
 
@@ -143,5 +133,18 @@ class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
       this.card,
       this
     ).publish();
+  }
+
+  protected override canActivateFromEvents(events: DuelEvent[]): boolean {
+    return events.some((event) => {
+      return (
+        event instanceof CardMoveEvent &&
+        event.card instanceof Monster &&
+        event.card === this.monster &&
+        [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(
+          event.how
+        )
+      );
+    });
   }
 }
