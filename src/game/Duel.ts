@@ -38,6 +38,7 @@ export default class Duel {
   }
 
   performAction(action?: Action): Action[] {
+    Duel.logger.debug(this.eventManager);
     if (action) action.perform();
     if (this.checkWin()) return [];
 
