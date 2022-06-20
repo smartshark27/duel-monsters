@@ -14,6 +14,7 @@ import Activation from "./actions/Activation";
 import DuelEvent from "./DuelEvent";
 import ElementalHEROStratosEffects from "./cardeffects/ElementalHEROStratosEffects";
 import AHeroLivesEffects from "./cardeffects/AHeroLivesEffects";
+import RaigekiEffects from "./cardeffects/RaigekiEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -66,7 +67,7 @@ export default class Card {
   }
 
   isSet(): boolean {
-    return this.turnSet > 0 && this.visibility === CardFace.Down;
+    return this.turnSet > 0 && this.visibility === CardFace.Down && this.isOnField();
   }
 
   wasSetBeforeThisTurn(): boolean {
@@ -138,6 +139,8 @@ export default class Card {
       this.effects = new MonsterRebornEffects(this);
     else if (this.originalName === "Mystical Space Typhoon")
       this.effects = new MysticalSpaceTyphoonEffects(this);
+    else if (this.originalName === "Raigeki")
+      this.effects = new RaigekiEffects(this);
     else if (this.originalName === "Supply Squad")
       this.effects = new SupplySquadEffects(this);
     else this.effects = new Effects(this);

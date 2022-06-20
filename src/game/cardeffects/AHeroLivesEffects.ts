@@ -37,12 +37,13 @@ class AHeroLivesEffect1 extends IgnitionEffect {
   }
 
   override activate(): void {
-    super.activate();
-
     const controller = this.card.controller;
+
     if (this.card.wasSetBeforeThisTurn()) {
+      super.activate();
       this.halveLifePoints();
     } else {
+      super.activate();
       global.DUEL.actionSelection = controller.field
         .getFreeSpellTrapZones()
         .map(

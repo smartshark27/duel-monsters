@@ -44,15 +44,16 @@ class MysticalSpaceTyphoonEffect1 extends QuickEffect {
   }
 
   override activate(): void {
-    super.activate();
     const controller = this.card.controller;
 
     if (this.card.wasSetBeforeThisTurn()) {
+      super.activate();
       global.DUEL.actionSelection = this.getSpellTraps().map(
         (card) =>
           new CardTarget(controller, card, (card) => this.setTarget(card))
       );
     } else {
+      super.activate();
       global.DUEL.actionSelection = controller.field
         .getFreeSpellTrapZones()
         .map(

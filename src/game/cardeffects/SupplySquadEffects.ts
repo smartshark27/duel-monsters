@@ -31,10 +31,10 @@ class SupplySquadPlayEffect extends IgnitionEffect {
   }
 
   override activate(): void {
-    super.activate();
     const controller = this.card.controller;
 
     if (!this.card.wasSetBeforeThisTurn()) {
+      super.activate();
       global.DUEL.actionSelection = controller.field
         .getFreeSpellTrapZones()
         .map(
@@ -43,7 +43,7 @@ class SupplySquadPlayEffect extends IgnitionEffect {
               this.activateToZone(zone)
             )
         );
-    }
+    } else super.activate();
   }
 }
 

@@ -97,6 +97,11 @@
     "spellType": "quick-play",
     "description": "Target 1 Spell/Trap on the field; destroy that target."
   },
+  "Raigeki": {
+    "cardType": "spell",
+    "spellType": "normal",
+    "description": "Destroy all monsters your opponent controls."
+  },
   "Red-Eyes Black Dragon": {
     "cardType": "monster",
     "attribute": "DARK",

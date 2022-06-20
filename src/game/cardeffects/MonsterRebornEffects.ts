@@ -11,7 +11,6 @@ import CardMoveEvent from "../events/CardMoveEvent";
 import { CardFace, BattlePosition, MoveMethod, Place } from "../../enums";
 import BattlePositionSelect from "../actions/BattlePositionSelect";
 import DuelEvent from "../DuelEvent";
-import Attack from "../actions/Attack";
 
 export default class MonsterRebornEffects extends Effects {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
@@ -26,14 +25,6 @@ class MonsterRebornEffect extends IgnitionEffect {
   protected static logger = LoggerFactory.getLogger("MonsterRebornEffect");
   private monster: Monster | null = null;
 
-  constructor(card: Card) {
-    super(card);
-  }
-
-  override reset(): void {
-    this.monster = null;
-  }
-
   override canActivate(events: DuelEvent[]): boolean {
     return (
       super.canActivate(events) &&
@@ -45,10 +36,10 @@ class MonsterRebornEffect extends IgnitionEffect {
   }
 
   override activate(): void {
-    super.activate();
     const controller = this.card.controller;
 
     if (this.card.wasSetBeforeThisTurn()) {
+      super.activate();
       global.DUEL.actionSelection = this.getGraveyardMonsters().map(
         (monster) =>
           new CardTarget(controller, monster, (monster) =>
@@ -56,6 +47,7 @@ class MonsterRebornEffect extends IgnitionEffect {
           )
       );
     } else {
+      super.activate();
       global.DUEL.actionSelection = controller.field
         .getFreeSpellTrapZones()
         .map(

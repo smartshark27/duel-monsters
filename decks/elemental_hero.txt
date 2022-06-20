@@ -20,9 +20,6 @@ Elemental HERO Sparkman
 Elemental HERO Sparkman
 Elemental HERO Sparkman
 Elemental HERO Sparkman
-Elemental HERO Sparkman
-Elemental HERO Sparkman
-Elemental HERO Sparkman
 Elemental HERO Stratos
 Elemental HERO Stratos
 Elemental HERO Stratos
@@ -35,6 +32,9 @@ Monster Reborn
 Mystical Space Typhoon
 Mystical Space Typhoon
 Mystical Space Typhoon
+Raigeki
+Raigeki
+Raigeki
 Supply Squad
 Supply Squad
 Supply Squad
