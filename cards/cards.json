@@ -41,6 +41,15 @@
     "attack": 1000,
     "defence": 1000
   },
+  "Elemental HERO Bubbleman": {
+    "cardType": "monster",
+    "attribute": "WATER",
+    "level": 4,
+    "monsterTypes": ["warrior", "effect"],
+    "attack": 800,
+    "defence": 1200,
+    "description": "If this is the only card in your hand, you can Special Summon it (from your hand). When this card is Summoned: You can draw 2 cards. You must control no other cards and have no cards in your hand to activate and to resolve this effect."
+  },
   "Elemental HERO Burstinatrix": {
     "cardType": "monster",
     "attribute": "FIRE",

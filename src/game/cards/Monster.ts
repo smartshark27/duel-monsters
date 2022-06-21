@@ -8,6 +8,7 @@ import PositionChange from "../actions/BattlePositionChange";
 import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
 import Player from "../Player";
+import SpecialSummon from "../actions/SpecialSummon";
 
 export default class Monster extends Card {
   protected static override logger = LoggerFactory.getLogger("Monster");
@@ -75,7 +76,7 @@ export default class Monster extends Card {
     if (this.canNormalSummonOrSet()) actions.push(this.getNormalSummonAction());
     if (this.canChangePosition()) actions.push(this.getPositionChangeAction());
     if (this.canAttack()) actions.push(this.getAttackAction());
-    return actions;
+    return actions.concat(this.getSpecialSummonActions());
   }
 
   private canNormalSummonOrSet(): boolean {
@@ -89,6 +90,10 @@ export default class Monster extends Card {
     return this.getTributesRequired() === 0
       ? new NormalSummon(this.controller, this)
       : new TributeSummon(this.controller, this);
+  }
+
+  private getSpecialSummonActions(): SpecialSummon[] {
+    return this.effects.getSpecialSummonActions();
   }
 
   private canChangePosition(): boolean {

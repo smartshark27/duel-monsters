@@ -6,7 +6,7 @@ import Monster from "../cards/Monster";
 export default class Summon extends Action {
   protected static override logger = LoggerFactory.getLogger("Summon");
 
-  constructor(actor: Player, protected card: Monster) {
+  constructor(actor: Player, protected monster: Monster) {
     super(actor);
   }
 }

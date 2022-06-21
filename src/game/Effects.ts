@@ -1,11 +1,13 @@
 import LoggerFactory from "../utils/LoggerFactory";
 import Activation from "./actions/Activation";
+import SpecialSummon from "./actions/SpecialSummon";
 import Card from "./Card";
 import DuelEvent from "./DuelEvent";
 import Effect from "./Effect";
 import ActivationEffect from "./effects/ActivationEffect";
 import MandatoryTriggerEffect from "./effects/MandatoryTriggerEffect";
 import OptionalTriggerEffect from "./effects/OptionalTriggerEffect";
+import SpecialSummonEffect from "./effects/SpecialSummonEffect";
 
 export default class Effects {
   protected static logger = LoggerFactory.getLogger("Effects");
@@ -15,6 +17,16 @@ export default class Effects {
 
   reset(): void {
     this.effects.forEach((effect) => effect.reset());
+  }
+
+  getSpecialSummonActions(): SpecialSummon[] {
+    return (
+      this.effects.filter(
+        (effect) => effect instanceof SpecialSummonEffect
+      ) as SpecialSummonEffect[]
+    ).flatMap((effect) =>
+      effect.canActivate() ? effect.getSpecialSummonActions() : []
+    );
   }
 
   getActivationActions(speed: number, events: DuelEvent[]): Activation[] {

@@ -7,7 +7,6 @@ import Activation from "./actions/Activation";
 import Pass from "./actions/Pass";
 import Draw from "./actions/Draw";
 import Attack from "./actions/Attack";
-import Summon from "./actions/Summon";
 import EventManager from "./EventManager";
 import Utils from "../utils/Utils";
 
@@ -24,7 +23,6 @@ export default class Duel {
   battlePhaseStep = BattlePhaseStep.None;
   damageStepTiming = DamageStepTiming.None;
 
-  summon: Summon | null = null;
   attack: Attack | null = null;
 
   private static logger = LoggerFactory.getLogger("Duel");

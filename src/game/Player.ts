@@ -104,16 +104,19 @@ export default class Player {
     return (
       this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
-      !global.DUEL.isDuringTiming() &&
       this.normalSummonsRemaining > 0 &&
       ((tributesRequired === 0 &&
-        this.field.getFreeMonsterZones().length > 0) ||
+        this.canPlayMonster()) ||
         (tributesRequired > 0 &&
           this.field.getMonsters().length >= tributesRequired))
     );
   }
 
-  canPlaySpellTrap() {
+  canPlayMonster(): boolean {
+    return this.field.getFreeMonsterZones().length > 0;
+  }
+
+  canPlaySpellTrap(): boolean {
     return this.field.getFreeSpellTrapZones().length > 0;
   }
 

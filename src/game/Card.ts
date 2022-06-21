@@ -15,6 +15,7 @@ import DuelEvent from "./DuelEvent";
 import ElementalHEROStratosEffects from "./cardeffects/ElementalHEROStratosEffects";
 import AHeroLivesEffects from "./cardeffects/AHeroLivesEffects";
 import RaigekiEffects from "./cardeffects/RaigekiEffects";
+import ElementalHEROBubblemanEffects from "./cardeffects/ElementalHEROBubblemanEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -131,6 +132,8 @@ export default class Card {
       this.effects = new AHeroLivesEffects(this);
     else if (this.originalName === "Call of the Haunted")
       this.effects = new CallOfTheHauntedEffects(this);
+    else if (this.originalName === "Elemental HERO Bubbleman")
+      this.effects = new ElementalHEROBubblemanEffects(this);
     else if (this.originalName === "Elemental HERO Stratos")
       this.effects = new ElementalHEROStratosEffects(this);
     else if (this.originalName === "Mirror Force")

@@ -7,13 +7,16 @@ import { BattlePosition, MoveMethod, Place } from "../../enums";
 import CardMoveEvent from "../events/CardMoveEvent";
 import BattlePositionSelect from "./BattlePositionSelect";
 
-export default class NormalSummon extends Summon {
-  protected static override logger = LoggerFactory.getLogger("NormalSummon");
+export default class SpecialSummon extends Summon {
+  protected static override logger = LoggerFactory.getLogger("SpecialSummon");
 
   override perform(): void {
     super.perform();
-    this.actor.normalSummonsRemaining--;
     this.selectPosition();
+  }
+
+  override toString(): string {
+    return `Special summon ${this.monster}`;
   }
 
   protected selectPosition(): void {
@@ -36,20 +39,16 @@ export default class NormalSummon extends Summon {
         .map(
           (zone) =>
             new ZoneSelect(this.actor, zone, (zone) =>
-              this.normalSummonOrSetToZone(zone)
+              this.specialSummonToZone(zone)
             )
         )
     );
   }
 
-  protected normalSummonOrSetToZone(zone: Zone) {
+  protected specialSummonToZone(zone: Zone) {
     Utils.removeItemFromArray(this.actor.hand, this.monster);
     zone.card = this.monster;
     this.getSummonEvent().publish();
-  }
-
-  override toString(): string {
-    return `Normal summon or set ${this.monster}`;
   }
 
   protected getSummonEvent(): CardMoveEvent {
@@ -58,9 +57,7 @@ export default class NormalSummon extends Summon {
       this.monster,
       Place.Hand,
       Place.Field,
-      this.monster.position === BattlePosition.Attack
-        ? MoveMethod.NormalSummoned
-        : MoveMethod.Set
+      MoveMethod.SpecialSummoned
     );
   }
 }

@@ -1,12 +1,15 @@
 A Hero Lives
-A Hero Lives
-A Hero Lives
-Call of the Haunted
 Call of the Haunted
 Call of the Haunted
 Elemental HERO Avian
 Elemental HERO Avian
 Elemental HERO Avian
+Elemental HERO Bubbleman
+Elemental HERO Bubbleman
+Elemental HERO Bubbleman
+Elemental HERO Bubbleman
+Elemental HERO Bubbleman
+Elemental HERO Bubbleman
 Elemental HERO Burstinatrix
 Elemental HERO Burstinatrix
 Elemental HERO Burstinatrix
@@ -16,7 +19,6 @@ Elemental HERO Clayman
 Elemental HERO Neos
 Elemental HERO Neos
 Elemental HERO Neos
-Elemental HERO Sparkman
 Elemental HERO Sparkman
 Elemental HERO Sparkman
 Elemental HERO Sparkman
@@ -34,7 +36,5 @@ Mystical Space Typhoon
 Mystical Space Typhoon
 Raigeki
 Raigeki
-Raigeki
-Supply Squad
 Supply Squad
 Supply Squad
