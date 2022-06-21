@@ -1,3 +1,4 @@
+import { Phase } from "../../enums";
 import LoggerFactory from "../../utils/LoggerFactory";
 import SpecialSummon from "../actions/SpecialSummon";
 import Card from "../Card";
@@ -12,7 +13,12 @@ export default class SpecialSummonEffect extends Effect {
   }
 
   canActivate(): boolean {
-    return this.card.controller.canPlayMonster();
+    const controller = this.card.controller;
+    return (
+      controller.isTurnPlayer() &&
+      [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
+      this.card.controller.canPlayMonster()
+    );
   }
 
   getSpecialSummonActions(): SpecialSummon[] {

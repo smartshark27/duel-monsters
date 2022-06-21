@@ -21,7 +21,7 @@ export default class SpecialSummon extends Summon {
 
   protected selectPosition(): void {
     this.setActionSelection(
-      [BattlePosition.Attack, BattlePosition.Set].map(
+      [BattlePosition.Attack, BattlePosition.Defence].map(
         (position) =>
           new BattlePositionSelect(this.actor, position, (position) =>
             this.setPosition(position)
