@@ -2,7 +2,7 @@ import LoggerFactory from "../../utils/LoggerFactory";
 import Player from "../Player";
 import Monster from "../cards/Monster";
 import NormalSummon from "./NormalSummon";
-import CardTarget from "./CardTarget";
+import CardSelect from "./CardSelect";
 import CardMoveEvent from "../events/CardMoveEvent";
 import { BattlePosition, MoveMethod, Place } from "../../enums";
 
@@ -23,7 +23,7 @@ export default class TributeSummon extends NormalSummon {
         .getMonsters()
         .map(
           (monsterToTribute) =>
-            new CardTarget(this.actor, monsterToTribute, (monsterToTribute) =>
+            new CardSelect(this.actor, monsterToTribute, (monsterToTribute) =>
               this.tributeMonster(monsterToTribute as Monster)
             )
         )
@@ -48,7 +48,7 @@ export default class TributeSummon extends NormalSummon {
           .getMonsters()
           .map(
             (monsterToTribute) =>
-              new CardTarget(this.actor, monsterToTribute, (monsterToTribute) =>
+              new CardSelect(this.actor, monsterToTribute, (monsterToTribute) =>
                 this.tributeMonster(monsterToTribute as Monster)
               )
           )

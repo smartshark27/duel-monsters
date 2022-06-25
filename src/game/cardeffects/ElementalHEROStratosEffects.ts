@@ -6,7 +6,7 @@ import DuelEvent from "../DuelEvent";
 import OptionalTriggerEffect from "../effects/OptionalTriggerEffect";
 import Monster from "../cards/Monster";
 import Utils from "../../utils/Utils";
-import CardTarget from "../actions/CardTarget";
+import CardSelect from "../actions/CardSelect";
 import { CardFace, MoveMethod, Place } from "../../enums";
 
 export default class ElementalHEROStratosEffects extends Effects {
@@ -81,7 +81,7 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
     if (this.destroysRemaining > 0 && opponentSpellTraps.length > 0) {
       global.DUEL.actionSelection = opponentSpellTraps.map(
         (card) =>
-          new CardTarget(this.card.controller, card, (card) =>
+          new CardSelect(this.card.controller, card, (card) =>
             this.destroyTarget(card)
           )
       );
@@ -123,7 +123,7 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
     const controller = this.card.controller;
     global.DUEL.actionSelection = this.getDeckHEROMonsters().map(
       (monster) =>
-        new CardTarget(controller, monster, (monster) =>
+        new CardSelect(controller, monster, (monster) =>
           this.addToHand(monster)
         )
     );

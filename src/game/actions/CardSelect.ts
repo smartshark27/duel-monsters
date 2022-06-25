@@ -3,8 +3,8 @@ import Player from "../Player";
 import Action from "../Action";
 import Card from "../Card";
 
-export default class CardTarget extends Action {
-  protected static override logger = LoggerFactory.getLogger("CardTarget");
+export default class CardSelect extends Action {
+  protected static override logger = LoggerFactory.getLogger("CardSelect");
 
   constructor(
     actor: Player,

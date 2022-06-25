@@ -3,7 +3,7 @@ import Card from "../Card";
 import Monster from "../cards/Monster";
 import Effects from "../Effects";
 import QuickEffect from "../effects/QuickEffect";
-import CardTarget from "../actions/CardTarget";
+import CardSelect from "../actions/CardSelect";
 import { BattlePhaseStep, CardFace, MoveMethod, Place } from "../../enums";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
@@ -43,7 +43,7 @@ class CallOfTheHauntedEffect1 extends QuickEffect {
     const controller = this.card.controller;
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
-        new CardTarget(controller, monster, (monster) =>
+        new CardSelect(controller, monster, (monster) =>
           this.targetGraveyardMonster(monster as Monster)
         )
     );

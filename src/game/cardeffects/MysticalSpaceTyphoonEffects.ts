@@ -1,7 +1,7 @@
 import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
-import CardTarget from "../actions/CardTarget";
+import CardSelect from "../actions/CardSelect";
 import QuickEffect from "../effects/QuickEffect";
 import DuelEvent from "../DuelEvent";
 import ZoneSelect from "../actions/ZoneSelect";
@@ -50,7 +50,7 @@ class MysticalSpaceTyphoonEffect1 extends QuickEffect {
       super.activate();
       global.DUEL.actionSelection = this.getSpellTraps().map(
         (card) =>
-          new CardTarget(controller, card, (card) => this.setTarget(card))
+          new CardSelect(controller, card, (card) => this.setTarget(card))
       );
     } else {
       super.activate();
@@ -98,7 +98,7 @@ class MysticalSpaceTyphoonEffect1 extends QuickEffect {
     super.activateToZone(zone);
     global.DUEL.actionSelection = this.getSpellTraps().map(
       (card) =>
-        new CardTarget(this.card.controller, card, (card) =>
+        new CardSelect(this.card.controller, card, (card) =>
           this.setTarget(card)
         )
     );

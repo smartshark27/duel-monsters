@@ -2,7 +2,7 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
-import CardTarget from "../actions/CardTarget";
+import CardSelect from "../actions/CardSelect";
 import IgnitionEffect from "../effects/IgnitionEffect";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
@@ -42,7 +42,7 @@ class MonsterRebornEffect extends IgnitionEffect {
       super.activate();
       global.DUEL.actionSelection = this.getGraveyardMonsters().map(
         (monster) =>
-          new CardTarget(controller, monster, (monster) =>
+          new CardSelect(controller, monster, (monster) =>
             this.targetGraveyardMonster(monster as Monster)
           )
       );
@@ -77,7 +77,7 @@ class MonsterRebornEffect extends IgnitionEffect {
     super.activateToZone(zone);
     global.DUEL.actionSelection = this.getGraveyardMonsters().map(
       (monster) =>
-        new CardTarget(this.card.controller, monster, (monster) =>
+        new CardSelect(this.card.controller, monster, (monster) =>
           this.targetGraveyardMonster(monster as Monster)
         )
     );

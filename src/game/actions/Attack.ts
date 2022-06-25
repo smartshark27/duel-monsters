@@ -9,7 +9,7 @@ import {
   TargetMethod,
 } from "../../enums";
 import Action from "../Action";
-import CardTarget from "./CardTarget";
+import CardSelect from "./CardSelect";
 import CardTargetEvent from "../events/CardTargetEvent";
 import PlayerTarget from "./PlayerTarget";
 import PlayerTargetEvent from "../events/PlayerTargetEvent";
@@ -97,13 +97,13 @@ export default class Attack extends Action {
     return `Attack using ${this.monster}`;
   }
 
-  private getMonsterAttackActions(): CardTarget[] {
+  private getMonsterAttackActions(): CardSelect[] {
     const opponent = global.DUEL.getOpponentOf(this.actor);
     return opponent.field
       .getMonsters()
       .map(
         (monster) =>
-          new CardTarget(this.actor, monster, (monster) =>
+          new CardSelect(this.actor, monster, (monster) =>
             this.attackMonster(monster as Monster)
           )
       );

@@ -2,7 +2,7 @@ import Effects from "../Effects";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Card from "../Card";
 import Monster from "../cards/Monster";
-import CardTarget from "../actions/CardTarget";
+import CardSelect from "../actions/CardSelect";
 import IgnitionEffect from "../effects/IgnitionEffect";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
@@ -65,7 +65,7 @@ class AHeroLivesEffect1 extends IgnitionEffect {
 
     global.DUEL.actionSelection = this.getDeckHEROMonsters().map(
       (monster) =>
-        new CardTarget(this.card.controller, monster, (monster) =>
+        new CardSelect(this.card.controller, monster, (monster) =>
           this.selectMonster(monster as Monster)
         )
     );
