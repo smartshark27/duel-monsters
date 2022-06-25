@@ -4,11 +4,19 @@
     "spellType": "normal",
     "description": "If you control no face-up monsters: Pay half your LP; Special Summon 1 Level 4 or lower \"Elemental HERO\" monster from your Deck."
   },
+  "Alexandrite Dragon": {
+    "cardType": "monster",
+    "attribute": "LIGHT",
+    "level": 4,
+    "monsterTypes": ["dragon", "normal"],
+    "attack": 2000,
+    "defence": 100
+  },
   "Baby Dragon": {
     "cardType": "monster",
     "attribute": "WIND",
     "level": 3,
-    "monsterTypes": ["normal", "dragon"],
+    "monsterTypes": ["dragon", "normal"],
     "attack": 1200,
     "defence": 700
   },
@@ -90,6 +98,22 @@
     "attack": 1800,
     "defence": 300,
     "description": "When this card is Normal or Special Summoned: You can activate 1 of these effects.\n●Destroy Spells/Traps on the field, up to the number of \"HERO\" monsters you control, except this card.\n●Add 1 \"HERO\" monster from your Deck to your hand."
+  },
+  "Guardragon Justicia": {
+    "cardType": "monster",
+    "attribute": "WATER",
+    "level": 2,
+    "monsterTypes": ["dragon", "tuner", "normal"],
+    "attack": 0,
+    "defence": 2100
+  },
+  "Luster Dragon": {
+    "cardType": "monster",
+    "attribute": "WIND",
+    "level": 4,
+    "monsterTypes": ["dragon", "normal"],
+    "attack": 1900,
+    "defence": 1600
   },
   "Mirror Force": {
     "cardType": "trap",
