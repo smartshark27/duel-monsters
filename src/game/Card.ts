@@ -16,6 +16,7 @@ import ElementalHEROStratosEffects from "./cardeffects/ElementalHEROStratosEffec
 import AHeroLivesEffects from "./cardeffects/AHeroLivesEffects";
 import RaigekiEffects from "./cardeffects/RaigekiEffects";
 import ElementalHEROBubblemanEffects from "./cardeffects/ElementalHEROBubblemanEffects";
+import HarpiesFeatherDusterEffects from "./cardeffects/HarpiesFeatherDusterEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -68,7 +69,9 @@ export default class Card {
   }
 
   isSet(): boolean {
-    return this.turnSet > 0 && this.visibility === CardFace.Down && this.isOnField();
+    return (
+      this.turnSet > 0 && this.visibility === CardFace.Down && this.isOnField()
+    );
   }
 
   wasSetBeforeThisTurn(): boolean {
@@ -136,6 +139,8 @@ export default class Card {
       this.effects = new ElementalHEROBubblemanEffects(this);
     else if (this.originalName === "Elemental HERO Stratos")
       this.effects = new ElementalHEROStratosEffects(this);
+    else if (this.originalName === "Harpie's Feather Duster")
+      this.effects = new HarpiesFeatherDusterEffects(this);
     else if (this.originalName === "Mirror Force")
       this.effects = new MirrorForceEffect(this);
     else if (this.originalName === "Monster Reborn")

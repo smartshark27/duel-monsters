@@ -107,6 +107,11 @@
     "attack": 0,
     "defence": 2100
   },
+  "Harpie's Feather Duster": {
+    "cardType": "spell",
+    "spellType": "normal",
+    "description": "Destroy all Spells and Traps your opponent controls."
+  },
   "Luster Dragon": {
     "cardType": "monster",
     "attribute": "WIND",
