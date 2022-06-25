@@ -61,17 +61,11 @@ export default class Player {
       return [new Draw(this)];
     }
 
-    return this.hand
-      .flatMap((card) => card.getActions(1, events))
-      .concat(
-        this.field.getCards().flatMap((card) => card.getActions(1, events))
-      );
+    return this.getUsableCards().flatMap((card) => card.getActions(1, events));
   }
 
   getSpeed2Actions(events: DuelEvent[] = []): Action[] {
-    return this.hand
-      .concat(this.field.getCards())
-      .flatMap((card) => card.getActions(2, events));
+    return this.getUsableCards().flatMap((card) => card.getActions(2, events));
   }
 
   getMandatoryTriggeredActions(events: DuelEvent[]): Action[] {
@@ -81,9 +75,9 @@ export default class Player {
   }
 
   getOptionalTriggeredActions(events: DuelEvent[]): Action[] {
-    const actions: Action[] = this.field
-      .getCards()
-      .flatMap((card) => card.getOptionalTriggeredActions(events));
+    const actions: Action[] = this.getUsableCards().flatMap((card) =>
+      card.getOptionalTriggeredActions(events)
+    );
     return actions.length > 0 ? actions.concat(new Pass(this)) : [];
   }
 
@@ -105,8 +99,7 @@ export default class Player {
       this.isTurnPlayer() &&
       [Phase.Main1, Phase.Main2].includes(global.DUEL.phase) &&
       this.normalSummonsRemaining > 0 &&
-      ((tributesRequired === 0 &&
-        this.canPlayMonster()) ||
+      ((tributesRequired === 0 && this.canPlayMonster()) ||
         (tributesRequired > 0 &&
           this.field.getMonsters().length >= tributesRequired))
     );
@@ -188,5 +181,9 @@ export default class Player {
     Utils.removeItemFromArray(this.hand, card);
     this.graveyard.push(card);
     return card;
+  }
+
+  private getUsableCards(): Card[] {
+    return this.hand.concat(this.field.getCards()).concat(this.graveyard);
   }
 }

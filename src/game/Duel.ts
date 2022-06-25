@@ -77,168 +77,6 @@ export default class Duel {
     }
   }
 
-  getOpenActions(performedAction?: Action): Action[] {
-    this.setState(State.Open);
-
-    if (this.isDuringTiming())
-      return this.getTurnPlayerMandatoryTriggeredActions();
-
-    if (this.chain.links.length > 0)
-      return this.getChainBuildActions(performedAction);
-    if (performedAction instanceof Pass) return this.getPassResponseActions();
-    else if (performedAction)
-      return this.getTurnPlayerMandatoryTriggeredActions();
-
-    const actions = this.turnPlayer.getSpeed1Actions();
-    if (actions.length === 0) return this.getPassResponseActions();
-    else if (actions.length === 1 && actions[0] instanceof Draw) return actions;
-    return actions.concat(new Pass(this.turnPlayer));
-  }
-
-  getTurnPlayerMandatoryTriggeredActions(): Action[] {
-    this.setState(State.TurnPlayerMandatoryTrigger);
-
-    const actions = this.turnPlayer.getMandatoryTriggeredActions(
-      this.eventManager.queuedEvents
-    );
-    if (actions.length > 1) return actions;
-    else if (actions.length === 1) actions[0].perform();
-
-    return this.getOpponentMandatoryTriggeredActions();
-  }
-
-  getOpponentMandatoryTriggeredActions(): Action[] {
-    this.setState(State.OpponentMandatoryTrigger);
-
-    const opponent = this.getOpponentOf(this.turnPlayer);
-    const actions = opponent.getMandatoryTriggeredActions(
-      this.eventManager.queuedEvents
-    );
-    if (actions.length > 1) return actions;
-    else if (actions.length === 1) actions[0].perform();
-
-    return this.getTurnPlayerOptionalTriggeredActions();
-  }
-
-  getTurnPlayerOptionalTriggeredActions(performedAction?: Action): Action[] {
-    this.setState(State.TurnPlayerOptionalTrigger);
-
-    if (!(performedAction instanceof Pass)) {
-      const actions = this.turnPlayer.getOptionalTriggeredActions(
-        this.eventManager.queuedEvents
-      );
-      if (actions.length > 0) return actions;
-    }
-
-    return this.getOpponentOptionalTriggeredActions();
-  }
-
-  getOpponentOptionalTriggeredActions(performedAction?: Action): Action[] {
-    this.setState(State.OpponentOptionalTrigger);
-
-    if (!(performedAction instanceof Pass)) {
-      const opponent = this.getOpponentOf(this.turnPlayer);
-      const actions = opponent.getOptionalTriggeredActions(
-        this.eventManager.queuedEvents
-      );
-      if (actions.length > 0) return actions;
-    }
-
-    this.eventManager.clearQueuedEvents();
-
-    if (this.chain.getLength() > 0) {
-      return this.getChainBuildActions();
-    }
-    return this.getTurnPlayerResponseActions();
-  }
-
-  getChainBuildActions(performedAction?: Action): Action[] {
-    this.setState(State.ChainBuild);
-
-    if (performedAction) {
-      const respondableEvents = this.eventManager.getRespondableEvents();
-      const lastActor = performedAction.actor;
-      const opponent = this.getOpponentOf(lastActor);
-      const opponentActions = opponent.getSpeed2Actions(respondableEvents);
-      if (opponentActions.length > 0)
-        return (opponentActions as Action[]).concat(new Pass(opponent));
-
-      const lastActorActions = lastActor.getSpeed2Actions(respondableEvents);
-      if (performedAction instanceof Pass || lastActorActions.length === 0)
-        return this.getChainResolveActions();
-
-      return (lastActorActions as Action[]).concat(new Pass(opponent));
-    }
-
-    return this.getChainResolveActions();
-  }
-
-  getChainResolveActions(): Action[] {
-    this.setState(State.ChainResolve);
-
-    if (this.chain.getLength() > 0) this.chain.resolveNext();
-    if (this.actionSelection.length > 0) return this.getActionSelection();
-    if (this.chain.getLength() > 0) return this.getChainResolveActions();
-
-    this.chain.cleanup();
-    this.eventManager.clearOpenEvents();
-
-    if (this.isDuringSingleChainTiming()) {
-      this.proceed();
-      return this.getOpenActions();
-    }
-    return this.getTurnPlayerMandatoryTriggeredActions();
-  }
-
-  getTurnPlayerResponseActions(performedAction?: Action): Action[] {
-    this.setState(State.TurnPlayerResponse);
-
-    if (performedAction instanceof Activation)
-      return this.getChainBuildActions();
-    if (!performedAction) {
-      const actions = this.turnPlayer.getSpeed2Actions(
-        this.eventManager.getRespondableEvents()
-      );
-      if (actions.length > 0) return actions.concat(new Pass(this.turnPlayer));
-    }
-
-    return this.getOpponentResponseActions();
-  }
-
-  getOpponentResponseActions(performedAction?: Action): Action[] {
-    this.setState(State.OpponentResponse);
-
-    if (performedAction instanceof Activation)
-      return this.getChainBuildActions();
-    const opponent = this.getOpponentOf(this.turnPlayer);
-    if (!performedAction) {
-      const actions = opponent.getSpeed2Actions(
-        this.eventManager.getRespondableEvents()
-      );
-      if (actions.length > 0) return actions.concat(new Pass(opponent));
-    }
-
-    if (this.isDuringTiming()) this.proceed();
-
-    this.eventManager.clearOpenEvents();
-    return this.getOpenActions();
-  }
-
-  getPassResponseActions(performedAction?: Action): Action[] {
-    this.setState(State.PassResponse);
-
-    if (performedAction instanceof Activation)
-      return this.getChainBuildActions();
-    const opponent = this.getOpponentOf(this.turnPlayer);
-    if (!performedAction) {
-      const actions = opponent.getSpeed2Actions();
-      if (actions.length > 0) return actions.concat(new Pass(opponent));
-    }
-
-    this.proceed();
-    return this.getOpenActions();
-  }
-
   isDuringTiming() {
     return this.attack || this.damageStepTiming !== DamageStepTiming.None;
   }
@@ -262,6 +100,172 @@ export default class Duel {
       "\n" +
       `${this.getPhaseInfoStr()}`
     );
+  }
+
+  private getOpenActions(performedAction?: Action): Action[] {
+    this.setState(State.Open);
+
+    if (this.isDuringTiming())
+      return this.getTurnPlayerMandatoryTriggeredActions();
+
+    if (this.chain.links.length > 0)
+      return this.getChainBuildActions(performedAction);
+    if (performedAction instanceof Pass) return this.getPassResponseActions();
+    else if (performedAction)
+      return this.getTurnPlayerMandatoryTriggeredActions();
+
+    const actions = this.turnPlayer.getSpeed1Actions();
+    if (actions.length === 0) return this.getPassResponseActions();
+    else if (actions.length === 1 && actions[0] instanceof Draw) return actions;
+    return actions.concat(new Pass(this.turnPlayer));
+  }
+
+  private getTurnPlayerMandatoryTriggeredActions(): Action[] {
+    this.setState(State.TurnPlayerMandatoryTrigger);
+
+    const actions = this.turnPlayer.getMandatoryTriggeredActions(
+      this.eventManager.queuedEvents
+    );
+    if (actions.length > 1) return actions;
+    else if (actions.length === 1) actions[0].perform();
+
+    return this.getOpponentMandatoryTriggeredActions();
+  }
+
+  private getOpponentMandatoryTriggeredActions(): Action[] {
+    this.setState(State.OpponentMandatoryTrigger);
+
+    const opponent = this.getOpponentOf(this.turnPlayer);
+    const actions = opponent.getMandatoryTriggeredActions(
+      this.eventManager.queuedEvents
+    );
+    if (actions.length > 1) return actions;
+    else if (actions.length === 1) actions[0].perform();
+
+    return this.getTurnPlayerOptionalTriggeredActions();
+  }
+
+  private getTurnPlayerOptionalTriggeredActions(
+    performedAction?: Action
+  ): Action[] {
+    this.setState(State.TurnPlayerOptionalTrigger);
+
+    if (!(performedAction instanceof Pass)) {
+      const actions = this.turnPlayer.getOptionalTriggeredActions(
+        this.eventManager.queuedEvents
+      );
+      if (actions.length > 0) return actions;
+    }
+
+    return this.getOpponentOptionalTriggeredActions();
+  }
+
+  private getOpponentOptionalTriggeredActions(
+    performedAction?: Action
+  ): Action[] {
+    this.setState(State.OpponentOptionalTrigger);
+
+    if (!(performedAction instanceof Pass)) {
+      const opponent = this.getOpponentOf(this.turnPlayer);
+      const actions = opponent.getOptionalTriggeredActions(
+        this.eventManager.queuedEvents
+      );
+      if (actions.length > 0) return actions;
+    }
+
+    this.eventManager.clearQueuedEvents();
+
+    if (this.chain.getLength() > 0) {
+      return this.getChainBuildActions();
+    }
+    return this.getTurnPlayerResponseActions();
+  }
+
+  private getChainBuildActions(performedAction?: Action): Action[] {
+    this.setState(State.ChainBuild);
+
+    if (performedAction) {
+      const respondableEvents = this.eventManager.getRespondableEvents();
+      const lastActor = performedAction.actor;
+      const opponent = this.getOpponentOf(lastActor);
+      const opponentActions = opponent.getSpeed2Actions(respondableEvents);
+      if (opponentActions.length > 0)
+        return (opponentActions as Action[]).concat(new Pass(opponent));
+
+      const lastActorActions = lastActor.getSpeed2Actions(respondableEvents);
+      if (performedAction instanceof Pass || lastActorActions.length === 0)
+        return this.getChainResolveActions();
+
+      return (lastActorActions as Action[]).concat(new Pass(opponent));
+    }
+
+    return this.getChainResolveActions();
+  }
+
+  private getChainResolveActions(): Action[] {
+    this.setState(State.ChainResolve);
+
+    if (this.chain.getLength() > 0) this.chain.resolveNext();
+    if (this.actionSelection.length > 0) return this.getActionSelection();
+    if (this.chain.getLength() > 0) return this.getChainResolveActions();
+
+    this.chain.cleanup();
+    this.eventManager.clearOpenEvents();
+
+    if (this.isDuringSingleChainTiming()) {
+      this.proceed();
+      return this.getOpenActions();
+    }
+    return this.getTurnPlayerMandatoryTriggeredActions();
+  }
+
+  private getTurnPlayerResponseActions(performedAction?: Action): Action[] {
+    this.setState(State.TurnPlayerResponse);
+
+    if (performedAction instanceof Activation)
+      return this.getChainBuildActions();
+    if (!performedAction) {
+      const actions = this.turnPlayer.getSpeed2Actions(
+        this.eventManager.getRespondableEvents()
+      );
+      if (actions.length > 0) return actions.concat(new Pass(this.turnPlayer));
+    }
+
+    return this.getOpponentResponseActions();
+  }
+
+  private getOpponentResponseActions(performedAction?: Action): Action[] {
+    this.setState(State.OpponentResponse);
+
+    if (performedAction instanceof Activation)
+      return this.getChainBuildActions();
+    const opponent = this.getOpponentOf(this.turnPlayer);
+    if (!performedAction) {
+      const actions = opponent.getSpeed2Actions(
+        this.eventManager.getRespondableEvents()
+      );
+      if (actions.length > 0) return actions.concat(new Pass(opponent));
+    }
+
+    if (this.isDuringTiming()) this.proceed();
+
+    this.eventManager.clearOpenEvents();
+    return this.getOpenActions();
+  }
+
+  private getPassResponseActions(performedAction?: Action): Action[] {
+    this.setState(State.PassResponse);
+
+    if (performedAction instanceof Activation)
+      return this.getChainBuildActions();
+    const opponent = this.getOpponentOf(this.turnPlayer);
+    if (!performedAction) {
+      const actions = opponent.getSpeed2Actions();
+      if (actions.length > 0) return actions.concat(new Pass(opponent));
+    }
+
+    this.proceed();
+    return this.getOpenActions();
   }
 
   private isDuringSingleChainTiming() {
