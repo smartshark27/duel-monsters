@@ -120,6 +120,14 @@
     "attack": 1900,
     "defence": 1600
   },
+  "Masked HERO Acid": {
+    "cardType": "monster",
+    "attribute": "WATER",
+    "level": 8,
+    "monsterTypes": ["warrior", "fusion", "effect"],
+    "attack": 2600,
+    "defence": 2100
+  },
   "Mirror Force": {
     "cardType": "trap",
     "trapType": "normal",

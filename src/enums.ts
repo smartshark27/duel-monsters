@@ -7,19 +7,6 @@ export const enum Phase {
   End = "end",
 }
 
-export const enum State {
-  Open = "open",
-  TurnPlayerMandatoryTrigger = "turn player mandatory trigger",
-  OpponentMandatoryTrigger = "opponent mandatory trigger",
-  TurnPlayerOptionalTrigger = "turn player optional trigger",
-  OpponentOptionalTrigger = "opponent optional trigger",
-  TurnPlayerResponse = "turn player response",
-  OpponentResponse = "opponent response",
-  ChainBuild = "chain build",
-  ChainResolve = "chain resolve",
-  PassResponse = "pass response",
-}
-
 export const enum BattlePhaseStep {
   None = "none",
   Start = "start",
@@ -37,6 +24,19 @@ export const enum DamageStepTiming {
   End = "end",
 }
 
+export const enum State {
+  Open = "open",
+  TurnPlayerMandatoryTrigger = "turn player mandatory trigger",
+  OpponentMandatoryTrigger = "opponent mandatory trigger",
+  TurnPlayerOptionalTrigger = "turn player optional trigger",
+  OpponentOptionalTrigger = "opponent optional trigger",
+  TurnPlayerResponse = "turn player response",
+  OpponentResponse = "opponent response",
+  ChainBuild = "chain build",
+  ChainResolve = "chain resolve",
+  PassResponse = "pass response",
+}
+
 export const enum CardType {
   Monster = "monster",
   Spell = "spell",
@@ -46,6 +46,15 @@ export const enum CardType {
 export const enum CardFace {
   Up = "up",
   Down = "down",
+}
+
+export const enum MonsterType {
+  Normal = "normal",
+  Effect = "effect",
+  Fusion = "fusion",
+  Tuner = "tuner",
+  Dragon = "dragon",
+  Warrior = "warrior",
 }
 
 export const enum BattlePosition {

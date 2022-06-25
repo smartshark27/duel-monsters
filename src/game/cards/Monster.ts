@@ -1,4 +1,10 @@
-import { BattlePhaseStep, BattlePosition, CardFace, Phase } from "../../enums";
+import {
+  BattlePhaseStep,
+  BattlePosition,
+  CardFace,
+  MonsterType,
+  Phase,
+} from "../../enums";
 import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
@@ -17,12 +23,16 @@ export default class Monster extends Card {
   originalAttackPoints!: number;
   originalDefencePoints!: number;
   originalLevel!: number;
+  originalTypes: MonsterType[] = [];
   attackPoints!: number;
   defencePoints!: number;
   level!: number;
+  types: MonsterType[] = [];
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
+    this.originalLevel = data.level as number;
+    this.originalTypes = data.monsterTypes as MonsterType[];
     this.reset();
   }
 
@@ -31,11 +41,15 @@ export default class Monster extends Card {
     this.attacksRemaining = 1;
     this.originalAttackPoints = this.data.attack as number;
     this.originalDefencePoints = this.data.defence as number;
-    this.originalLevel = this.data.level as number;
     this.attackPoints = this.originalAttackPoints;
     this.defencePoints = this.originalDefencePoints;
     this.level = this.originalLevel;
+    this.types = this.originalTypes;
     this.position = BattlePosition.Attack;
+  }
+
+  isExtraDeckType(): boolean {
+    return this.types.some((type) => [MonsterType.Fusion].includes(type));
   }
 
   getTributesRequired(): number {

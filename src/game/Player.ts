@@ -15,6 +15,7 @@ import Field from "./Field";
 
 export default class Player {
   deck: Deck | undefined;
+  extraDeck: Card[] = [];
   hand: Card[] = [];
   graveyard: Card[] = [];
   normalSummonsRemaining = 0;
@@ -32,8 +33,9 @@ export default class Player {
   }
 
   setDeck(deck: Deck) {
-    deck.shuffle();
     this.deck = deck;
+    this.moveExtraDeckCards();
+    deck.shuffle();
   }
 
   init() {
@@ -157,7 +159,7 @@ export default class Player {
       str += char;
     }
     str += `|${this.graveyard.length}|    ${this} has ${this.lifePoints} lifepoints\n`;
-    str += `|-|`;
+    str += `|${this.extraDeck.length}|`;
     for (let i = 0; i < 5; i++) {
       const card = this.field.spellTrapZones[i].card;
       if (card instanceof Spell && card.visibility === CardFace.Up) str += "S";
@@ -173,6 +175,19 @@ export default class Player {
 
   toString(): string {
     return this.name;
+  }
+
+  private moveExtraDeckCards(): void {
+    if (this.deck) {
+      for (var card of this.deck.cards)
+        if (card instanceof Monster && card.isExtraDeckType()) {
+          this.extraDeck.push(card);
+        }
+
+      this.deck.cards = this.deck.cards.filter(
+        (card) => !(card instanceof Monster && card.isExtraDeckType())
+      );
+    }
   }
 
   private discardRandom(): Card {

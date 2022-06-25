@@ -1,4 +1,4 @@
-import { CardType, SpellType, TrapType } from "../enums";
+import { CardType, MonsterType, SpellType, TrapType } from "../enums";
 
 export default interface CardData {
   cardType: CardType;
@@ -6,7 +6,7 @@ export default interface CardData {
   trapType?: TrapType;
   attribute?: string;
   level?: number;
-  monsterTypes?: String[];
+  monsterTypes?: MonsterType[];
   attack?: number;
   defence?: number;
   description?: string;
