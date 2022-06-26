@@ -153,6 +153,7 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
 
   private addToHand(card: Card): void {
     const controller = this.card.controller;
+    if (controller.deck) Utils.removeItemFromArray(controller.deck.cards, card);
     controller.hand.push(card);
     new CardMoveEvent(
       controller,

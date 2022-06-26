@@ -45,7 +45,7 @@ class MaskedHEROAcidEffect extends MandatoryTriggerEffect {
           MoveMethod.DestroyedByEffect,
           this.card,
           this
-        );
+        ).publish();
       });
 
       global.DUEL.getOpponentOf(controller)

@@ -41,6 +41,11 @@
     "trapType": "continuous",
     "description": "Activate this card by targeting 1 monster in your GY; Special Summon that target in Attack Position. When this card leaves the field, destroy that monster. When that monster is destroyed, destroy this card."
   },
+  "E - Emergency Call": {
+    "cardType": "spell",
+    "spellType": "normal",
+    "description": "Add 1 \"Elemental HERO\" monster from your Deck to your hand."
+  },
   "Elemental HERO Avian": {
     "cardType": "monster",
     "attribute": "WIND",

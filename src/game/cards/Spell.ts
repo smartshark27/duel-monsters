@@ -3,6 +3,7 @@ import Action from "../Action";
 import SpellTrapSet from "../actions/SpellTrapSet";
 import Card from "../Card";
 import AHeroLivesEffects from "../cardeffects/AHeroLivesEffects";
+import EEmergencyCallEffects from "../cardeffects/EEmergencyCallEffects";
 import HarpiesFeatherDusterEffects from "../cardeffects/HarpiesFeatherDusterEffects";
 import MaskChangeEffects from "../cardeffects/MaskChangeEffects";
 import MonsterRebornEffects from "../cardeffects/MonsterRebornEffects";
@@ -26,6 +27,8 @@ export default class Spell extends Card {
   protected override setEffects(): void {
     if (this.originalName === "A Hero Lives")
       this.effects = new AHeroLivesEffects(this);
+    else if (this.originalName === "E - Emergency Call")
+      this.effects = new EEmergencyCallEffects(this);
     else if (this.originalName === "Harpie's Feather Duster")
       this.effects = new HarpiesFeatherDusterEffects(this);
     else if (this.originalName === "Mask Change")
