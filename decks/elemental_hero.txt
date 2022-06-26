@@ -7,10 +7,7 @@ Elemental HERO Avian
 Elemental HERO Bubbleman
 Elemental HERO Bubbleman
 Elemental HERO Bubbleman
-Elemental HERO Bubbleman
-Elemental HERO Bubbleman
-Elemental HERO Bubbleman
-Elemental HERO Bubbleman
+Elemental HERO Burstinatrix
 Elemental HERO Burstinatrix
 Elemental HERO Burstinatrix
 Elemental HERO Clayman
@@ -29,11 +26,6 @@ Harpie's Feather Duster
 Mask Change
 Mask Change
 Mask Change
-Mask Change
-Mask Change
-Mask Change
-Mask Change
-Mask Change
 Mirror Force
 Mirror Force
 Mirror Force
@@ -41,6 +33,7 @@ Monster Reborn
 Mystical Space Typhoon
 Mystical Space Typhoon
 Mystical Space Typhoon
+Raigeki
 Raigeki
 Raigeki
 Supply Squad

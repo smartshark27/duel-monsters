@@ -32,12 +32,13 @@ class MaskedHEROAcidEffect extends MandatoryTriggerEffect {
 
   override resolve(): void {
     super.resolve();
+    const controller = this.card.controller;
     const spellTraps = this.getOpponentSpellTraps();
     if (spellTraps.length > 0) {
       spellTraps.forEach((card) => {
         card.destroy();
         new CardMoveEvent(
-          this.card.controller,
+          controller,
           this.card,
           Place.Field,
           Place.Graveyard,
@@ -46,6 +47,12 @@ class MaskedHEROAcidEffect extends MandatoryTriggerEffect {
           this
         );
       });
+
+      global.DUEL.getOpponentOf(controller)
+        .field.getMonsters()
+        .forEach((monster) => {
+          monster.updateAttackPoints(-300);
+        });
     }
   }
 

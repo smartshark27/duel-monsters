@@ -131,7 +131,8 @@
     "level": 8,
     "monsterTypes": ["warrior", "fusion", "effect"],
     "attack": 2600,
-    "defence": 2100
+    "defence": 2100,
+    "description": "Must be Special Summoned with \"Mask Change\". When this card is Special Summoned: Destroy as many Spells and Traps your opponent controls as possible, and if you do, all monsters they control lose 300 ATK."
   },
   "Mirror Force": {
     "cardType": "trap",

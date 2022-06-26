@@ -68,6 +68,11 @@ export default class Monster extends Card {
       : this.defencePoints;
   }
 
+  updateAttackPoints(change: number): void {
+    this.attackPoints += change;
+    this.attackPoints = this.attackPoints < 0 ? 0 : this.attackPoints;
+  }
+
   setPosition(position: BattlePosition): void {
     this.visibility =
       position === BattlePosition.Set ? CardFace.Down : CardFace.Up;
