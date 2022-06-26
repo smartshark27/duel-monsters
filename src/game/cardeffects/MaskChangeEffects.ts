@@ -122,7 +122,6 @@ class MaskChangeEffect extends QuickEffect {
     const extraDeckAttributes = this.getMaskedHEROMonsters().map(
       (monster) => monster.originalAttribute
     );
-    MaskChangeEffect.logger.warn(`attrs are ${extraDeckAttributes}`);
     return this.card.controller.field
       .getMonsters()
       .filter(

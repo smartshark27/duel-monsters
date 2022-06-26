@@ -18,6 +18,7 @@ import RaigekiEffects from "./cardeffects/RaigekiEffects";
 import ElementalHEROBubblemanEffects from "./cardeffects/ElementalHEROBubblemanEffects";
 import HarpiesFeatherDusterEffects from "./cardeffects/HarpiesFeatherDusterEffects";
 import MaskChangeEffects from "./cardeffects/MaskChangeEffects";
+import MaskedHEROAcidEffects from "./cardeffects/MaskedHEROAcidEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -142,6 +143,8 @@ export default class Card {
       this.effects = new ElementalHEROStratosEffects(this);
     else if (this.originalName === "Harpie's Feather Duster")
       this.effects = new HarpiesFeatherDusterEffects(this);
+    else if (this.originalName === "Masked HERO Acid")
+      this.effects = new MaskedHEROAcidEffects(this);
     else if (this.originalName === "Mask Change")
       this.effects = new MaskChangeEffects(this);
     else if (this.originalName === "Mirror Force")
