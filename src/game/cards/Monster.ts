@@ -2,6 +2,7 @@ import {
   BattlePhaseStep,
   BattlePosition,
   CardFace,
+  MonsterAttribute,
   MonsterType,
   Phase,
 } from "../../enums";
@@ -18,33 +19,35 @@ import SpecialSummon from "../actions/SpecialSummon";
 
 export default class Monster extends Card {
   protected static override logger = LoggerFactory.getLogger("Monster");
-  attacksRemaining = 1;
-  position = BattlePosition.Attack;
-  originalAttackPoints!: number;
-  originalDefencePoints!: number;
-  originalLevel!: number;
-  originalTypes: MonsterType[] = [];
-  attackPoints!: number;
-  defencePoints!: number;
+  attributes: MonsterAttribute[] = [];
   level!: number;
   types: MonsterType[] = [];
+  originalAttribute: MonsterAttribute;
+  originalLevel!: number;
+  originalTypes: MonsterType[] = [];
+  originalAttackPoints!: number;
+  originalDefencePoints!: number;
+  attackPoints!: number;
+  defencePoints!: number;
+  attacksRemaining = 1;
+  position = BattlePosition.Attack;
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
-    this.originalLevel = data.level as number;
-    this.originalTypes = data.monsterTypes as MonsterType[];
+    this.originalAttribute = this.data.attribute as MonsterAttribute;
     this.reset();
   }
 
   override reset(): void {
     super.reset();
-    this.attacksRemaining = 1;
+    this.attributes = [this.originalAttribute];
+    this.level = this.data.level as number;
+    this.types = this.data.monsterTypes as MonsterType[];
     this.originalAttackPoints = this.data.attack as number;
     this.originalDefencePoints = this.data.defence as number;
     this.attackPoints = this.originalAttackPoints;
     this.defencePoints = this.originalDefencePoints;
-    this.level = this.originalLevel;
-    this.types = this.originalTypes;
+    this.attacksRemaining = 1;
     this.position = BattlePosition.Attack;
   }
 

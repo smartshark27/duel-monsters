@@ -48,6 +48,15 @@ export const enum CardFace {
   Down = "down",
 }
 
+export const enum MonsterAttribute {
+  Light = "LIGHT",
+  Dark = "DARK",
+  Earth = "EARTH",
+  Wind = "WIND",
+  Fire = "FIRE",
+  Water = "WATER",
+}
+
 export const enum MonsterType {
   Normal = "normal",
   Effect = "effect",
@@ -78,6 +87,7 @@ export const enum Place {
   Hand = "hand",
   Field = "field",
   Deck = "deck",
+  ExtraDeck = "extra deck",
   Graveyard = "graveyard",
 }
 

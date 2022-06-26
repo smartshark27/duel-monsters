@@ -8,7 +8,7 @@ import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
 import Utils from "../../utils/Utils";
 import CardMoveEvent from "../events/CardMoveEvent";
-import { CardFace, BattlePosition, MoveMethod, Place } from "../../enums";
+import { BattlePosition, MoveMethod, Place } from "../../enums";
 import BattlePositionSelect from "../actions/BattlePositionSelect";
 import DuelEvent from "../DuelEvent";
 
@@ -95,8 +95,6 @@ class MonsterRebornEffect extends IgnitionEffect {
       );
       zone.card = this.monster;
       this.monster.controller = this.card.controller;
-      this.monster.visibility = CardFace.Up;
-      this.monster.turnPositionUpdated = global.DUEL.turn;
 
       new CardMoveEvent(
         this.card.controller,
@@ -122,6 +120,7 @@ class MonsterRebornEffect extends IgnitionEffect {
 
   private chooseBattlePosition(position: BattlePosition): void {
     if (this.monster) this.monster.setPosition(position);
+    this.monster = null;
   }
 
   override cleanup(): void {

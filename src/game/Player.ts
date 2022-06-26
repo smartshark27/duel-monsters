@@ -15,7 +15,7 @@ import Field from "./Field";
 
 export default class Player {
   deck: Deck | undefined;
-  extraDeck: Card[] = [];
+  extraDeck: Monster[] = [];
   hand: Card[] = [];
   graveyard: Card[] = [];
   normalSummonsRemaining = 0;
