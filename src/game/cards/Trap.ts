@@ -4,6 +4,8 @@ import Action from "../Action";
 import Card from "../Card";
 import Player from "../Player";
 import SpellTrapSet from "../actions/SpellTrapSet";
+import CallOfTheHauntedEffects from "../cardeffects/CallOfTheHauntedEffects";
+import MirrorForceEffect from "../cardeffects/MirrorForceEffects";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
@@ -22,6 +24,13 @@ export default class Trap extends Card {
     return super.canSet() && this.controller.canPlaySpellTrap();
   }
 
+  protected setEffects(): void {
+    if (this.originalName === "Call of the Haunted")
+      this.effects = new CallOfTheHauntedEffects(this);
+    else if (this.originalName === "Mirror Force")
+      this.effects = new MirrorForceEffect(this);
+    else super.setEffects();
+  }
   private getSetAction(): SpellTrapSet {
     return new SpellTrapSet(this.controller, this);
   }

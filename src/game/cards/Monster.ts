@@ -16,6 +16,9 @@ import TributeSummon from "../actions/TributeSummon";
 import Card from "../Card";
 import Player from "../Player";
 import SpecialSummon from "../actions/SpecialSummon";
+import MaskedHEROAcidEffects from "../cardeffects/MaskedHEROAcidEffects";
+import ElementalHEROStratosEffects from "../cardeffects/ElementalHEROStratosEffects";
+import ElementalHEROBubblemanEffects from "../cardeffects/ElementalHEROBubblemanEffects";
 
 export default class Monster extends Card {
   protected static override logger = LoggerFactory.getLogger("Monster");
@@ -93,12 +96,22 @@ export default class Monster extends Card {
     this.turnPositionUpdated = global.DUEL.turn;
   }
 
-  protected getSpeed1Actions(): Action[] {
+  protected override getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();
     if (this.canNormalSummonOrSet()) actions.push(this.getNormalSummonAction());
     if (this.canChangePosition()) actions.push(this.getPositionChangeAction());
     if (this.canAttack()) actions.push(this.getAttackAction());
     return actions.concat(this.getSpecialSummonActions());
+  }
+
+  protected override setEffects(): void {
+    if (this.originalName === "Elemental HERO Bubbleman")
+      this.effects = new ElementalHEROBubblemanEffects(this);
+    else if (this.originalName === "Elemental HERO Stratos")
+      this.effects = new ElementalHEROStratosEffects(this);
+    else if (this.originalName === "Masked HERO Acid")
+      this.effects = new MaskedHEROAcidEffects(this);
+    else super.setEffects();
   }
 
   private canNormalSummonOrSet(): boolean {

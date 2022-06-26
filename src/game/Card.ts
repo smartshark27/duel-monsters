@@ -3,22 +3,10 @@ import Player from "./Player";
 import Action from "./Action";
 import CardData from "../interfaces/CardData";
 import Effects from "./Effects";
-import MonsterRebornEffects from "./cardeffects/MonsterRebornEffects";
 import { CardFace, Phase } from "../enums";
-import MirrorForceEffect from "./cardeffects/MirrorForceEffects";
 import Zone from "./field/Zone";
-import MysticalSpaceTyphoonEffects from "./cardeffects/MysticalSpaceTyphoonEffects";
-import CallOfTheHauntedEffects from "./cardeffects/CallOfTheHauntedEffects";
-import SupplySquadEffects from "./cardeffects/SupplySquadEffects";
 import Activation from "./actions/Activation";
 import DuelEvent from "./DuelEvent";
-import ElementalHEROStratosEffects from "./cardeffects/ElementalHEROStratosEffects";
-import AHeroLivesEffects from "./cardeffects/AHeroLivesEffects";
-import RaigekiEffects from "./cardeffects/RaigekiEffects";
-import ElementalHEROBubblemanEffects from "./cardeffects/ElementalHEROBubblemanEffects";
-import HarpiesFeatherDusterEffects from "./cardeffects/HarpiesFeatherDusterEffects";
-import MaskChangeEffects from "./cardeffects/MaskChangeEffects";
-import MaskedHEROAcidEffects from "./cardeffects/MaskedHEROAcidEffects";
 
 export default class Card {
   visibility = CardFace.Down;
@@ -132,31 +120,7 @@ export default class Card {
     );
   }
 
-  private setEffects(): void {
-    if (this.originalName === "A Hero Lives")
-      this.effects = new AHeroLivesEffects(this);
-    else if (this.originalName === "Call of the Haunted")
-      this.effects = new CallOfTheHauntedEffects(this);
-    else if (this.originalName === "Elemental HERO Bubbleman")
-      this.effects = new ElementalHEROBubblemanEffects(this);
-    else if (this.originalName === "Elemental HERO Stratos")
-      this.effects = new ElementalHEROStratosEffects(this);
-    else if (this.originalName === "Harpie's Feather Duster")
-      this.effects = new HarpiesFeatherDusterEffects(this);
-    else if (this.originalName === "Masked HERO Acid")
-      this.effects = new MaskedHEROAcidEffects(this);
-    else if (this.originalName === "Mask Change")
-      this.effects = new MaskChangeEffects(this);
-    else if (this.originalName === "Mirror Force")
-      this.effects = new MirrorForceEffect(this);
-    else if (this.originalName === "Monster Reborn")
-      this.effects = new MonsterRebornEffects(this);
-    else if (this.originalName === "Mystical Space Typhoon")
-      this.effects = new MysticalSpaceTyphoonEffects(this);
-    else if (this.originalName === "Raigeki")
-      this.effects = new RaigekiEffects(this);
-    else if (this.originalName === "Supply Squad")
-      this.effects = new SupplySquadEffects(this);
-    else this.effects = new Effects(this);
+  protected setEffects(): void {
+    this.effects = new Effects(this);
   }
 }
