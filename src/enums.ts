@@ -103,6 +103,7 @@ export const enum MoveMethod {
   Activated = "activated",
   NormalSummoned = "normal summoned",
   Set = "set",
+  FlipSummoned = "flip summoned",
   TributeSummoned = "tribute summoned",
   TributeSet = "tribute set",
   SpecialSummoned = "special summoned",

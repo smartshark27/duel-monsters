@@ -104,6 +104,11 @@
     "defence": 300,
     "description": "When this card is Normal or Special Summoned: You can activate 1 of these effects.\n●Destroy Spells/Traps on the field, up to the number of \"HERO\" monsters you control, except this card.\n●Add 1 \"HERO\" monster from your Deck to your hand."
   },
+  "Forced Back": {
+    "cardType": "trap",
+    "trapType": "counter",
+    "description": "Negate the Normal Summon or Flip Summon of a monster and return it to its owner's hand."
+  },
   "Guardragon Justicia": {
     "cardType": "monster",
     "attribute": "WATER",

@@ -1,5 +1,6 @@
 import { State } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
+import Utils from "../utils/Utils";
 import DuelEvent from "./DuelEvent";
 
 export default class EventManager {
@@ -18,6 +19,13 @@ export default class EventManager {
 
   getRespondableEvents(): DuelEvent[] {
     return [...new Set(this.lastEvents.concat(this.openEvents))];
+  }
+
+  negate(event: DuelEvent): void {
+    Utils.removeItemFromArray(this.turnEvents, event);
+    Utils.removeItemFromArray(this.queuedEvents, event);
+    Utils.removeItemFromArray(this.lastEvents, event);
+    Utils.removeItemFromArray(this.openEvents, event);
   }
 
   clearTurnEvents(): void {

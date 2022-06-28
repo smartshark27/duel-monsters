@@ -81,12 +81,20 @@ export default class Card {
   }
 
   sendToGraveyard(): void {
-    const zone =
-      this.controller.field.getZoneOf(this) ||
-      global.DUEL.getOpponentOf(this.controller).field.getZoneOf(this);
+    const zone = this.controller.field.getZoneOf(this);
     if (zone) {
       this.visibility = CardFace.Up;
       this.owner.graveyard.push(this);
+      zone.card = null;
+      this.reset();
+    }
+  }
+
+  returnToHand(): void {
+    const zone = this.controller.field.getZoneOf(this);
+    if (zone) {
+      this.visibility = CardFace.Down;
+      this.owner.hand.push(this);
       zone.card = null;
       this.reset();
     }

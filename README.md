@@ -18,7 +18,7 @@ Or run an auto game with `npm start -- --auto`.
 - Ignition effects
 - Special summons from effects
 - Built-in special summons
-- Trap cards
+- Normal trap cards
 - Quick effects
 - Quick-play spell cards
 - Chains
@@ -27,6 +27,7 @@ Or run an auto game with `npm start -- --auto`.
 - Changing battle positions
 - Setting monsters
 - Extra deck
+- Counter trap cards
 
 ### Not Yet Supported
 
@@ -43,3 +44,7 @@ Or run an auto game with `npm start -- --auto`.
 - Link summoning
 - Gemini monsters
 - Trap monsters
+
+## Bugs
+
+- Spell speed 1 effects can chain to other spell speed 1 effects.

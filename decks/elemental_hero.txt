@@ -1,7 +1,6 @@
 A Hero Lives
 Call of the Haunted
 Call of the Haunted
-Call of the Haunted
 E - Emergency Call
 E - Emergency Call
 E - Emergency Call
@@ -25,6 +24,8 @@ Elemental HERO Sparkman
 Elemental HERO Stratos
 Elemental HERO Stratos
 Elemental HERO Stratos
+Forced Back
+Forced Back
 Harpie's Feather Duster
 Mask Change
 Mask Change
@@ -36,7 +37,6 @@ Mystical Space Typhoon
 Mystical Space Typhoon
 Raigeki
 Raigeki
-Supply Squad
 Supply Squad
 Masked HERO Acid
 Masked HERO Acid
