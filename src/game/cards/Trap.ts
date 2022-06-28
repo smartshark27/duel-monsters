@@ -7,12 +7,15 @@ import SpellTrapSet from "../actions/SpellTrapSet";
 import CallOfTheHauntedEffects from "../cardeffects/CallOfTheHauntedEffects";
 import MirrorForceEffects from "../cardeffects/MirrorForceEffects";
 import ForcedBackEffects from "../cardeffects/ForcedBackEffects";
+import { TrapType } from "../../enums";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
+  type: TrapType;
 
   constructor(owner: Player, name: string, data: CardData) {
     super(owner, name, data);
+    this.type = data.trapType as TrapType;
   }
 
   protected override getSpeed1Actions(): Action[] {

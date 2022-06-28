@@ -44,7 +44,3 @@ Or run an auto game with `npm start -- --auto`.
 - Link summoning
 - Gemini monsters
 - Trap monsters
-
-## Bugs
-
-- Spell speed 1 effects can chain to other spell speed 1 effects.

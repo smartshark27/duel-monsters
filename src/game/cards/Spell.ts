@@ -1,3 +1,5 @@
+import { SpellType } from "../../enums";
+import CardData from "../../interfaces/CardData";
 import LoggerFactory from "../../utils/LoggerFactory";
 import Action from "../Action";
 import SpellTrapSet from "../actions/SpellTrapSet";
@@ -10,9 +12,20 @@ import MonsterRebornEffects from "../cardeffects/MonsterRebornEffects";
 import MysticalSpaceTyphoonEffects from "../cardeffects/MysticalSpaceTyphoonEffects";
 import RaigekiEffects from "../cardeffects/RaigekiEffects";
 import SupplySquadEffects from "../cardeffects/SupplySquadEffects";
+import Player from "../Player";
 
 export default class Spell extends Card {
   protected static override logger = LoggerFactory.getLogger("Spell");
+  type: SpellType;
+
+  constructor(
+    public owner: Player,
+    protected originalName: string,
+    public data: CardData
+  ) {
+    super(owner, originalName, data);
+    this.type = data.spellType as SpellType;
+  }
 
   protected override getSpeed1Actions(): Action[] {
     const actions = super.getSpeed1Actions();

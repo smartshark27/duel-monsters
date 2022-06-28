@@ -19,6 +19,7 @@ import SpecialSummon from "../actions/SpecialSummon";
 import MaskedHEROAcidEffects from "../cardeffects/MaskedHEROAcidEffects";
 import ElementalHEROStratosEffects from "../cardeffects/ElementalHEROStratosEffects";
 import ElementalHEROBubblemanEffects from "../cardeffects/ElementalHEROBubblemanEffects";
+import ElementalHEROShadowMistEffects from "../cardeffects/ElementalHEROShadowMistEffects";
 
 export default class Monster extends Card {
   protected static override logger = LoggerFactory.getLogger("Monster");
@@ -107,6 +108,8 @@ export default class Monster extends Card {
   protected override setEffects(): void {
     if (this.originalName === "Elemental HERO Bubbleman")
       this.effects = new ElementalHEROBubblemanEffects(this);
+    else if (this.originalName === "Elemental HERO Shadow Mist")
+      this.effects = new ElementalHEROShadowMistEffects(this);
     else if (this.originalName === "Elemental HERO Stratos")
       this.effects = new ElementalHEROStratosEffects(this);
     else if (this.originalName === "Masked HERO Acid")

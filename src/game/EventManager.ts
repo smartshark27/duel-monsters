@@ -2,6 +2,7 @@ import { State } from "../enums";
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import DuelEvent from "./DuelEvent";
+import ActivationEvent from "./events/ActivationEvent";
 
 export default class EventManager {
   protected static logger = LoggerFactory.getLogger("EventManager");
@@ -19,6 +20,13 @@ export default class EventManager {
 
   getRespondableEvents(): DuelEvent[] {
     return [...new Set(this.lastEvents.concat(this.openEvents))];
+  }
+
+  wasCardNameActivatedThisTurn(name: string): boolean {
+    return this.turnEvents.some(
+      (event) =>
+        event instanceof ActivationEvent && event.effect.card.name === name
+    );
   }
 
   negate(event: DuelEvent): void {

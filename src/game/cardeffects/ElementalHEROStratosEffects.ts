@@ -32,7 +32,8 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
       super.canActivate(events) &&
       this.card.visibility === CardFace.Up &&
       !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
-      this.getSpellTraps().length > 0
+      this.getSpellTraps().length > 0 &&
+      this.getOtherFieldHEROMonsters().length > 0
     );
   }
 
@@ -51,7 +52,9 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
       return (
         event instanceof CardMoveEvent &&
         event.card === this.card &&
-        this.getOtherFieldHEROMonsters().length > 0
+        [MoveMethod.NormalSummoned, MoveMethod.SpecialSummoned].includes(
+          event.how
+        )
       );
     });
   }
@@ -114,7 +117,8 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
     return (
       super.canActivate(events) &&
       this.card.visibility === CardFace.Up &&
-      !global.DUEL.chain.links.some((effect) => effect.card === this.card)
+      !global.DUEL.chain.links.some((effect) => effect.card === this.card) &&
+      this.getDeckHEROMonsters().length > 0
     );
   }
 
@@ -134,13 +138,14 @@ class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
   }
 
   protected override canActivateFromEvents(events: DuelEvent[]): boolean {
-    return events.some((event) => {
-      return (
+    return events.some(
+      (event) =>
         event instanceof CardMoveEvent &&
         event.card === this.card &&
-        this.getDeckHEROMonsters().length > 0
-      );
-    });
+        [MoveMethod.NormalSummoned, MoveMethod.SpecialSummoned].includes(
+          event.how
+        )
+    );
   }
 
   private getDeckHEROMonsters(): Monster[] {

@@ -87,6 +87,15 @@
     "attack": 2500,
     "defence": 2000
   },
+  "Elemental HERO Shadow Mist": {
+    "cardType": "monster",
+    "attribute": "DARK",
+    "level": 4,
+    "monsterTypes": ["warrior", "effect"],
+    "attack": 1000,
+    "defence": 1500,
+    "description": "If this card is Special Summoned: You can add 1 \"Change\" Quick-Play Spell Card from your Deck to your hand. If this card is sent to the GY: You can add 1 \"HERO\" monster from your Deck to your hand, except \"Elemental HERO Shadow Mist\". You can only use 1 \"Elemental HERO Shadow Mist\" effect per turn, and only once that turn."
+  },
   "Elemental HERO Sparkman": {
     "cardType": "monster",
     "attribute": "LIGHT",
