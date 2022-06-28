@@ -3,11 +3,6 @@ Call of the Haunted
 Call of the Haunted
 Call of the Haunted
 Drowning Mirror Force
-Drowning Mirror Force
-Drowning Mirror Force
-Drowning Mirror Force
-Drowning Mirror Force
-Drowning Mirror Force
 E - Emergency Call
 E - Emergency Call
 E - Emergency Call
@@ -37,7 +32,6 @@ Harpie's Feather Duster
 Mask Change
 Mask Change
 Mask Change
-Mirror Force
 Mirror Force
 Monster Reborn
 Mystical Space Typhoon

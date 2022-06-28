@@ -29,8 +29,12 @@ export default class Duel {
 
   constructor(private players: Player[]) {
     Duel.logger.info("Creating duel");
+    this.turnPlayer = players[0];
+  }
+
+  start(): void {
     this.players.forEach((player) => player.init());
-    this.turnPlayer = Utils.getRandomItemFromArray(players);
+    this.turnPlayer = Utils.getRandomItemFromArray(this.players);
     Duel.logger.info(`${this.turnPlayer} will go first`);
     this.turnPlayer.startMainPhase1();
   }
