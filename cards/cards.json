@@ -41,6 +41,11 @@
     "trapType": "continuous",
     "description": "Activate this card by targeting 1 monster in your GY; Special Summon that target in Attack Position. When this card leaves the field, destroy that monster. When that monster is destroyed, destroy this card."
   },
+  "Drowning Mirror Force": {
+    "cardType": "trap",
+    "trapType": "normal",
+    "description": "When an opponent's monster declares a direct attack: Shuffle all your opponent's Attack Position monsters into the Deck."
+  },
   "E - Emergency Call": {
     "cardType": "spell",
     "spellType": "normal",

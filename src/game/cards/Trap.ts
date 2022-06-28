@@ -8,6 +8,7 @@ import CallOfTheHauntedEffects from "../cardeffects/CallOfTheHauntedEffects";
 import MirrorForceEffects from "../cardeffects/MirrorForceEffects";
 import ForcedBackEffects from "../cardeffects/ForcedBackEffects";
 import { TrapType } from "../../enums";
+import DrowningMirrorForceEffects from "../cardeffects/DrowningMirrorForceEffects";
 
 export default class Trap extends Card {
   protected static override logger = LoggerFactory.getLogger("Trap");
@@ -31,6 +32,8 @@ export default class Trap extends Card {
   protected setEffects(): void {
     if (this.originalName === "Call of the Haunted")
       this.effects = new CallOfTheHauntedEffects(this);
+    else if (this.originalName === "Drowning Mirror Force")
+      this.effects = new DrowningMirrorForceEffects(this);
     else if (this.originalName === "Forced Back")
       this.effects = new ForcedBackEffects(this);
     else if (this.originalName === "Mirror Force")

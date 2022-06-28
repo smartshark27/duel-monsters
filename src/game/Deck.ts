@@ -28,6 +28,11 @@ export default class Deck {
     return this.cards.pop();
   }
 
+  shuffleCardInto(card: Card): void {
+    this.cards.push(card);
+    this.shuffle();
+  }
+
   private loadCards() {
     const filename = "./decks/" + this.name + ".txt";
     Deck.logger.debug(`Loading cards from ${filename}`);

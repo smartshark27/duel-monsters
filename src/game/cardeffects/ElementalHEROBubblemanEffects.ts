@@ -61,15 +61,14 @@ class ElementalHEROBubblemanEffect2 extends OptionalTriggerEffect {
   }
 
   protected override canActivateFromEvents(events: DuelEvent[]): boolean {
-    return events.some((event) => {
-      return (
+    return events.some(
+      (event) =>
         event instanceof CardMoveEvent &&
         event.card === this.card &&
         [MoveMethod.NormalSummoned, MoveMethod.SpecialSummoned].includes(
           event.how
         )
-      );
-    });
+    );
   }
 
   private controllerHasNoCards(): boolean {

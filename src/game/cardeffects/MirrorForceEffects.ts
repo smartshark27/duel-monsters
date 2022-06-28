@@ -55,7 +55,7 @@ class MirrorForceEffect extends QuickEffect {
           MoveMethod.DestroyedByEffect,
           this.card,
           this
-        );
+        ).publish();
       });
 
     global.DUEL.attack = null;

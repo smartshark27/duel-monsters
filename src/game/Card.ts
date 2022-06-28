@@ -100,6 +100,16 @@ export default class Card {
     }
   }
 
+  shuffleIntoDeck(): void {
+    const zone = this.controller.field.getZoneOf(this);
+    if (zone) {
+      this.visibility = CardFace.Down;
+      this.owner.deck?.shuffleCardInto(this);
+      zone.card = null;
+      this.reset();
+    }
+  }
+
   reset(): void {
     this.name = this.originalName;
     this.controller = this.owner;
