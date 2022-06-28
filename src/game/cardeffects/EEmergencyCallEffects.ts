@@ -22,7 +22,7 @@ export default class EEmergencyCallEffects extends Effects {
 }
 
 class EEmergencyCallEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("EEmergencyCallEffect");
+  protected static override logger = LoggerFactory.getLogger("EEmergencyCallEffect");
 
   override canActivate(events: DuelEvent[]): boolean {
     return (

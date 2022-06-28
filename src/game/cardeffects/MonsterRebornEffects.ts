@@ -13,7 +13,7 @@ import BattlePositionSelect from "../actions/BattlePositionSelect";
 import DuelEvent from "../DuelEvent";
 
 export default class MonsterRebornEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger("MonsterRebornEffects");
+  protected static override logger = LoggerFactory.getLogger("MonsterRebornEffects");
 
   constructor(protected card: Card) {
     super(card);
@@ -22,7 +22,7 @@ export default class MonsterRebornEffects extends Effects {
 }
 
 class MonsterRebornEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("MonsterRebornEffect");
+  protected static override logger = LoggerFactory.getLogger("MonsterRebornEffect");
   private monster: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {

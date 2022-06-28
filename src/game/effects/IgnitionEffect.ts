@@ -5,7 +5,7 @@ import { Phase } from "../../enums";
 import DuelEvent from "../DuelEvent";
 
 export default class IgnitionEffect extends ActivationEffect {
-  protected static logger = LoggerFactory.getLogger("IgnitionEffect");
+  protected static override logger = LoggerFactory.getLogger("IgnitionEffect");
 
   constructor(card: Card) {
     super(card, 1);

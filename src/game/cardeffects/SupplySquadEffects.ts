@@ -10,7 +10,7 @@ import DuelEvent from "../DuelEvent";
 import Monster from "../cards/Monster";
 
 export default class SupplySquadEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger("SupplySquadEffects");
+  protected static override logger = LoggerFactory.getLogger("SupplySquadEffects");
 
   constructor(protected card: Card) {
     super(card);
@@ -20,7 +20,7 @@ export default class SupplySquadEffects extends Effects {
 }
 
 class SupplySquadPlayEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("SupplySquadPlayEffect");
+  protected static override logger = LoggerFactory.getLogger("SupplySquadPlayEffect");
 
   override canActivate(events: DuelEvent[]): boolean {
     return (
@@ -48,7 +48,7 @@ class SupplySquadPlayEffect extends IgnitionEffect {
 }
 
 class SupplySquadTriggerEffect extends OptionalTriggerEffect {
-  protected static logger = LoggerFactory.getLogger("SupplySquadTriggerEffect");
+  protected static override logger = LoggerFactory.getLogger("SupplySquadTriggerEffect");
   private turnLastActivated = 0;
 
   override canActivate(events: DuelEvent[]): boolean {

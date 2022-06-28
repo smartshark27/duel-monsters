@@ -9,7 +9,7 @@ import CardMoveEvent from "../events/CardMoveEvent";
 import Zone from "../field/Zone";
 
 export default class ActivationEffect extends Effect {
-  protected static logger = LoggerFactory.getLogger("ActivationEffect");
+  protected static override logger = LoggerFactory.getLogger("ActivationEffect");
 
   constructor(card: Card, speed: number) {
     super(card, speed);

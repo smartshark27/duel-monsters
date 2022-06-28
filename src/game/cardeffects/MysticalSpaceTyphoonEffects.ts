@@ -11,7 +11,7 @@ import { MoveMethod, Place } from "../../enums";
 import Utils from "../../utils/Utils";
 
 export default class MysticalSpaceTyphoonEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "MysticalSpaceTyphoonEffects"
   );
 
@@ -22,7 +22,7 @@ export default class MysticalSpaceTyphoonEffects extends Effects {
 }
 
 class MysticalSpaceTyphoonEffect1 extends QuickEffect {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "DestroySpellTrapQuickEffect"
   );
   private target: Card | null = null;

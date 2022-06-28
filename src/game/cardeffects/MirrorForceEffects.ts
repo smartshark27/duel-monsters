@@ -12,7 +12,8 @@ import CardMoveEvent from "../events/CardMoveEvent";
 import DuelEvent from "../DuelEvent";
 
 export default class MirrorForceEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger("MirrorForceEffects");
+  protected static override logger =
+    LoggerFactory.getLogger("MirrorForceEffects");
 
   constructor(card: Card) {
     super(card);
@@ -21,9 +22,8 @@ export default class MirrorForceEffects extends Effects {
 }
 
 class MirrorForceEffect extends QuickEffect {
-  protected static logger = LoggerFactory.getLogger(
-    "DestroyAllOpponentsMonstersQuickEffect"
-  );
+  protected static override logger =
+    LoggerFactory.getLogger("MirrorForceEffect");
 
   constructor(card: Card) {
     super(card);

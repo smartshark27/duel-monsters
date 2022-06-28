@@ -4,7 +4,7 @@ import ActivationEffect from "../effects/ActivationEffect";
 import Action from "../Action";
 
 export default class Activation extends Action {
-  protected static logger = LoggerFactory.getLogger("Activation");
+  protected static override logger = LoggerFactory.getLogger("Activation");
 
   constructor(actor: Player, public effect: ActivationEffect) {
     super(actor);

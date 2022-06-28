@@ -15,7 +15,7 @@ export default class HarpiesFeatherDusterEffects extends Effects {
 }
 
 class HarpiesFeatherDusterEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "HarpiesFeatherDusterEffect"
   );
 

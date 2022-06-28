@@ -10,7 +10,7 @@ import CardSelect from "../actions/CardSelect";
 import { CardFace, MoveMethod, Place } from "../../enums";
 
 export default class ElementalHEROStratosEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "ElementalHEROStratosEffects"
   );
 
@@ -22,7 +22,7 @@ export default class ElementalHEROStratosEffects extends Effects {
 }
 
 class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "ElementalHEROStratosEffect1"
   );
   private destroysRemaining = 0;
@@ -106,7 +106,7 @@ class ElementalHEROStratosEffect1 extends OptionalTriggerEffect {
 }
 
 class ElementalHEROStratosEffect2 extends OptionalTriggerEffect {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "ElementalHEROStratosEffect2"
   );
 

@@ -6,7 +6,7 @@ import Monster from "../cards/Monster";
 import Effect from "../Effect";
 
 export default class SpecialSummonEffect extends Effect {
-  protected static logger = LoggerFactory.getLogger("SpecialSummonEffect");
+  protected static override logger = LoggerFactory.getLogger("SpecialSummonEffect");
 
   constructor(card: Card) {
     super(card, 1);

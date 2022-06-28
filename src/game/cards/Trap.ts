@@ -20,7 +20,7 @@ export default class Trap extends Card {
     return actions;
   }
 
-  protected canSet(): boolean {
+  protected override canSet(): boolean {
     return super.canSet() && this.controller.canPlaySpellTrap();
   }
 
@@ -31,6 +31,7 @@ export default class Trap extends Card {
       this.effects = new MirrorForceEffects(this);
     else super.setEffects();
   }
+
   private getSetAction(): SpellTrapSet {
     return new SpellTrapSet(this.controller, this);
   }

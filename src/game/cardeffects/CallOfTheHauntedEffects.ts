@@ -13,7 +13,7 @@ import MandatoryTriggerEffect from "../effects/MandatoryTriggerEffect";
 import DuelEvent from "../DuelEvent";
 
 export default class CallOfTheHauntedEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffects");
+  protected static override logger = LoggerFactory.getLogger("CallOfTheHauntedEffects");
   public effect2: CallOfTheHauntedEffect2;
 
   constructor(card: Card) {
@@ -25,7 +25,7 @@ export default class CallOfTheHauntedEffects extends Effects {
 }
 
 class CallOfTheHauntedEffect1 extends QuickEffect {
-  protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffect1");
+  protected static override logger = LoggerFactory.getLogger("CallOfTheHauntedEffect1");
   private monster: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {
@@ -107,7 +107,7 @@ class CallOfTheHauntedEffect1 extends QuickEffect {
 }
 
 class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
-  protected static logger = LoggerFactory.getLogger("CallOfTheHauntedEffect2");
+  protected static override logger = LoggerFactory.getLogger("CallOfTheHauntedEffect2");
   monster: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {

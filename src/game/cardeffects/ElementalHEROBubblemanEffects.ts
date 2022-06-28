@@ -8,7 +8,7 @@ import { CardFace, MoveMethod, Place } from "../../enums";
 import CardMoveEvent from "../events/CardMoveEvent";
 
 export default class ElementalHEROBubblemanEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "ElementalHEROBubblemanEffects"
   );
 
@@ -20,7 +20,7 @@ export default class ElementalHEROBubblemanEffects extends Effects {
 }
 
 class ElementalHEROBubblemanEffect1 extends SpecialSummonEffect {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "ElementalHEROBubblemanEffect1"
   );
 
@@ -38,7 +38,7 @@ class ElementalHEROBubblemanEffect1 extends SpecialSummonEffect {
 }
 
 class ElementalHEROBubblemanEffect2 extends OptionalTriggerEffect {
-  protected static logger = LoggerFactory.getLogger(
+  protected static override logger = LoggerFactory.getLogger(
     "ElementalHEROBubblemanEffect2"
   );
 

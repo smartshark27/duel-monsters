@@ -15,7 +15,7 @@ export default class RaigekiEffects extends Effects {
 }
 
 class RaigekiEffect extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("RaigekiEffect");
+  protected static override logger = LoggerFactory.getLogger("RaigekiEffect");
 
   override canActivate(events: DuelEvent[]): boolean {
     const controller = this.card.controller;

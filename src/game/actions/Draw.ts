@@ -6,7 +6,7 @@ import { MoveMethod, Place } from "../../enums";
 import ActivationEffect from "../effects/ActivationEffect";
 
 export default class Draw extends Action {
-  protected static logger = LoggerFactory.getLogger("Draw");
+  protected static override logger = LoggerFactory.getLogger("Draw");
 
   constructor(actor: Player, private effect?: ActivationEffect) {
     super(actor);

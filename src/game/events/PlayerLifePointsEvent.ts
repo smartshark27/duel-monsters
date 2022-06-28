@@ -6,7 +6,7 @@ import Effect from "../Effect";
 import Player from "../Player";
 
 export default class PlayerLifePointsEvent extends DuelEvent {
-  protected static logger = LoggerFactory.getLogger("PlayerLifePointsEvent");
+  protected static override logger = LoggerFactory.getLogger("PlayerLifePointsEvent");
 
   constructor(
     actor: Player,

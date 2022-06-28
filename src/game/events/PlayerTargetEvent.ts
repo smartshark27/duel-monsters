@@ -6,7 +6,7 @@ import Effect from "../Effect";
 import Player from "../Player";
 
 export default class PlayerTargetEvent extends DuelEvent {
-  protected static logger = LoggerFactory.getLogger("PlayerTargetEvent");
+  protected static override logger = LoggerFactory.getLogger("PlayerTargetEvent");
 
   constructor(
     actor: Player,

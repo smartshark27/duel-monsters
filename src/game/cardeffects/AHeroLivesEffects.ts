@@ -13,7 +13,7 @@ import BattlePositionSelect from "../actions/BattlePositionSelect";
 import DuelEvent from "../DuelEvent";
 
 export default class AHeroLivesEffects extends Effects {
-  protected static logger = LoggerFactory.getLogger("AHeroLivesEffects");
+  protected static override logger = LoggerFactory.getLogger("AHeroLivesEffects");
 
   constructor(protected card: Card) {
     super(card);
@@ -22,7 +22,7 @@ export default class AHeroLivesEffects extends Effects {
 }
 
 class AHeroLivesEffect1 extends IgnitionEffect {
-  protected static logger = LoggerFactory.getLogger("AHeroLivesEffect1");
+  protected static override logger = LoggerFactory.getLogger("AHeroLivesEffect1");
   private target: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {
