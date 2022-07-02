@@ -7,7 +7,7 @@ export default class SpellTrapZone extends Zone {
 
   constructor(owner: Player, private index: number) {
     super(owner);
-    Zone.logger.info(`Creating ${this}`);
+    Zone.logger.debug(`Creating ${this}`);
   }
 
   override toString(): string {

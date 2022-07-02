@@ -36,8 +36,6 @@ class EEmergencyCallEffect extends IgnitionEffect {
   override activate(): void {
     const controller = this.card.controller;
 
-    super.activate();
-
     if (!this.card.wasSetBeforeThisTurn()) {
       super.activate();
       global.DUEL.actionSelection = controller.field
@@ -48,7 +46,7 @@ class EEmergencyCallEffect extends IgnitionEffect {
               this.activateToZone(zone)
             )
         );
-    }
+    } else super.activate();
   }
 
   override resolve(): void {

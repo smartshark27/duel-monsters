@@ -28,7 +28,7 @@ export default class Player {
 
   constructor(name: string) {
     this.name = name;
-    Player.logger.info(`Created player ${name}`);
+    Player.logger.debug(`Created player ${name}`);
     this.field = new Field(this);
   }
 
@@ -125,9 +125,6 @@ export default class Player {
     );
     this.lifePoints += change;
     this.lifePoints = this.lifePoints < 0 ? 0 : this.lifePoints;
-    Player.logger.info(
-      `Player ${this} has ${this.lifePoints} life points remaining`
-    );
     if (this.lifePoints === 0) {
       global.DUEL.end(global.DUEL.getOpponentOf(this));
     }
