@@ -57,7 +57,7 @@ class HarpiesFeatherDusterEffect extends IgnitionEffect {
         MoveMethod.DestroyedByEffect,
         this.card,
         this
-      );
+      ).publish();
     });
   }
 

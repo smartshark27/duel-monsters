@@ -71,9 +71,9 @@ export default class Player {
   }
 
   getMandatoryTriggeredActions(events: DuelEvent[]): Action[] {
-    return this.field
-      .getCards()
-      .flatMap((card) => card.getMandatoryTriggeredActions(events));
+    return this.getUsableCards().flatMap((card) =>
+      card.getMandatoryTriggeredActions(events)
+    );
   }
 
   getOptionalTriggeredActions(events: DuelEvent[]): Action[] {

@@ -13,19 +13,26 @@ import MandatoryTriggerEffect from "../effects/MandatoryTriggerEffect";
 import DuelEvent from "../DuelEvent";
 
 export default class CallOfTheHauntedEffects extends Effects {
-  protected static override logger = LoggerFactory.getLogger("CallOfTheHauntedEffects");
+  protected static override logger = LoggerFactory.getLogger(
+    "CallOfTheHauntedEffects"
+  );
   public effect2: CallOfTheHauntedEffect2;
+  public effect3: CallOfTheHauntedEffect3;
 
   constructor(card: Card) {
     super(card);
     this.effects.push(new CallOfTheHauntedEffect1(card));
     this.effect2 = new CallOfTheHauntedEffect2(card);
+    this.effect3 = new CallOfTheHauntedEffect3(card);
     this.effects.push(this.effect2);
+    this.effects.push(this.effect3);
   }
 }
 
 class CallOfTheHauntedEffect1 extends QuickEffect {
-  protected static override logger = LoggerFactory.getLogger("CallOfTheHauntedEffect1");
+  protected static override logger = LoggerFactory.getLogger(
+    "CallOfTheHauntedEffect1"
+  );
   private monster: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {
@@ -100,14 +107,17 @@ class CallOfTheHauntedEffect1 extends QuickEffect {
         this
       ).publish();
 
-      (this.card.effects as CallOfTheHauntedEffects).effect2.monster =
-        this.monster;
+      const cardEffects = this.card.effects as CallOfTheHauntedEffects;
+      cardEffects.effect2.monster = this.monster;
+      cardEffects.effect3.monster = this.monster;
     } else CallOfTheHauntedEffect1.logger.warn("Target is not set");
   }
 }
 
 class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
-  protected static override logger = LoggerFactory.getLogger("CallOfTheHauntedEffect2");
+  protected static override logger = LoggerFactory.getLogger(
+    "CallOfTheHauntedEffect2"
+  );
   monster: Monster | null = null;
 
   override canActivate(events: DuelEvent[]): boolean {
@@ -144,6 +154,49 @@ class CallOfTheHauntedEffect2 extends MandatoryTriggerEffect {
         [MoveMethod.DestroyedByBattle, MoveMethod.DestroyedByEffect].includes(
           event.how
         )
+      );
+    });
+  }
+}
+
+class CallOfTheHauntedEffect3 extends MandatoryTriggerEffect {
+  protected static override logger = LoggerFactory.getLogger(
+    "CallOfTheHauntedEffect3"
+  );
+  monster: Monster | null = null;
+
+  override canActivate(events: DuelEvent[]): boolean {
+    return (
+      super.canActivate(events) &&
+      this.monster !== null
+    );
+  }
+
+  override resolve(): void {
+    super.resolve();
+    const controller = this.card.controller;
+
+    if (this.monster) {
+      this.monster.destroy();
+
+      new CardMoveEvent(
+        controller,
+        this.monster,
+        Place.Field,
+        Place.Graveyard,
+        MoveMethod.DestroyedByEffect,
+        this.card,
+        this
+      ).publish();
+    }
+  }
+
+  protected override canActivateFromEvents(events: DuelEvent[]): boolean {
+    return events.some((event) => {
+      return (
+        event instanceof CardMoveEvent &&
+        event.card === this.card &&
+        event.from === Place.Field
       );
     });
   }
