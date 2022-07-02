@@ -1,7 +1,6 @@
 import LoggerFactory from "../utils/LoggerFactory";
 import Utils from "../utils/Utils";
 import Card from "./Card";
-import Player from "./Player";
 
 export default class Deck {
   private static logger = LoggerFactory.getLogger("Duel");
@@ -20,5 +19,9 @@ export default class Deck {
   shuffleCardInto(card: Card): void {
     this.cards.push(card);
     this.shuffle();
+  }
+
+  removeCard(card: Card): void {
+    Utils.removeItemFromArray(this.cards, card);
   }
 }

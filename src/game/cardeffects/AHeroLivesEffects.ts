@@ -104,7 +104,7 @@ class AHeroLivesEffect1 extends IgnitionEffect {
 
   private specialSummonToZone(zone: Zone): void {
     if (this.target) {
-      Utils.removeItemFromArray(this.target.controller.graveyard, this.target);
+      this.target.controller.deck?.removeCard(this.target);
       zone.card = this.target;
       this.target.controller = this.card.controller;
       this.target.turnPositionUpdated = global.DUEL.turn;
