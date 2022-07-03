@@ -6,7 +6,6 @@ import CardSelect from "../actions/CardSelect";
 import IgnitionEffect from "../effects/IgnitionEffect";
 import ZoneSelect from "../actions/ZoneSelect";
 import Zone from "../field/Zone";
-import Utils from "../../utils/Utils";
 import CardMoveEvent from "../events/CardMoveEvent";
 import { BattlePosition, MoveMethod, Place } from "../../enums";
 import BattlePositionSelect from "../actions/BattlePositionSelect";
