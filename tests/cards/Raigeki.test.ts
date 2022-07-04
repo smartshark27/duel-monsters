@@ -1,4 +1,4 @@
-import { BattlePosition, CardFace } from "../../src/enums";
+import { BattlePosition } from "../../src/enums";
 import CardLoader from "../../src/game/CardLoader";
 import Monster from "../../src/game/cards/Monster";
 import Duel from "../../src/game/Duel";
