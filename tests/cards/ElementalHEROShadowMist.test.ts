@@ -1,4 +1,3 @@
-import { BattlePosition } from "../../src/enums";
 import CardLoader from "../../src/game/CardLoader";
 import Monster from "../../src/game/cards/Monster";
 import Deck from "../../src/game/Deck";
