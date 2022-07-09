@@ -39,7 +39,7 @@ class MaskedHEROAcidEffect extends MandatoryTriggerEffect {
         card.destroy();
         new CardMoveEvent(
           controller,
-          this.card,
+          card,
           Place.Field,
           Place.Graveyard,
           MoveMethod.DestroyedByEffect,
